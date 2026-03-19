@@ -1,0 +1,90 @@
+---
+- # ====== Authorization: AD Role ==============================
+  id: 43639706807981447
+  identification: 
+    name: AD Role
+
+  subscription: 
+    version-number: 1
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: "RETURN LCDT.AD.authorization_rau('Tu wpisz nazwe roli', :APP_ID, :APP_USER) > 0;"
+
+  server-cache: 
+    evaluation-point: Once per Session
+
+- # ====== Authorization: Administration Rights ================
+  id: 52839508229029280
+  identification: 
+    name: Administration Rights
+
+  subscription: 
+    version-number: 1
+
+  authorization-scheme: 
+    type: Is In Role or Group
+
+  settings: 
+    type: Application Role
+    name(s): Administrator
+
+  server-cache: 
+    evaluation-point: Once per Page View
+
+  error: 
+    error-message: Insufficient privileges, user is not an Administrator
+
+- # ====== Authorization: Reader Rights ========================
+  id: 52839564944029280
+  identification: 
+    name: Reader Rights
+
+  subscription: 
+    version-number: 1
+
+  authorization-scheme: 
+    type: PL/SQL Function Returning Boolean
+
+  settings: 
+    pl/sql-function-body: |
+      if nvl(apex_app_setting.get_value(
+         p_name => 'ACCESS_CONTROL_SCOPE'),'x') = 'ALL_USERS' then
+          -- allow user not in the ACL to access the application
+          return true;
+      else
+          -- require user to have at least one role
+          return apex_acl.has_user_any_roles (
+              p_application_id => :APP_ID, 
+              p_user_name      => :APP_USER);
+      end if;
+
+  server-cache: 
+    evaluation-point: Once per Page View
+
+  error: 
+    error-message: You are not authorized to view this application, either because you have not been granted access, or your account has been locked. Please contact the application administrator.
+
+- # ====== Authorization: Contribution Rights ==================
+  id: 52839660084029280
+  identification: 
+    name: Contribution Rights
+
+  subscription: 
+    version-number: 1
+
+  authorization-scheme: 
+    type: Is In Role or Group
+
+  settings: 
+    type: Application Role
+    name(s): Administrator,Contributor
+
+  server-cache: 
+    evaluation-point: Once per Page View
+
+  error: 
+    error-message: Insufficient privileges, user is not a Contributor
+

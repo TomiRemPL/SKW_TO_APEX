@@ -1,0 +1,72 @@
+---
+- # ====== Application Item: B_APP_ID_AUDYT ====================
+  id: 15695386239954625
+  identification: 
+    name: B_APP_ID_AUDYT
+    scope: Application
+
+  security: 
+    session-state-protection: Checksum Required - Application Level
+    escape-special-characters: true
+
+  comments: 
+    comments: Zmienna globalna na poziomie aplikacji do przechowywania kontekstu ID Audytu
+
+  subscription: 
+    version-number: 408605581
+
+- # ====== Application Item: B_APP_ID_KONTROLI =================
+  id: 17081797775522576
+  identification: 
+    name: B_APP_ID_KONTROLI
+    scope: Application
+
+  security: 
+    session-state-protection: Checksum Required - Application Level
+    escape-special-characters: true
+
+  comments: 
+    comments: Zmienna aplikacyjna do trzymania wybranego ID analizowanej kontroli
+
+  subscription: 
+    version-number: 408935413
+
+- # ====== Application Item: G_FIRSTNAME =======================
+  id: 35964161630801704
+  identification: 
+    name: G_FIRSTNAME
+    scope: Global
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 2675516
+
+- # ====== Application Item: G_LASTNAME ========================
+  id: 35964322749800611
+  identification: 
+    name: G_LASTNAME
+    scope: Global
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 2675541
+
+- # ====== Application Item: G_EMAIL ===========================
+  id: 35964542813799679
+  identification: 
+    name: G_EMAIL
+    scope: Global
+
+  security: 
+    session-state-protection: Restricted - May not be set from browser
+    escape-special-characters: true
+
+  subscription: 
+    version-number: 2675560
+

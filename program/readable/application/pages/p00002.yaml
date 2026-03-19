@@ -1,0 +1,3400 @@
+---
+# ====== Page: DAW_ANKIETA ===================================
+id: 2
+identification: 
+  name: DAW_ANKIETA
+  alias: DAW-ANKIETA
+  title: DAW_ANKIETA
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    .tekst-zawijany {
+        white-space: pre-wrap !important;
+        min-width: 150px; /* Opcjonalnie: minimalna szerokość kolumny */
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Przerywnik ==================================
+  id: 273335866880595123
+  identification: 
+    name: Przerywnik
+    type: Static Content
+
+  source: 
+    html-code: |
+      <table style="width: 100%; border-collapse: collapse; border: none; margin: 0; padding: 0;">
+          <tr style="border: none;">
+              <td style="width: 50%; text-align: left; border: none; vertical-align: middle; padding: 10px;">
+                  <span style="font-weight: bold; font-size: 16px; color: #00aeb7;">
+                      ADEKWATNOŚĆ
+                  </span>
+              </td>
+          </tr>
+      </table>
+
+  layout: 
+    sequence: 50
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: P2_SKUTECZNOSC_OCENA ========================
+  id: 271995752579552326
+  identification: 
+    name: P2_SKUTECZNOSC_OCENA
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT * FROM B_OCENA a 
+      WHERE 1=1
+        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+        AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = 2 /*skuteczność*/
+
+  layout: 
+    sequence: 100
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: 1
+    new-column: true
+    column-span: 6
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    css-classes: 
+    - odswiez-mnie
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 271995808737552327
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Update Row
+      lost-update-type: Row Values
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    toolbar: 
+      show: true
+      controls: 
+      - Actions Menu
+      - Save Button
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: true
+      download: true
+
+    download: 
+      send-as-email: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 273304476251408273
+      identification: 
+        name: Primary Report
+        alias: 3042406
+
+  columns: 
+  - # ====== Column: B_OCENA_PRZELAMANA_UZASADNIENIE =============
+    id: 271996867621552337
+    identification: 
+      column-name: B_OCENA_PRZELAMANA_UZASADNIENIE
+      type: Textarea
+
+    heading: 
+      heading: Przełamanie - komentarz
+      alignment: center
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: false
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 4000
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_PRZELAMANA_UZASADNIENIE
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: B_OCENA_CZY_NADPISANA =======================
+    id: 271996757220552336
+    identification: 
+      column-name: B_OCENA_CZY_NADPISANA
+      type: Switch
+
+    heading: 
+      heading: Czy przełamanie?
+      alignment: center
+
+    settings: 
+      use-defaults: false
+      on-value: 1
+      on-label: TAK
+      off-value: 0
+      off-label: NIE
+
+    layout: 
+      sequence: 90
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_CZY_NADPISANA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_OCENA_NADPISANA ===========================
+    id: 271996649096552335
+    identification: 
+      column-name: B_OCENA_NADPISANA
+      type: Number Field
+
+    heading: 
+      heading: 'Ocena nadpisana:'
+      alignment: center
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 80
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_NADPISANA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_OCENA_LICZONA =============================
+    id: 271996507462552334
+    identification: 
+      column-name: B_OCENA_LICZONA
+      type: Number Field
+
+    heading: 
+      heading: 'Ocena wyliczona:'
+      alignment: center
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 70
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_LICZONA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: ID_PK_B_OCENA ===============================
+    id: 271996429129552333
+    identification: 
+      column-name: ID_PK_B_OCENA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 60
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_PK_B_OCENA
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_SL_C_PYTANIE_DZIEDZINA_ID =================
+    id: 271996298778552332
+    identification: 
+      column-name: B_SL_C_PYTANIE_DZIEDZINA_ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 50
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: B_SL_C_PYTANIE_DZIEDZINA_ID
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_KONTROLA ============================
+    id: 271996196301552331
+    identification: 
+      column-name: ID_FK_B_KONTROLA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 40
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_KONTROLA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_AUDYT ===============================
+    id: 271996124961552330
+    identification: 
+      column-name: ID_FK_B_AUDYT
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 30
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_AUDYT
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 271996050551552329
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 271995904467552328
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+- # ====== Region: Przerywnik ==================================
+  id: 136091006245002853
+  identification: 
+    name: Przerywnik
+    type: Static Content
+
+  source: 
+    html-code: |
+      <table style="width: 100%; border-collapse: collapse; border: none; margin: 0; padding: 0;">
+          <tr style="border: none;">
+              <td style="width: 50%; text-align: left; border: none; vertical-align: middle; padding: 10px;">
+                  <span style="font-weight: bold; font-size: 16px; color: #00aeb7;">
+                      SKUTECZNOŚĆ
+                  </span>
+              </td>
+          </tr>
+      </table>
+
+  layout: 
+    sequence: 80
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: P2_SKUTECZNOSC ==============================
+  id: 99681844894736331
+  identification: 
+    name: P2_SKUTECZNOSC
+    title: Adekwatność
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT * FROM B_ANKIETA a 
+      WHERE 1=1
+        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+        AND A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = 2 /*Skuteczność*/
+
+  layout: 
+    sequence: 90
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    css-classes: 
+    - odswiez-mnie
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 99681767761736330
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    toolbar: 
+      show: true
+      controls: 
+      - Actions Menu
+      - Save Button
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: true
+      download: true
+
+    download: 
+      send-as-email: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 17096473050593435
+      identification: 
+        name: Primary Report
+        alias: 2904397
+
+  columns: 
+  - # ====== Column: ID_PK_B_ANKIETA =============================
+    id: 99681695684736329
+    identification: 
+      column-name: ID_PK_B_ANKIETA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 40
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_PK_B_ANKIETA
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_AUDYT ===============================
+    id: 99681556111736328
+    identification: 
+      column-name: ID_FK_B_AUDYT
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 50
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_AUDYT
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_KONTROLA ============================
+    id: 99681426009736327
+    identification: 
+      column-name: ID_FK_B_KONTROLA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 60
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_KONTROLA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_SL_C_PYTANIE ========================
+    id: 99681335186736326
+    identification: 
+      column-name: ID_FK_B_SL_C_PYTANIE
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 70
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_SL_C_PYTANIE
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_SL_C_PYTANIE_WAGA =========================
+    id: 99681313713736325
+    identification: 
+      column-name: B_SL_C_PYTANIE_WAGA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 80
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: B_SL_C_PYTANIE_WAGA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA ==============
+    id: 99681126977736324
+    identification: 
+      column-name: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 90
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: SHORT_DESCRIPTION_FR_ =======================
+    id: 99681111643736323
+    identification: 
+      column-name: SHORT_DESCRIPTION_FR_
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 100
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: SHORT_DESCRIPTION_FR_
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: REFERENCE_ID ================================
+    id: 99680976466736322
+    identification: 
+      column-name: REFERENCE_ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 110
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: REFERENCE_ID
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_ANKIETA_ODPOWIEDZ =========================
+    id: 99680834897736321
+    identification: 
+      column-name: B_ANKIETA_ODPOWIEDZ
+      type: Select List
+
+    heading: 
+      heading: Odpowiedź
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: B_SL_C_ODPOWIEDZ # 17216107384976181
+      display-extra-values: true
+      display-null-value: true
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_ODPOWIEDZ
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_ANKIETA_OCENA_WAZONA_LICZ =================
+    id: 99680795733736320
+    identification: 
+      column-name: B_ANKIETA_OCENA_WAZONA_LICZ
+      type: Number Field
+
+    heading: 
+      heading: Ocena ważona
+      alignment: center
+      alternative-label: Ocena ważona
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 130
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_OCENA_WAZONA_LICZ
+      data-type: NUMBER
+      query-only: true
+      primary-key: false
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+      hide: false
+
+  - # ====== Column: B_ANKIETA_KOMENTARZ =========================
+    id: 99680687409736319
+    identification: 
+      column-name: B_ANKIETA_KOMENTARZ
+      type: Textarea
+
+    heading: 
+      heading: Komentarz
+      alignment: start
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: true
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      css-classes: 
+      - tekst-zawijany
+
+    validation: 
+      value-required: false
+      maximum-length: 4000
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_KOMENTARZ
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: B_ANKIETA_LINK_DOKUMENTACJA =================
+    id: 99680604996736318
+    identification: 
+      column-name: B_ANKIETA_LINK_DOKUMENTACJA
+      type: Textarea
+
+    heading: 
+      heading: Link do dokumentacji
+      alignment: center
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: true
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 150
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 1000
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_LINK_DOKUMENTACJA
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 99680298078736315
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 99680157890736314
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU ====
+    id: 99679967560736312
+    identification: 
+      column-name: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
+      type: Date Picker
+
+    heading: 
+      heading: Data Ostatniej Kontroli Na Moment Audytu
+      alignment: start
+
+    settings: 
+      show-time: false
+      display-as: Popup
+      minimum-date: None
+      maximum-date: None
+      multiple-months: No
+      use-defaults: true
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
+      data-type: DATE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: PYTANIE_TEKST ===============================
+    id: 17307946442275858
+    identification: 
+      column-name: PYTANIE_TEKST
+      type: Display Only
+
+    heading: 
+      heading: Pytanie
+      alignment: center
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      css-classes: 
+      - tekst-zawijany
+
+    source: 
+      type: SQL Expression
+      sql-expression: |
+        SELECT DISTINCT A.B_SL_C_PYTANIE_TRESC FROM 
+        B_SL_C_PYTANIE A
+        	WHERE A.ID_PK_B_SL_C_PYTANIE = ID_FK_B_SL_C_PYTANIE
+      data-type: VARCHAR2
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Distinct Column
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: PYTANIE_KOLEJNOSC ===========================
+    id: 17308033104275859
+    identification: 
+      column-name: PYTANIE_KOLEJNOSC
+      type: Display Only
+
+    heading: 
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: SQL Expression
+      sql-expression: |
+        SELECT
+        	a.B_SL_C_PYTANIE_KOLEJNOSC
+        FROM
+        	B_SL_C_PYTANIE a
+        WHERE
+        	a.ID_PK_B_SL_C_PYTANIE = ID_FK_B_SL_C_PYTANIE 
+      data-type: NUMBER
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+- # ====== Region: P2_ADEKWATNOSC_OCENA ========================
+  id: 17308116217275860
+  identification: 
+    name: P2_ADEKWATNOSC_OCENA
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT * FROM B_OCENA a 
+      WHERE 1=1
+        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+        AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = 1 /*ADEKWATNOŚĆ*/
+
+  layout: 
+    sequence: 70
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: 1
+    new-column: true
+    column-span: 6
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    css-classes: 
+    - odswiez-mnie
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 23198234978598549
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Update Row
+      lost-update-type: Row Values
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    toolbar: 
+      show: true
+      controls: 
+      - Actions Menu
+      - Save Button
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: true
+      download: true
+
+    download: 
+      send-as-email: false
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 23233237111605456
+      identification: 
+        name: Primary Report
+        alias: 2965765
+
+  columns: 
+  - # ====== Column: ID_FK_B_AUDYT ===============================
+    id: 23198348048598550
+    identification: 
+      column-name: ID_FK_B_AUDYT
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 30
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_AUDYT
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_KONTROLA ============================
+    id: 23198403705598551
+    identification: 
+      column-name: ID_FK_B_KONTROLA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 40
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_KONTROLA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_SL_C_PYTANIE_DZIEDZINA_ID =================
+    id: 23198510733598552
+    identification: 
+      column-name: B_SL_C_PYTANIE_DZIEDZINA_ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 50
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: B_SL_C_PYTANIE_DZIEDZINA_ID
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_PK_B_OCENA ===============================
+    id: 23198610168598553
+    identification: 
+      column-name: ID_PK_B_OCENA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 60
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_PK_B_OCENA
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_OCENA_LICZONA =============================
+    id: 23198755520598554
+    identification: 
+      column-name: B_OCENA_LICZONA
+      type: Number Field
+
+    heading: 
+      heading: 'Ocena wyliczona:'
+      alignment: center
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 70
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_LICZONA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_OCENA_NADPISANA ===========================
+    id: 23198843077598555
+    identification: 
+      column-name: B_OCENA_NADPISANA
+      type: Number Field
+
+    heading: 
+      heading: 'Ocena nadpisana:'
+      alignment: center
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 80
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_NADPISANA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 23198929067598556
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 23199081079598557
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: B_OCENA_CZY_NADPISANA =======================
+    id: 23199222549598559
+    identification: 
+      column-name: B_OCENA_CZY_NADPISANA
+      type: Switch
+
+    heading: 
+      heading: Czy przełamanie?
+      alignment: center
+
+    settings: 
+      use-defaults: false
+      on-value: 1
+      on-label: TAK
+      off-value: 0
+      off-label: NIE
+
+    layout: 
+      sequence: 90
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_CZY_NADPISANA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_OCENA_PRZELAMANA_UZASADNIENIE =============
+    id: 23199285507598560
+    identification: 
+      column-name: B_OCENA_PRZELAMANA_UZASADNIENIE
+      type: Textarea
+
+    heading: 
+      heading: Przełamanie - komentarz
+      alignment: center
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: false
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 4000
+
+    source: 
+      type: Database Column
+      database-column: B_OCENA_PRZELAMANA_UZASADNIENIE
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+- # ====== Region: P2_ADEKWATNOSC ==============================
+  id: 23200524177598572
+  identification: 
+    name: P2_ADEKWATNOSC
+    title: Adekwatność
+    type: Interactive Grid
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT * FROM B_ANKIETA a 
+      WHERE 1=1
+        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+        AND A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = 1 /*ADEKWATNOŚĆ*/
+
+  layout: 
+    sequence: 60
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: 1
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    css-classes: 
+    - odswiez-mnie
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 23200659443598573
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+    performance: 
+      lazy-loading: false
+
+    appearance: 
+      select-first-row: true
+      fixed-row-height: true
+
+    pagination: 
+      type: Scroll
+      show-total-count: false
+
+    toolbar: 
+      show: true
+      controls: 
+      - Actions Menu
+      - Save Button
+
+    enable-users-to: 
+      save-public-report: false
+      flashback: true
+      define-chart-view: true
+      download: true
+
+    download: 
+      send-as-email: false
+
+    heading: 
+      fixed-to: None
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 29485717943784280
+      identification: 
+        name: Primary Report
+        alias: 3028290
+
+  columns: 
+  - # ====== Column: APEX$ROW_SELECTOR ===========================
+    id: 23200716987598574
+    identification: 
+      column-name: APEX$ROW_SELECTOR
+      type: Row Selector
+
+    settings: 
+      enable-multi-select: true
+      show-select-all: true
+      hide-control: false
+
+    layout: 
+      sequence: 10
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: APEX$ROW_ACTION =============================
+    id: 23200878004598575
+    identification: 
+      column-name: APEX$ROW_ACTION
+      type: Actions Menu
+
+    layout: 
+      sequence: 20
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+  - # ====== Column: PYTANIE_TEKST ===============================
+    id: 23200938461598576
+    identification: 
+      column-name: PYTANIE_TEKST
+      type: Display Only
+
+    heading: 
+      heading: Pytanie
+      alignment: center
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      css-classes: 
+      - tekst-zawijany
+
+    source: 
+      type: SQL Expression
+      sql-expression: |
+        SELECT DISTINCT A.B_SL_C_PYTANIE_TRESC FROM 
+        B_SL_C_PYTANIE A
+        	WHERE A.ID_PK_B_SL_C_PYTANIE = ID_FK_B_SL_C_PYTANIE
+      data-type: VARCHAR2
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Distinct Column
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: ID_PK_B_ANKIETA =============================
+    id: 23201012892598577
+    identification: 
+      column-name: ID_PK_B_ANKIETA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 40
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_PK_B_ANKIETA
+      data-type: NUMBER
+      query-only: true
+      primary-key: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_AUDYT ===============================
+    id: 23201086456598578
+    identification: 
+      column-name: ID_FK_B_AUDYT
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 50
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_AUDYT
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_KONTROLA ============================
+    id: 23201210784598579
+    identification: 
+      column-name: ID_FK_B_KONTROLA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 60
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_KONTROLA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_SL_C_PYTANIE ========================
+    id: 23201322927598580
+    identification: 
+      column-name: ID_FK_B_SL_C_PYTANIE
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 70
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_SL_C_PYTANIE
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_SL_C_PYTANIE_WAGA =========================
+    id: 23201403332598581
+    identification: 
+      column-name: B_SL_C_PYTANIE_WAGA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 80
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: B_SL_C_PYTANIE_WAGA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA ==============
+    id: 23201541980598582
+    identification: 
+      column-name: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 90
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: SHORT_DESCRIPTION_FR_ =======================
+    id: 23201603406598583
+    identification: 
+      column-name: SHORT_DESCRIPTION_FR_
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 100
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: SHORT_DESCRIPTION_FR_
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: REFERENCE_ID ================================
+    id: 23201713931598584
+    identification: 
+      column-name: REFERENCE_ID
+      type: Hidden
+
+    settings: 
+      value-protected: true
+
+    layout: 
+      sequence: 110
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: Database Column
+      database-column: REFERENCE_ID
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+
+  - # ====== Column: B_ANKIETA_ODPOWIEDZ =========================
+    id: 23201820126598585
+    identification: 
+      column-name: B_ANKIETA_ODPOWIEDZ
+      type: Select List
+
+    heading: 
+      heading: Odpowiedź
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: B_SL_C_ODPOWIEDZ # 17216107384976181
+      display-extra-values: true
+      display-null-value: true
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_ODPOWIEDZ
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: Use List of Values
+      exact-match: true
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: B_ANKIETA_OCENA_WAZONA_LICZ =================
+    id: 23201917207598586
+    identification: 
+      column-name: B_ANKIETA_OCENA_WAZONA_LICZ
+      type: Number Field
+
+    heading: 
+      heading: Ocena ważona
+      alignment: end
+      alternative-label: Ocena ważona
+
+    settings: 
+      number-alignment: Start
+      virtual-keyboard: Decimal
+
+    layout: 
+      sequence: 130
+      column-alignment: end
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_OCENA_WAZONA_LICZ
+      data-type: NUMBER
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: false
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: B_ANKIETA_KOMENTARZ =========================
+    id: 23202025887598587
+    identification: 
+      column-name: B_ANKIETA_KOMENTARZ
+      type: Textarea
+
+    heading: 
+      heading: Komentarz
+      alignment: start
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: true
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      css-classes: 
+      - tekst-zawijany
+
+    validation: 
+      value-required: false
+      maximum-length: 4000
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_KOMENTARZ
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: B_ANKIETA_LINK_DOKUMENTACJA =================
+    id: 23202131432598588
+    identification: 
+      column-name: B_ANKIETA_LINK_DOKUMENTACJA
+      type: Textarea
+
+    heading: 
+      heading: Link do dokumentacji
+      alignment: center
+
+    settings: 
+      resizable: true
+      auto-height: false
+      character-counter: true
+      trim-spaces: Leading and Trailing
+
+    layout: 
+      sequence: 150
+      column-alignment: center
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+      maximum-length: 1000
+
+    source: 
+      type: Database Column
+      database-column: B_ANKIETA_LINK_DOKUMENTACJA
+      data-type: VARCHAR2
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      performance-impacting-operators: 
+      - Contains
+      - Starts With
+      - Case Insensitive
+      - Regular Expression
+      text-case: Mixed
+      lov-type: None
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: false
+      hide: true
+
+  - # ====== Column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU ====
+    id: 23202219315598589
+    identification: 
+      column-name: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
+      type: Date Picker
+
+    heading: 
+      heading: Data Ostatniej Kontroli Na Moment Audytu
+      alignment: start
+
+    settings: 
+      show-time: false
+      display-as: Popup
+      minimum-date: None
+      maximum-date: None
+      multiple-months: No
+      use-defaults: true
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    validation: 
+      value-required: false
+
+    source: 
+      type: Database Column
+      database-column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
+      data-type: DATE
+      query-only: false
+      primary-key: false
+
+    default: 
+      duplicate-copies-existing-value: true
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+      date-ranges: All
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+  - # ====== Column: PYTANIE_KOLEJNOSC ===========================
+    id: 23202367284598590
+    identification: 
+      column-name: PYTANIE_KOLEJNOSC
+      type: Display Only
+
+    heading: 
+      alignment: start
+
+    settings: 
+      format: Plain Text
+      based-on: Item Value
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+      stretch: Use Report Setting
+
+    accessibility: 
+      value-identifies-row: false
+
+    source: 
+      type: SQL Expression
+      sql-expression: |
+        SELECT
+        	a.B_SL_C_PYTANIE_KOLEJNOSC
+        FROM
+        	B_SL_C_PYTANIE a
+        WHERE
+        	a.ID_PK_B_SL_C_PYTANIE = ID_FK_B_SL_C_PYTANIE 
+      data-type: NUMBER
+
+    session-state: 
+      data-type: VARCHAR2
+
+    column-filter: 
+      enabled: true
+      lov-type: Distinct Column
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    enable-users-to: 
+      sort: true
+      control-break/aggregate: true
+      hide: true
+
+page-items: 
+- # ====== Page Item: P2_AUDYT_ID ==============================
+  id: 99682499828736337
+  identification: 
+    name: P2_AUDYT_ID
+    type: Select List
+
+  label: 
+    label: Numer Audytu
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: B_AUDYT.B_AUDYT_NUMER_AUDYTU # 15641858188447220
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P2_KONTROLA_ID ===========================
+  id: 99682413361736336
+  identification: 
+    name: P2_KONTROLA_ID
+    type: Select List
+
+  label: 
+    label: Numer Kontroli
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: B_LISTA_KONTROLI_DO_AUDYTU # 17078910224506206
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: WyliczOcenę =================================
+  id: 23200306126598570
+  identification: 
+    button-name: WyliczOcenę
+    label: _______ Wylicz i zapisz ocenę końcową _______
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: REGION_POSITION_05
+    start-new-layout: false
+    start-new-row: true
+    column: 6
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+    - t-Button--hoverIconPush
+    - t-Button--gapBottom
+    icon: fa-lg fa-save
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Page Default
+
+dynamic-actions: 
+- # ====== Dynamic Action: Oblicz ocenę ważoną AD ==============
+  id: 267042272316461836
+  identification: 
+    name: Oblicz ocenę ważoną AD
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Column(s)
+    interactive-grid: P2_ADEKWATNOSC # 23200524177598572
+    column(s): 
+    - B_ANKIETA_ODPOWIEDZ
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 273336043114595125
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Function Body
+      pl/sql-function-body: |
+        BEGIN
+            -- 1. Warunek: Jeśli nic nie wybrano, zwróć NULL
+            IF :B_ANKIETA_ODPOWIEDZ IS NULL THEN
+                RETURN NULL;
+            
+            -- 2. Warunek: Jeśli TAK lub N/A -> Waga * 1
+            ELSIF :B_ANKIETA_ODPOWIEDZ IN ('TAK', 'N/A') THEN
+                RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA);
+        
+            -- 3. Warunek: Jeśli CZĘŚCIOWO -> Waga * 0.5
+            ELSIF :B_ANKIETA_ODPOWIEDZ = 'CZĘŚCIOWO' THEN
+                RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA) * 0.5;
+        
+            -- 4. Warunek: W każdym innym przypadku (np. NIE) -> 0
+            ELSE
+                RETURN 0;
+            END IF;
+        END;
+      items-to-submit: 
+      - B_ANKIETA_ODPOWIEDZ
+      - B_SL_C_PYTANIE_WAGA
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Column(s)
+      column(s): 
+      - B_ANKIETA_OCENA_WAZONA_LICZ
+
+    execution: 
+      sequence: 10
+      event: Oblicz ocenę ważoną AD # 267042272316461836
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Ustawienie B_APP_ID_AUDYT ===========
+  id: 99682266943736335
+  identification: 
+    name: Ustawienie B_APP_ID_AUDYT
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P2_AUDYT_ID
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 99682120133736334
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        begin
+          :B_APP_ID_AUDYT := :P2_AUDYT_ID;
+        end;
+      items-to-submit: 
+      - P2_AUDYT_ID
+
+    execution: 
+      sequence: 10
+      event: Ustawienie B_APP_ID_AUDYT # 99682266943736335
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Przeladowanie regionow ======================
+    id: 99680335706736316
+    identification: 
+      name: Przeladowanie regionow
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: jQuery Selector
+      jquery-selector: .odswiez-mnie
+
+    execution: 
+      sequence: 20
+      event: Ustawienie B_APP_ID_AUDYT # 99682266943736335
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Ustawienie B_APP_ID_KONTROLI ========
+  id: 99682061710736333
+  identification: 
+    name: Ustawienie B_APP_ID_KONTROLI
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P2_KONTROLA_ID
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 99681983140736332
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        Begin
+          :B_APP_ID_KONTROLI := :P2_KONTROLA_ID;
+        End;
+      items-to-submit: 
+      - P2_KONTROLA_ID
+
+    execution: 
+      sequence: 10
+      event: Ustawienie B_APP_ID_KONTROLI # 99682061710736333
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Przeladowanie regionow ======================
+    id: 99680499800736317
+    identification: 
+      name: Przeladowanie regionow
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: jQuery Selector
+      jquery-selector: .odswiez-mnie
+
+    execution: 
+      sequence: 20
+      event: Ustawienie B_APP_ID_KONTROLI # 99682061710736333
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Oblicz ocenę ważoną SK ==============
+  id: 99679847755736311
+  identification: 
+    name: Oblicz ocenę ważoną SK
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Column(s)
+    interactive-grid: P2_SKUTECZNOSC # 99681844894736331
+    column(s): 
+    - B_ANKIETA_ODPOWIEDZ
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 99679739512736310
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Function Body
+      pl/sql-function-body: |
+        BEGIN
+            -- 1. Warunek: Jeśli nic nie wybrano, zwróć NULL
+            IF :B_ANKIETA_ODPOWIEDZ IS NULL THEN
+                RETURN NULL;
+        
+            -- 2. Wyjątek dla pytania nr 10:
+            --    "Czy zidentyfikowaliśmy błędy w sposobie przeprowadzenia kontroli..."
+            --    Logika odwrócona: TAK = błędy znalezione (źle) -> 0 pkt
+            --                      CZĘŚCIOWO -> 0.1 pkt
+            --                      NIE / N/A  -> pełna waga (dobrze)
+            ELSIF :ID_FK_B_SL_C_PYTANIE = 10 THEN
+                IF :B_ANKIETA_ODPOWIEDZ = 'TAK' THEN
+                    RETURN 0;
+                ELSIF :B_ANKIETA_ODPOWIEDZ = 'CZĘŚCIOWO' THEN
+                    RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA) * 0.5;
+                ELSE
+                    -- NIE lub N/A -> pełna waga
+                    RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA);
+                END IF;
+        
+            -- 3. Warunek standardowy: Jeśli TAK lub N/A -> pełna waga
+            ELSIF :B_ANKIETA_ODPOWIEDZ IN ('TAK', 'N/A') THEN
+                RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA);
+        
+            -- 4. Warunek standardowy: Jeśli CZĘŚCIOWO -> Waga * 0.5
+            ELSIF :B_ANKIETA_ODPOWIEDZ = 'CZĘŚCIOWO' THEN
+                RETURN TO_NUMBER(:B_SL_C_PYTANIE_WAGA) * 0.5;
+        
+            -- 5. Warunek standardowy: W każdym innym przypadku (np. NIE) -> 0
+            ELSE
+                RETURN 0;
+            END IF;
+        END;
+      items-to-submit: 
+      - B_ANKIETA_ODPOWIEDZ
+      - B_SL_C_PYTANIE_WAGA
+      - ID_FK_B_SL_C_PYTANIE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Column(s)
+      column(s): 
+      - B_ANKIETA_OCENA_WAZONA_LICZ
+
+    execution: 
+      sequence: 10
+      event: Oblicz ocenę ważoną SK # 99679847755736311
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Oblicz ocenę adekwatnosci ===================
+    id: 23199714478598564
+    identification: 
+      name: Oblicz ocenę adekwatnosci
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            v_dziedzina NUMBER := 1; /*adekwatność*/
+        	v_liczba_null 	NUMBER;
+        	v_liczba_na 	NUMBER;
+            v_suma      	NUMBER;
+            v_id_audytu 	NUMBER := :B_APP_ID_AUDYT; -- Zakładam, że ID audytu jest w tej zmiennej
+            v_wynik         NUMBER := -1;
+        BEGIN
+            --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość
+        	SELECT count(1) 
+        	INTO v_liczba_null
+        	FROM B_ANKIETA a
+        	WHERE 
+        	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+              AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+              AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+              AND a.B_ANKIETA_ODPOWIEDZ IS NULL;
+        	IF v_liczba_null>0 THEN 
+        	  v_wynik := NULL;
+        	END IF;
+        	-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'
+            SELECT COUNT(1)
+            INTO v_liczba_na
+         	FROM B_ANKIETA a
+        	WHERE 
+        	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+              AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+              AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+              AND a.B_ANKIETA_ODPOWIEDZ='N/A';
+            -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'
+            IF v_liczba_na >= 6 THEN
+                v_wynik := -1;
+            END IF;
+            -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych
+            SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F
+            INTO v_suma
+         	FROM B_ANKIETA a
+        	WHERE 
+        	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+              AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+              AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+              AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;
+            -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0
+            v_suma := NVL(v_suma, 0);
+            -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy
+            IF v_suma < 0.25 THEN
+                v_wynik := 4;
+            ELSIF v_suma < 0.5 THEN
+                v_wynik := 3;
+            ELSIF v_suma <= 0.75 THEN
+                v_wynik := 2;
+            ELSE
+                v_wynik := 1;
+            END IF;
+            
+            UPDATE B_OCENA a   -- <--- ZMIEŃ NA NAZWĘ TABELI GDZIE TRZYMASZ WYNIK CAŁEGO AUDYTU
+            SET a.B_OCENA_LICZONA = v_wynik     -- <--- ZMIEŃ NA NAZWĘ KOLUMNY Z WYNIKIEM
+            WHERE 1=1
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/   
+        END;
+
+    execution: 
+      sequence: 30
+      event: Oblicz ocenę ważoną SK # 99679847755736311
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+    configuration: 
+      build-option: Commented Out # 52549358497029667
+
+processes: 
+- # ====== Process: P2_ADEKWATNOSC - DMI =======================
+  id: 273335938055595124
+  identification: 
+    name: P2_ADEKWATNOSC - DMI
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: P2_ADEKWATNOSC # 23200524177598572
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+
+- # ====== Process: WyliczenieOceny - SKUTECZNOSC ==============
+  id: 271997042677552339
+  identification: 
+    name: WyliczenieOceny - SKUTECZNOSC
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_dziedzina NUMBER := 2; /*SKUTECZNOSC*/
+      	v_liczba_null 	NUMBER;
+      	v_liczba_na 	NUMBER;
+          v_suma      	NUMBER;
+          v_id_audytu 	NUMBER := :B_APP_ID_AUDYT; 
+          v_wynik         NUMBER := -1;
+      BEGIN
+          --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość
+      	SELECT count(1) 
+      	INTO v_liczba_null
+      	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ IS NULL;
+      	-- IF v_liczba_null>0 THEN 
+      	--   v_wynik := NULL;
+      	-- END IF;
+      	-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'
+          SELECT COUNT(1)
+          INTO v_liczba_na
+       	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ='N/A';
+          -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'
+          -- IF v_liczba_na >= 6 THEN
+          --     v_wynik := -1;
+          -- END IF;
+          -- -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych
+          SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F
+          INTO v_suma
+       	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;
+          -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0
+          v_suma := NVL(v_suma, 0);
+          -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy
+          if v_liczba_null > 0 then v_wynik := null;
+          ELSIF v_liczba_na = 6 then v_wynik := -1;
+          ELSIF v_suma < 0.25 THEN   v_wynik := 4;
+          ELSIF v_suma < 0.5 THEN    v_wynik := 3;
+          ELSIF v_suma <= 0.75 THEN  v_wynik := 2;
+          ELSE  v_wynik := 1;
+          END IF;
+          
+          /*Zapisanie wyliczonej oceny do bazy danych*/
+          UPDATE B_OCENA a   
+           SET a.B_OCENA_LICZONA = v_wynik     
+          WHERE 1=1
+          AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+          AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+          AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/ 
+      
+          /*Jeśli pole B_OCENA_CZY_NADPISANA ma wartość 1 - TAK, to nie przepisujemy wyniku, w
+           w przeciwnym przypadku przepisujemy*/
+          --if :B_OCENA_CZY_NADPISANA = 'NIE' then
+              UPDATE B_OCENA a   
+               SET a.B_OCENA_NADPISANA = v_wynik     
+              WHERE 1=1
+              AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+              AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+              AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina /*ADEKWATNOŚĆ*/ 
+              AND nvl(A.B_OCENA_CZY_NADPISANA,-1) = 0;
+          --END IF;
+      END;	
+
+  execution: 
+    sequence: 70
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: P2_SKUTECZNOSC - DMI =======================
+  id: 271996896114552338
+  identification: 
+    name: P2_SKUTECZNOSC - DMI
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: P2_SKUTECZNOSC_OCENA # 271995752579552326
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+
+- # ====== Process: P2_SKUTECZNOSC - Save Interactive Grid Data 
+  id: 99680053840736313
+  identification: 
+    name: P2_SKUTECZNOSC - Save Interactive Grid Data
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: P2_SKUTECZNOSC # 99681844894736331
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+
+- # ====== Process: P2_ADEKWATNOSC_OCENA - Save Interactive Grid
+  id: 23199139912598558
+  identification: 
+    name: P2_ADEKWATNOSC_OCENA - Save Interactive Grid Data
+    type: Interactive Grid - Automatic Row Processing (DML)
+    execution-chain: None
+    editable-region: P2_ADEKWATNOSC_OCENA # 17308116217275860
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    execution-scope: For Created and Modified Rows
+
+- # ====== Process: WyliczenieOceny - ADEKWATNOSC ==============
+  id: 23199543488598562
+  identification: 
+    name: WyliczenieOceny - ADEKWATNOSC
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_dziedzina NUMBER := 1; /*adekwatność*/
+      	v_liczba_null 	NUMBER;
+      	v_liczba_na 	NUMBER;
+          v_suma      	NUMBER;
+          v_id_audytu 	NUMBER := :B_APP_ID_AUDYT; 
+          v_wynik         NUMBER := -1;
+      BEGIN
+          --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość
+      	SELECT count(1) 
+      	INTO v_liczba_null
+      	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ IS NULL;
+      	-- IF v_liczba_null>0 THEN 
+      	--   v_wynik := NULL;
+      	-- END IF;
+      	-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'
+          SELECT COUNT(1)
+          INTO v_liczba_na
+       	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ='N/A';
+          -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'
+          -- IF v_liczba_na >= 6 THEN
+          --     v_wynik := -1;
+          -- END IF;
+          -- -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych
+          SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F
+          INTO v_suma
+       	FROM B_ANKIETA a
+      	WHERE 
+      	  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina
+            AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+            AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+            AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;
+          -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0
+          v_suma := NVL(v_suma, 0);
+          -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy
+          if v_liczba_null > 0 then v_wynik := null;
+          ELSIF v_liczba_na = 6 then v_wynik := -1;
+          ELSIF v_suma < 0.25 THEN   v_wynik := 4;
+          ELSIF v_suma < 0.5 THEN    v_wynik := 3;
+          ELSIF v_suma <= 0.75 THEN  v_wynik := 2;
+          ELSE  v_wynik := 1;
+          END IF;
+          
+          /*Zapisanie wyliczonej oceny do bazy danych*/
+          UPDATE B_OCENA a   
+           SET a.B_OCENA_LICZONA = v_wynik     
+          WHERE 1=1
+          AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+          AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+          AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/ 
+      
+          /*Jeśli pole B_OCENA_CZY_NADPISANA ma wartość 1 - TAK, to nie przepisujemy wyniku, w
+           w przeciwnym przypadku przepisujemy*/
+          --if :B_OCENA_CZY_NADPISANA = 'NIE' then
+              UPDATE B_OCENA a   
+               SET a.B_OCENA_NADPISANA = v_wynik     
+              WHERE 1=1
+              AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)
+              AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)
+              AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina /*ADEKWATNOŚĆ*/ 
+              AND nvl(A.B_OCENA_CZY_NADPISANA,-1) = 0;
+          --END IF;
+      END;	
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+

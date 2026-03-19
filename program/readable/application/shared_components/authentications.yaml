@@ -1,0 +1,76 @@
+---
+- # ====== Authentication: LDAP Authentication Scheme ==========
+  id: 35502160304852062
+  identification: 
+    name: LDAP Authentication Scheme
+
+  subscription: 
+    version-number: 1
+
+  settings: 
+    type: LDAP Directory
+    host: adldap.creditagricole
+    port: 636
+    use-ssl: SSL with Authentication
+    distinguished-name-(dn)-string: grupa\%LDAP_USER%
+    use-exact-distinguished-name-(dn): true
+    username-escaping: Standard
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+
+- # ====== Authentication: ADFS Authentication Scheme ==========
+  id: 40458398296031578
+  identification: 
+    name: ADFS Authentication Scheme
+
+  subscription: 
+    version-number: 1
+
+  settings: 
+    type: Social Sign-In
+    credential-store: 7691417643591874
+    authentication-provider: OpenID Connect Provider
+    discovery-url: 'https://adfs.credit-agricole.pl/adfs/.well-known/openid-configuration'
+    scope: openid,allatclaims
+    username: '#username#'
+    convert-username-to-upper-case: true
+    additional-user-attributes: firstname,lastname,email
+    map-additional-user-attributes-to: G_FIRSTNAME,G_LASTNAME,G_EMAIL
+    verify-attributes: true
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+
+- # ====== Authentication: Oracle APEX Accounts ================
+  id: 52549728300029663
+  identification: 
+    name: Oracle APEX Accounts
+
+  subscription: 
+    version-number: 1
+
+  settings: 
+    type: Oracle APEX Accounts
+
+  session-not-valid: 
+    redirect-to: Login Page
+
+  login-processing: 
+    switch-in-session: false
+
+  real-application-security: 
+    ras-mode: Disabled
+

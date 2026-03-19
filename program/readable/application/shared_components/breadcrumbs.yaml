@@ -1,0 +1,63 @@
+---
+- # ====== Breadcrumb: Breadcrumb ==============================
+  id: 52549978164029661
+  identification: 
+    name: Breadcrumb
+
+  entries: 
+  - # ====== Entry: DAW_LISTA_AUDYTOW ============================
+    id: 236841336023933758
+    identification: 
+      name: DAW_LISTA_AUDYTOW
+      page-number: 4
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&APP_SESSION.::&DEBUG.:::'
+        page: 4 # DAW_LISTA_AUDYTOW
+
+  - # ====== Entry: DAW_WYBOR_KONTROLI ===========================
+    id: 236745898414336547
+    identification: 
+      name: DAW_WYBOR_KONTROLI
+      page-number: 6
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6:&APP_SESSION.::&DEBUG.:::'
+        page: 6 # DAW_WYBOR_KONTROLI
+
+  - # ====== Entry: Home =========================================
+    id: 52550207101029661
+    identification: 
+      name: Home
+      page-number: 1
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::'
+        page: 1 # Home
+
+  - # ====== Entry: Administration ===============================
+    id: 53023351660028672
+    identification: 
+      name: Administration
+      page-number: 10000
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10000:&APP_SESSION.::&DEBUG.:::'
+        page: 10000 # Administration
+

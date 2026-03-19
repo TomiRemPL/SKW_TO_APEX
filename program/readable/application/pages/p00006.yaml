@@ -1,0 +1,979 @@
+---
+# ====== Page: DAW_WYBOR_KONTROLI ============================
+id: 6
+identification: 
+  name: DAW_WYBOR_KONTROLI
+  alias: DAW-WYBOR-KONTROLI
+  title: DAW_WYBOR_KONTROLI
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+css: 
+  inline: |
+    /* Podswietlenie zaznaczonego wiersza w IR */
+    #ir-dostepne-kontrole tr.apex-highlighted > td {
+        background-color: #e8f4fd !important;
+    }
+    
+    /* Podswietlenie wiersza juz bedacego w audycie */
+    #ir-dostepne-kontrole tr.juz-w-audycie > td {
+        background-color: #eafaea !important;
+    }
+    
+    /* Checkbox – rozmiar i wyrownanie */
+    #ir-dostepne-kontrole input[type="checkbox"].cb-kontrola {
+        width: 14px !important;
+        height: 14px !important;
+        cursor: pointer;
+    }
+    
+    #ir-dostepne-kontrole th input[type="checkbox"] {
+        display: block;
+        margin: 0 auto;
+    }
+    
+    #ir-kontrole input.cb-kontrola {
+        width: 14px !important;
+        height: 14px !important;
+        cursor: pointer;
+    }
+    #ir-kontrole th input[type="checkbox"] {
+        display: block;
+        margin: 0 auto;
+    }
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Kontrole ====================================
+  id: 236817493323877852
+  identification: 
+    name: Kontrole
+    title: Wybierz kontrole
+    type: Interactive Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+          APEX_ITEM.CHECKBOX2(
+              p_idx                      => 1,
+              p_value                    => k.ID_PK_B_KONTROLA,
+              p_attributes               => 'class="cb-kontrola"',
+              p_checked_values           => :P6_ZAZNACZONE_ID,
+              p_checked_values_delimiter => ','
+          )                        AS "WYBIERZ",
+          k.ID_PK_B_KONTROLA,
+          k.REFERENCE_ID           AS "Reference ID",
+          k.SHORT_DESCRIPTION_FR_  AS "Nazwa",
+          k.CONTROL_LEVEL          AS "Poziom",
+          k.DOMAIN_PROCESS         AS "Obszar",
+          k.CONTROL_GROUP          AS "Grupa",
+          CASE
+              WHEN EXISTS (
+                  SELECT 1 FROM B_AUDYT_KONTROLA ak
+                  WHERE  ak.ID_FK_B_AUDYT     = :P6_ID_AUDYTU
+                    AND  ak.ID_FK_B_KONTROLA = k.ID_PK_B_KONTROLA
+              ) THEN 'TAK'
+              ELSE 'NIE'
+          END                      AS "W AUDYCIE"
+      FROM
+          B_KONTROLA k
+      WHERE
+          k.STATUS != 'Deactive'
+      ORDER BY
+          k.REFERENCE_ID
+    page-items-to-submit: 
+    - P6_ID_AUDYTU
+    - P6_ZAZNACZONE_ID
+
+  layout: 
+    sequence: 40
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Interactive Report
+    template-options: 
+    - '#DEFAULT#'
+    - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: ir-kontrole
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    id: 236817427178877851
+    link: 
+      link-column: Exclude Link Column
+
+    pagination: 
+      type: Row Ranges X to Y
+      display-position: Bottom - Right
+
+    performance: 
+      lazy-loading: false
+      maximum-rows-to-process: 1000000
+
+    search-bar: 
+      include-search-bar: true
+      search-field: true
+      finder-drop-down: true
+      reports-select-list: true
+      rows-per-page-selector: false
+
+    actions-menu: 
+      include-actions-menu: true
+      filter: true
+      select-columns: true
+      rows-per-page: true
+      sort: true
+      control-break: true
+      highlight: true
+      compute: true
+      aggregate: true
+      chart: true
+      group-by: true
+      pivot: true
+      flashback: true
+      save-report: true
+      save-public-report: false
+      reset: true
+      help: true
+      download: true
+      subscription: true
+
+    download: 
+      formats: 
+      - CSV
+      - HTML
+      - Excel
+      - PDF
+      send-as-email: true
+
+    heading: 
+      fixed-to: Page
+
+    icon-view: 
+      show: false
+
+    detail-view: 
+      show: false
+
+    saved-reports: 
+    - # ====== Saved Report: Primary Report ========================
+      id: 236741590846293115
+      identification: 
+        name: Primary Report
+        alias: 4767100
+
+    columns: 
+    - # ====== Column: WYBIERZ =====================================
+      id: 236817287789877850
+      identification: 
+        column-name: WYBIERZ
+        type: Plain Text
+
+      heading: 
+        heading: Wybierz
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 10
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      advanced: 
+        static-id: cb-kontrola
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: false
+
+    - # ====== Column: ID_PK_B_KONTROLA ============================
+      id: 236817213229877849
+      identification: 
+        column-name: ID_PK_B_KONTROLA
+        type: Plain Text
+
+      heading: 
+        heading: Id Pk B Kontrola
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 20
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: Reference ID ================================
+      id: 236817061880877848
+      identification: 
+        column-name: Reference ID
+        type: Plain Text
+
+      heading: 
+        heading: Reference Id
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 30
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: Nazwa =======================================
+      id: 236816930638877847
+      identification: 
+        column-name: Nazwa
+        type: Plain Text
+
+      heading: 
+        heading: Nazwa
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 40
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: Poziom ======================================
+      id: 236816845863877846
+      identification: 
+        column-name: Poziom
+        type: Plain Text
+
+      heading: 
+        heading: Poziom
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 50
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: Obszar ======================================
+      id: 236816825605877845
+      identification: 
+        column-name: Obszar
+        type: Plain Text
+
+      heading: 
+        heading: Obszar
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 60
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: Grupa =======================================
+      id: 236816686675877844
+      identification: 
+        column-name: Grupa
+        type: Plain Text
+
+      heading: 
+        heading: Grupa
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 70
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    - # ====== Column: W AUDYCIE ===================================
+      id: 236816573073877843
+      identification: 
+        column-name: W AUDYCIE
+        type: Plain Text
+
+      heading: 
+        heading: W Audycie
+        alignment: start
+
+      single-row-view: 
+        use-column-heading: true
+
+      layout: 
+        sequence: 80
+        column-alignment: start
+
+      accessibility: 
+        value-identifies-row: false
+
+      source: 
+        primary-key: false
+
+      column-filter: 
+        type: Default Based on Column Type
+
+      enable-users-to: 
+        hide: true
+        sort: true
+        filter: true
+        highlight: true
+        control-break: true
+        aggregate: true
+        compute: true
+        chart: true
+        group-by: true
+        pivot: true
+
+      security: 
+        escape-special-characters: true
+
+    printing: 
+      output: 
+        layout: Default Report Layout
+        view-file-as: Attachment
+
+      page: 
+        size: A4
+        orientation: Landscape
+        units: Millimeters
+        width: 297
+        height: 210
+        border-width: 0.5
+        border-color: '#666666'
+
+      page-header: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+        page-header-text: Wybierz kontrole
+
+      column-headings: 
+        font: Helvetica
+        font-weight: Bold
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#EEEEEE'
+
+      columns: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 10
+        font-color: '#000000'
+        background-color: '#FFFFFF'
+
+      page-footer: 
+        font: Helvetica
+        font-weight: Normal
+        font-size: 12
+        font-color: '#000000'
+        alignment: center
+
+- # ====== Region: Breadcrumb ==================================
+  id: 236746405115336549
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 52549978164029661
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+page-items: 
+- # ====== Page Item: P6_ID_AUDYTU =============================
+  id: 236817676718877854
+  identification: 
+    name: P6_ID_AUDYTU
+    type: Text Field
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P6_ZAZNACZONE_ID =========================
+  id: 236817571772877853
+  identification: 
+    name: P6_ZAZNACZONE_ID
+    type: Text Field
+
+  label: 
+    label: New
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: DODAJ_DO_AUDYTU =============================
+  id: 236816511896877842
+  identification: 
+    button-name: DODAJ_DO_AUDYTU
+    label: Dodaj zaznaczone do audytu
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: DA_Checkbox_Zmiana ==================
+  id: 236816312672877840
+  identification: 
+    name: DA_Checkbox_Zmiana
+
+  execution: 
+    sequence: 10
+    event-scope: Dynamic
+    static-container-(jquery-selector): '#ir-kontrole'
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: jQuery Selector
+    jquery-selector: input.cb-kontrola
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 236816192636877839
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        (function () {
+            var $cb        = $(event.target);
+            var idKontroli = $cb.val();
+            var zaznaczony = $cb.is(':checked');
+            var lista      = apex.item('P6_ZAZNACZONE_ID').getValue();
+            var arr        = lista ? lista.split(',').filter(function(v){ return v !== ''; }) : [];
+            var idx        = arr.indexOf(idKontroli);
+        
+            if (zaznaczony && idx < 0) {
+                arr.push(idKontroli);
+            } else if (!zaznaczony && idx >= 0) {
+                arr.splice(idx, 1);
+            }
+        
+            apex.item('P6_ZAZNACZONE_ID').setValue(arr.join(','));
+        }());
+
+    execution: 
+      sequence: 10
+      event: DA_Checkbox_Zmiana # 236816312672877840
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: DA_Po_Odswiezeniu ===================
+  id: 236816058845877838
+  identification: 
+    name: DA_Po_Odswiezeniu
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Kontrole # 236817493323877852
+
+  actions: 
+  - # ====== Action: Przywrócenie stanu ==========================
+    id: 236815957823877837
+    identification: 
+      name: Przywrócenie stanu
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        (function () {
+            // APEX odtworzyl checkboxy przez p_checked_values w SQL.
+            // Synchronizujemy tylko checkbox "zaznacz wszystkie" w naglowku.
+            var total   = $('#ir-kontrole input.cb-kontrola').length;
+            var checked = $('#ir-kontrole input.cb-kontrola:checked').length;
+            $('#cb-all').prop('checked', total > 0 && total === checked);
+        }());
+
+    execution: 
+      sequence: 10
+      event: DA_Po_Odswiezeniu # 236816058845877838
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: DA_Zaznacz_Wszystkie ================
+  id: 236491116175026876
+  identification: 
+    name: DA_Zaznacz_Wszystkie
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: jQuery Selector
+    jquery-selector: '#cb-all'
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 236490994068026875
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        (function () {
+            var zaznaczWszystkie = $(event.target).is(':checked');
+            var $ir  = $('#ir-dostepne-kontrole');
+            var listaArr = [];
+        
+            $ir.find('input.cb-kontrola').each(function () {
+                $(this).prop('checked', zaznaczWszystkie);
+                $(this).closest('tr').toggleClass('apex-highlighted', zaznaczWszystkie);
+                if (zaznaczWszystkie) {
+                    listaArr.push($(this).val());
+                }
+            });
+        
+            apex.item('P23_ZAZNACZONE_ID').setValue(listaArr.join(','));
+        }());
+
+    execution: 
+      sequence: 10
+      event: DA_Zaznacz_Wszystkie # 236491116175026876
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Dodaj_Kontrole =============================
+  id: 236816361729877841
+  identification: 
+    name: Dodaj_Kontrole
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_tab  APEX_APPLICATION_GLOBAL.VC_ARR2;
+          v_err  VARCHAR2(4000);
+      BEGIN
+          -- Sprawdz czy cos zaznaczono
+          IF :P6_ZAZNACZONE_ID IS NULL OR TRIM(:P6_ZAZNACZONE_ID) = '' THEN
+              APEX_ERROR.ADD_ERROR(
+                  p_message          => 'Zaznacz przynajmniej jedną kontrolę.',
+                  p_display_location => APEX_ERROR.c_inline_in_notification
+              );
+              RETURN;
+          END IF;
+      
+          -- Rozdziel liste ID przecinkami i iteruj
+          v_tab := APEX_UTIL.STRING_TO_TABLE(:P6_ZAZNACZONE_ID, ',');
+      
+          FOR i IN 1 .. v_tab.COUNT LOOP
+              IF TRIM(v_tab(i)) IS NOT NULL THEN
+                  BEGIN
+                      PKG_AUDYT.DODAJ_KONTROLE(
+                          p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),
+                          p_id_kontrola => TO_NUMBER(TRIM(v_tab(i))),
+                          p_uzytkownik  => :APP_USER
+                      );
+                  EXCEPTION
+                      WHEN OTHERS THEN
+                          v_err := SQLERRM;
+                          -- Pomijamy -20012 (kontrola juz w audycie) – reszta przerywa
+                          IF INSTR(v_err, 'ORA-20012') = 0 THEN
+                              APEX_ERROR.ADD_ERROR(
+                                  p_message          => 'Błąd: ' || v_err,
+                                  p_display_location => APEX_ERROR.c_inline_in_notification
+                              );
+                              RETURN;
+                          END IF;
+                  END;
+              END IF;
+          END LOOP;
+      
+          -- Wyczysc zaznaczenie po zapisie
+          :P6_ZAZNACZONE_ID := NULL;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              v_err := SQLERRM;
+              APEX_ERROR.ADD_ERROR(
+                  p_message          => 'Błąd podczas dodawania kontroli: ' || v_err,
+                  p_display_location => APEX_ERROR.c_inline_in_notification
+              );
+      END;
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: DODAJ_DO_AUDYTU # 236816511896877842
+

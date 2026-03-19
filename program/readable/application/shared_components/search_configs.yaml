@@ -1,0 +1,32 @@
+---
+- # ====== Search Configuration: Ad Search =====================
+  id: 38713252573395624
+  identification: 
+    name: Ad Search
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    search-type: Simple (APEX Data Source)
+    location: Local Database
+    type: SQL Query
+    sql-query: 'SELECT * FROM TABLE(LCDT.AD.query_all(:P10043_USER_SEARCH))'
+    searchable-columns: 'IDNAME:FULLNAME'
+
+  column-mapping: 
+    primary-key-1-column-name: IDNAME
+    title-column-name: IDNAME
+    badge-column-name: DEPARTMENT
+    custom-column-name-1: FULLNAME
+    custom-column-name-2: TITLE
+
+  icon-and-badge: 
+    icon-source: Icon Class
+
+  advanced: 
+    static-id: ad_search
+
+  security: 
+    authorization-scheme: Must Not Be Public User
+

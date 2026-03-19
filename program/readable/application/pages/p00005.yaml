@@ -1,0 +1,250 @@
+---
+# ====== Page: DAW_IMPORT_KONTROLI ===========================
+id: 5
+identification: 
+  name: DAW_IMPORT_KONTROLI
+  alias: DAW-IMPORT-KONTROLI
+  title: DAW_IMPORT_KONTROLI
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+page-items: 
+- # ====== Page Item: P_ID_LOG_WYNIKU ==========================
+  id: 136091429418002857
+  identification: 
+    name: P_ID_LOG_WYNIKU
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: No Parent
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P_PLIK ===================================
+  id: 136091144483002854
+  identification: 
+    name: P_PLIK
+    type: File Upload
+
+  label: 
+    label: Plik do wczytania - Excel
+    alignment: Left
+
+  display: 
+    display-as: Inline File Browse
+    capture-using: NONE
+
+  storage:: 
+    type: Table APEX_APPLICATION_TEMP_FILES
+    purge-file-at: End of Session
+    allow-multiple-files: false
+    file-types: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    maximum-file-size: 15000
+
+  layout: 
+    sequence: 10
+    region: No Parent
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 5
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: WczytajPlik =================================
+  id: 136091211338002855
+  identification: 
+    button-name: WczytajPlik
+    label: Wczytaj plik
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconLeft
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: true
+    warn-on-unsaved-changes: Do Not Check
+
+  configuration: 
+    build-option: Commented Out # 52549358497029667
+
+processes: 
+- # ====== Process: Wczyt ======================================
+  id: 136091377169002856
+  identification: 
+    name: Wczyt
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          v_id_log    NUMBER;
+          v_id_sesji  NUMBER;
+      BEGIN
+          -- Wygeneruj unikalny ID sesji importu
+          SELECT NVL(MAX(ID_SESJI_IMPORTU), 0) + 1
+          INTO   v_id_sesji
+          FROM   B_KONTROLA_IMPORT;
+      
+          -- Wczytaj dane z pliku Excel do tabeli stagingowej.
+          -- APEX_DATA_PARSER.PARSE czyta plik bezposrednio z APEX_APPLICATION_TEMP_FILES
+          -- (gdzie APEX odkłada plik po wgraniu przez FILE BROWSE).
+          -- p_skip_rows => 1 pomija pierwszy wiersz z naglowkami kolumn.
+          -- p_file_type => APEX_DATA_PARSER.C_FILE_TYPE_XLSX wymusza format Excel.
+          INSERT INTO B_KONTROLA_IMPORT (
+              ID_SESJI_IMPORTU,
+              REFERENCE_ID,           STATUS,
+              CONTROL_LEVEL,          DESCRIPTION_FR_,
+              DESCRIPTION_EN_,        SHORT_DESCRIPTION_FR_,
+              SHORT_DESCRIPTION_EN_,  DEFINITION_FR_,
+              DEFINITION_EN_,         OBJECTIVE_FR_,
+              OBJECTIVE_EN_,          DOMAIN_PROCESS,
+              RISKS,                  CONTROL_GROUP
+          )
+          SELECT
+              v_id_sesji,
+              p.col001,   -- REFERENCE_ID
+              p.col002,   -- STATUS
+              p.col003,   -- CONTROL_LEVEL
+              p.col004,   -- DESCRIPTION_FR_
+              p.col005,   -- DESCRIPTION_EN_
+              p.col006,   -- SHORT_DESCRIPTION_FR_
+              p.col007,   -- SHORT_DESCRIPTION_EN_
+              p.col008,   -- DEFINITION_FR_
+              p.col009,   -- DEFINITION_EN_
+              p.col010,   -- OBJECTIVE_FR_
+              p.col011,   -- OBJECTIVE_EN_
+              p.col012,   -- DOMAIN_PROCESS
+              p.col013,   -- RISKS
+              p.col014    -- CONTROL_GROUP
+          FROM
+              APEX_APPLICATION_TEMP_FILES f,
+              TABLE(
+                  APEX_DATA_PARSER.PARSE(
+                      p_content       => f.blob_content,
+                      p_file_name     => f.filename,
+                      p_file_type     => APEX_DATA_PARSER.C_FILE_TYPE_XLSX,
+                      p_skip_rows     => 1
+                  )
+              ) p
+          WHERE f.name = :P_PLIK;
+      
+          -- Uruchom wlasciwy import z pakietu
+          PKG_IMPORT_KONTROLI.WYKONAJ_IMPORT(
+              p_id_sesji_importu => v_id_sesji,
+              p_nazwa_pliku      => :P_PLIK,
+              p_uzytkownik       => :APP_USER,
+              p_id_log           => v_id_log
+          );
+      
+          -- Przekaz ID logu do strony APEX (do wyswietlenia statystyk)
+          :P_ID_LOG_WYNIKU := v_id_log;
+      
+      EXCEPTION
+          WHEN OTHERS THEN
+              APEX_ERROR.ADD_ERROR(
+                  p_message          => 'Blad wczytywania pliku: ' || SQLERRM,
+                  p_display_location => APEX_ERROR.c_inline_in_notification
+              );
+      END;
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  configuration: 
+    build-option: Commented Out # 52549358497029667
+

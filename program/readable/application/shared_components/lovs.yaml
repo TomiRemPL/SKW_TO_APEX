@@ -1,0 +1,439 @@
+---
+- # ====== List of Values: B_AUDYT.B_AUDYT_NUMER_AUDYTU ========
+  id: 15641858188447220
+  identification: 
+    name: B_AUDYT.B_AUDYT_NUMER_AUDYTU
+
+  subscription: 
+    version-number: 408602658
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: B_AUDYT
+
+  column-mapping: 
+    return: ID_PK_B_AUDYT
+    display: B_AUDYT_NUMER_AUDYTU
+    default-sort: B_AUDYT_NUMER_AUDYTU
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: B_KONTROLA.REFERENCE_ID =============
+  id: 15642523813447224
+  identification: 
+    name: B_KONTROLA.REFERENCE_ID
+
+  subscription: 
+    version-number: 408551774
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: B_KONTROLA
+
+  column-mapping: 
+    return: ID_PK_B_KONTROLA
+    display: REFERENCE_ID
+    default-sort: REFERENCE_ID
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: B_SL_C_PYTANIE.B_SL_C_PYTANIE_TRESC =
+  id: 15643212967447225
+  identification: 
+    name: B_SL_C_PYTANIE.B_SL_C_PYTANIE_TRESC
+
+  subscription: 
+    version-number: 408605138
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: B_SL_C_PYTANIE
+
+  column-mapping: 
+    return: ID_PK_B_SL_C_PYTANIE
+    display: B_SL_C_PYTANIE_TRESC
+    default-sort: B_SL_C_PYTANIE_KOLEJNOSC
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: B_LISTA_KONTROLI_DO_AUDYTU ==========
+  id: 17078910224506206
+  identification: 
+    name: B_LISTA_KONTROLI_DO_AUDYTU
+
+  subscription: 
+    version-number: 408929237
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      SELECT
+      	DISTINCT A.ID_FK_B_KONTROLA,
+      	b.REFERENCE_ID || ' - ' || b.SHORT_DESCRIPTION_EN_ AS OPIS_KONTROLI
+      FROM
+      	B_ANKIETA A
+      LEFT JOIN B_KONTROLA b ON
+      	b.ID_PK_B_KONTROLA = A.ID_FK_B_KONTROLA
+      WHERE 
+        A.ID_FK_B_AUDYT = :B_APP_ID_AUDYT 
+          OR :B_APP_ID_AUDYT IS NULL
+      ORDER BY b.REFERENCE_ID || ' - ' || b.SHORT_DESCRIPTION_EN_ 
+
+  column-mapping: 
+    return: ID_FK_B_KONTROLA
+    display: OPIS_KONTROLI
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: B_SL_C_ODPOWIEDZ ====================
+  id: 17216107384976181
+  identification: 
+    name: B_SL_C_ODPOWIEDZ
+
+  subscription: 
+    version-number: 411576584
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: TAK ==========================================
+    id: 17216474187976182
+    entry: 
+      sequence: 1
+      display: TAK
+      return: TAK
+
+  - # ====== Entry: CZĘŚCIOWO ====================================
+    id: 17216855882976187
+    entry: 
+      sequence: 2
+      display: CZĘŚCIOWO
+      return: CZĘŚCIOWO
+
+  - # ====== Entry: NIE ==========================================
+    id: 17217280109976187
+    entry: 
+      sequence: 3
+      display: NIE
+      return: NIE
+
+  - # ====== Entry: N/A ==========================================
+    id: 17217609314976187
+    entry: 
+      sequence: 4
+      display: N/A
+      return: N/A
+
+- # ====== List of Values: ADLOV ===============================
+  id: 38716325477263310
+  identification: 
+    name: ADLOV
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: 'SELECT * FROM TABLE(AD.query_all(:P10043_AD))'
+
+  column-mapping: 
+    return: IDNAME
+    default-sort: Use Order By from Query
+
+  columns: 
+  - # ====== Column: IDNAME ======================================
+    id: 38722455010042435
+    identification: 
+      column-name: IDNAME
+      show: false
+
+    layout: 
+      sequence: 10
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: FULLNAME ====================================
+    id: 38722832798042432
+    identification: 
+      column-name: FULLNAME
+      show: true
+
+    heading: 
+      heading: Fullname
+
+    layout: 
+      sequence: 20
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: true
+
+  - # ====== Column: DEPARTMENT ==================================
+    id: 38723217320042432
+    identification: 
+      column-name: DEPARTMENT
+      show: true
+
+    heading: 
+      heading: Department
+
+    layout: 
+      sequence: 30
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: false
+
+  - # ====== Column: TITLE =======================================
+    id: 38723667405042432
+    identification: 
+      column-name: TITLE
+      show: true
+
+    heading: 
+      heading: Title
+
+    layout: 
+      sequence: 40
+
+    source: 
+      data-type: VARCHAR2
+
+    advanced: 
+      searchable: false
+
+- # ====== List of Values: DESKTOP THEME STYLES ================
+  id: 52861895457029116
+  identification: 
+    name: DESKTOP THEME STYLES
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select s.name d,
+             s.theme_style_id r
+        from apex_application_theme_styles s,
+             apex_application_themes t
+       where s.application_id = :app_id
+         and t.application_id = s.application_id
+         and t.theme_number   = s.theme_number
+         and t.is_current     = 'Yes'
+       order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: USER_THEME_PREFERENCE ===============
+  id: 52862651396029100
+  identification: 
+    name: USER_THEME_PREFERENCE
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Allow End Users to choose Theme Style ========
+    id: 52862931045029099
+    entry: 
+      sequence: 1
+      display: Allow End Users to choose Theme Style
+      return: Yes
+
+- # ====== List of Values: TIMEFRAME (4 WEEKS) =================
+  id: 52881532871028982
+  identification: 
+    name: TIMEFRAME (4 WEEKS)
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select disp,
+             val as seconds
+        from table( apex_util.get_timeframe_lov_data )
+       order by insert_order
+
+  column-mapping: 
+    return: SECONDS
+    display: DISP
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: VIEW_AS_REPORT_CHART ================
+  id: 52927770240028869
+  identification: 
+    name: VIEW_AS_REPORT_CHART
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Add Report Page ==============================
+    id: 52928063269028869
+    entry: 
+      sequence: 1
+      display: Add Report Page
+      return: REPORT
+
+    globalization: 
+      template: <span class="fa fa-table" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
+
+  - # ====== Entry: Add Chart Page ===============================
+    id: 52928540443028868
+    entry: 
+      sequence: 2
+      display: Add Chart Page
+      return: CHART
+
+    globalization: 
+      template: <span class="fa fa-pie-chart" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
+
+- # ====== List of Values: ACCESS_ROLES ========================
+  id: 52960462178028808
+  identification: 
+    name: ACCESS_ROLES
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select role_name d, role_id r
+      from APEX_APPL_ACL_ROLES where application_id = :APP_ID 
+      order by 1
+
+  column-mapping: 
+    return: R
+    display: D
+    default-sort: Use Order By from Query
+
+- # ====== List of Values: EMAIL_USERNAME_FORMAT ===============
+  id: 52967969782028795
+  identification: 
+    name: EMAIL_USERNAME_FORMAT
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Email Addresses ==============================
+    id: 52968254724028795
+    entry: 
+      sequence: 1
+      display: Email Addresses
+      return: EMAIL
+
+- # ====== List of Values: FEEDBACK_RATING =====================
+  id: 52985243077028734
+  identification: 
+    name: FEEDBACK_RATING
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Positive =====================================
+    id: 52985537258028734
+    entry: 
+      sequence: 1
+      display: Positive
+      return: 3
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-smile-o fa-2x feedback-positive" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Neutral ======================================
+    id: 52985952377028734
+    entry: 
+      sequence: 2
+      display: Neutral
+      return: 2
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-emoji-neutral fa-2x feedback-neutral" aria-hidden="true" ></span></span>
+
+  - # ====== Entry: Negative =====================================
+    id: 52986345780028734
+    entry: 
+      sequence: 3
+      display: Negative
+      return: 1
+
+    globalization: 
+      template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-frown-o fa-2x feedback-negative" aria-hidden="true" ></span></span>
+
+- # ====== List of Values: FEEDBACK_STATUS =====================
+  id: 52997628364028725
+  identification: 
+    name: FEEDBACK_STATUS
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: No Action ====================================
+    id: 52997861087028725
+    entry: 
+      sequence: 1
+      display: No Action
+      return: 0
+
+  - # ====== Entry: Acknowledged =================================
+    id: 52998309065028725
+    entry: 
+      sequence: 2
+      display: Acknowledged
+      return: 1
+
+  - # ====== Entry: Open =========================================
+    id: 52998717236028725
+    entry: 
+      sequence: 3
+      display: Open
+      return: 3
+
+  - # ====== Entry: Closed =======================================
+    id: 52999084478028725
+    entry: 
+      sequence: 4
+      display: Closed
+      return: 4
+
