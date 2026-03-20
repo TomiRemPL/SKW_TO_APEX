@@ -8,6 +8,8 @@ from apex_export_to_md.parser.ddl_parser import (
     parse_create_index,
     parse_comment_on,
     parse_create_sequence,
+    parse_create_view,
+    parse_package,
 )
 from apex_export_to_md.models.db_models import DbSchema
 
@@ -226,3 +228,91 @@ class TestParseCreateSequence:
         assert seq.start_with == "1203"
         assert seq.increment_by == "1"
         assert seq.min_value == "0"
+
+
+class TestParseCreateView:
+    def test_view_with_columns(self):
+        sql = '''CREATE OR REPLACE FORCE EDITIONABLE VIEW "B_V_TEST"
+                 ("COL_A", "COL_B") AS
+                 SELECT a.COL_A, b.COL_B
+                 FROM TABLE_A a JOIN TABLE_B b ON a.ID = b.ID'''
+        view = parse_create_view(sql)
+        assert view is not None
+        assert view.name == "B_V_TEST"
+        assert view.columns == ["COL_A", "COL_B"]
+        assert "SELECT" in view.sql
+        assert "JOIN TABLE_B" in view.sql
+
+    def test_view_without_column_list(self):
+        sql = '''CREATE OR REPLACE VIEW "V1" AS SELECT * FROM T1'''
+        view = parse_create_view(sql)
+        assert view is not None
+        assert view.name == "V1"
+        assert view.columns == []
+        assert "SELECT * FROM T1" in view.sql
+
+
+class TestParsePackage:
+    def test_package_spec(self):
+        sql = '''create or replace PACKAGE PKG_TEST AS
+    C_STATUS CONSTANT VARCHAR2(20) := 'Active';
+    -- Tworzenie rekordu
+    PROCEDURE CREATE_REC (
+        p_name  IN  VARCHAR2,
+        p_id    OUT NUMBER
+    );
+    -- Sprawdza status
+    FUNCTION CHECK_STATUS (
+        p_id IN NUMBER
+    ) RETURN VARCHAR2;
+END PKG_TEST;'''
+        pkg = parse_package(sql)
+        assert pkg is not None
+        assert pkg.name == "PKG_TEST"
+        assert len(pkg.spec_subprograms) == 2
+        proc = pkg.spec_subprograms[0]
+        assert proc.name == "CREATE_REC"
+        assert proc.subprogram_type == "PROCEDURE"
+        assert proc.description == "Tworzenie rekordu"
+        assert len(proc.parameters) == 2
+        assert proc.parameters[0].direction == "IN"
+        assert proc.parameters[1].direction == "OUT"
+        func = pkg.spec_subprograms[1]
+        assert func.name == "CHECK_STATUS"
+        assert func.subprogram_type == "FUNCTION"
+        assert func.return_type == "VARCHAR2"
+        assert len(pkg.constants) == 1
+        assert "C_STATUS" in pkg.constants[0]
+
+    def test_package_body(self):
+        sql = '''create or replace PACKAGE BODY PKG_TEST AS
+    -- Procedura wewnetrzna
+    PROCEDURE HELPER (p_x IN NUMBER) IS
+    BEGIN
+        NULL;
+    END HELPER;
+    PROCEDURE CREATE_REC (p_name IN VARCHAR2, p_id OUT NUMBER) IS
+    BEGIN
+        NULL;
+    END CREATE_REC;
+END PKG_TEST;'''
+        pkg = parse_package(sql)
+        assert pkg is not None
+        assert pkg.name == "PKG_TEST"
+        assert len(pkg.body_subprograms) == 2
+        assert pkg.body_subprograms[0].name == "HELPER"
+        assert pkg.body_source != ""
+
+    def test_package_body_full_source_preserved(self):
+        """Pełny kod body (z komentarzami) zachowany w body_source."""
+        sql = '''create or replace PACKAGE BODY PKG AS
+    -- Komentarz ważny
+    PROCEDURE P IS
+    BEGIN
+        -- Jeszcze komentarz
+        NULL;
+    END P;
+END PKG;'''
+        pkg = parse_package(sql)
+        assert "Komentarz ważny" in pkg.body_source
+        assert "Jeszcze komentarz" in pkg.body_source

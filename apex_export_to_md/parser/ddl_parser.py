@@ -456,3 +456,173 @@ def parse_create_sequence(sql: str) -> DbSequence | None:
         start_with=_extract(r'START\s+WITH\s+(\d+)'),
         cache=_extract(r'CACHE\s+(\d+)'),
     )
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie CREATE VIEW
+# ---------------------------------------------------------------------------
+
+def parse_create_view(sql: str) -> DbView | None:
+    """Parsuj CREATE [OR REPLACE] [FORCE] [EDITIONABLE] VIEW."""
+    m = re.match(
+        r'CREATE\s+(?:OR\s+REPLACE\s+)?(?:FORCE\s+)?(?:EDITIONABLE\s+)?VIEW\s+"?(\w+)"?',
+        sql, re.IGNORECASE,
+    )
+    if not m:
+        return None
+
+    name = m.group(1)
+    rest = sql[m.end():]
+    columns: list[str] = []
+    col_match = re.match(r'\s*\(([^)]+)\)\s+AS\b', rest, re.IGNORECASE)
+    if col_match:
+        columns = _parse_column_list(col_match.group(1))
+        rest = rest[col_match.end():]
+    else:
+        as_match = re.match(r'\s+AS\b', rest, re.IGNORECASE)
+        if as_match:
+            rest = rest[as_match.end():]
+
+    view_sql = rest.strip().rstrip(';').strip()
+    return DbView(name=name, columns=columns, sql=view_sql)
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie PACKAGE (spec i body)
+# ---------------------------------------------------------------------------
+
+def parse_package(sql: str) -> DbPackage | None:
+    """Parsuj PACKAGE spec lub PACKAGE BODY."""
+    m = re.match(
+        r'create\s+(?:or\s+replace\s+)?PACKAGE\s+(BODY\s+)?"?(\w+)"?\s+(?:AS|IS)\b',
+        sql, re.IGNORECASE,
+    )
+    if not m:
+        return None
+
+    is_body = bool(m.group(1))
+    name = m.group(2)
+    source = sql.strip()
+
+    constants: list[str] = []
+    for cm in re.finditer(
+        r'(\w+\s+CONSTANT\s+\w+.*?:=\s*[^;]+)',
+        source, re.IGNORECASE,
+    ):
+        constants.append(cm.group(1).strip())
+
+    subprograms = _extract_subprograms(source)
+
+    pkg = DbPackage(name=name, constants=constants)
+    if is_body:
+        pkg.body_subprograms = subprograms
+        pkg.body_source = source
+    else:
+        pkg.spec_subprograms = subprograms
+        pkg.spec_source = source
+
+    return pkg
+
+
+def _extract_subprograms(source: str) -> list[DbSubprogram]:
+    """Wyciągnij procedury i funkcje z kodu pakietu."""
+    subprograms: list[DbSubprogram] = []
+    lines = source.split('\n')
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        m = re.match(r'(?:PROCEDURE|FUNCTION)\s+(\w+)', stripped, re.IGNORECASE)
+        if not m:
+            continue
+
+        sub_name = m.group(1)
+        is_func = stripped.upper().startswith('FUNCTION')
+        description = _collect_description_above(lines, i)
+        params_text = _collect_params_text(lines, i)
+        parameters = _parse_parameters(params_text) if params_text else []
+
+        return_type = None
+        if is_func:
+            for j in range(i, min(i + 20, len(lines))):
+                rm = re.search(r'\)\s*RETURN\s+(\w+)', lines[j], re.IGNORECASE)
+                if rm:
+                    return_type = rm.group(1)
+                    break
+                rm = re.search(r'RETURN\s+(\w+)\s*[;IS]', lines[j], re.IGNORECASE)
+                if rm and j > i:
+                    return_type = rm.group(1)
+                    break
+
+        subprograms.append(DbSubprogram(
+            name=sub_name,
+            subprogram_type="FUNCTION" if is_func else "PROCEDURE",
+            parameters=parameters,
+            return_type=return_type,
+            description=description,
+        ))
+
+    return subprograms
+
+
+def _collect_description_above(lines: list[str], idx: int) -> str | None:
+    """Zbierz opis z komentarzy '--' bezpośrednio nad procedurą/funkcją."""
+    desc_lines: list[str] = []
+    for j in range(idx - 1, -1, -1):
+        stripped = lines[j].strip()
+        if stripped.startswith('--'):
+            text = stripped.lstrip('-').strip()
+            if text and not re.match(r'^[=\-]+$', text):
+                desc_lines.insert(0, text)
+        elif stripped == '':
+            continue
+        else:
+            break
+    return " ".join(desc_lines) if desc_lines else None
+
+
+def _collect_params_text(lines: list[str], start_idx: int) -> str:
+    """Zbierz tekst parametrów procedury/funkcji (od '(' do ')')."""
+    text_lines = []
+    collecting = False
+    depth = 0
+
+    for j in range(start_idx, min(start_idx + 30, len(lines))):
+        line = lines[j]
+        for ch in line:
+            if ch == '(':
+                if not collecting:
+                    collecting = True
+                depth += 1
+            elif ch == ')':
+                depth -= 1
+                if depth == 0:
+                    return "".join(text_lines)
+            if collecting and depth > 0:
+                text_lines.append(ch)
+        if collecting:
+            text_lines.append(' ')
+
+    return "".join(text_lines)
+
+
+def _parse_parameters(params_text: str) -> list[DbParameter]:
+    """Parsuj listę parametrów z tekstu: p_name IN VARCHAR2, p_id OUT NUMBER."""
+    cleaned = params_text.strip().lstrip('(').strip()
+    if not cleaned:
+        return []
+
+    params: list[DbParameter] = []
+    parts = [p.strip() for p in cleaned.split(',') if p.strip()]
+
+    for part in parts:
+        part = re.sub(r'--.*$', '', part, flags=re.MULTILINE).strip()
+        m = re.match(r'(\w+)\s+(IN\s+OUT|OUT|IN)?\s*(\w+)', part, re.IGNORECASE)
+        if m:
+            direction = (m.group(2) or "IN").strip().upper()
+            params.append(DbParameter(
+                name=m.group(1),
+                data_type=m.group(3),
+                direction=direction,
+            ))
+
+    return params
