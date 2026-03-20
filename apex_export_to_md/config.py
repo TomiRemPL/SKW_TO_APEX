@@ -34,6 +34,13 @@ class AppConfig:
     include_shared_components: bool = True
     verbose: bool = False
 
+    # --- DDL i HTML ---
+    enable_ddl: bool = True
+    ddl_files: list[str] = field(default_factory=list)
+    enable_html: bool = True
+    html_output: str = ""
+    author_name: str = "Tomasz Rembiasz"
+
 
 # --- Heurystyki filtrowania stron standardowych APEX ---
 

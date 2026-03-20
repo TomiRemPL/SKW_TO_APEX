@@ -70,6 +70,26 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--verbose", action="store_true",
         help="Szczegółowe logi",
     )
+    parser.add_argument(
+        "--no-ddl", action="store_true",
+        help="Pomiń pipeline SQL DDL",
+    )
+    parser.add_argument(
+        "--ddl-files", default="",
+        help="Pliki SQL do parsowania (rozdzielone przecinkami; domyślnie: auto)",
+    )
+    parser.add_argument(
+        "--no-html", action="store_true",
+        help="Pomiń generowanie interaktywnego HTML",
+    )
+    parser.add_argument(
+        "--html-output", default="",
+        help="Nazwa pliku HTML wyjściowego",
+    )
+    parser.add_argument(
+        "--author-name", default="Tomasz Rembiasz",
+        help="Autor w stopce HTML (domyślnie: Tomasz Rembiasz)",
+    )
     return parser.parse_args(argv)
 
 
@@ -83,6 +103,10 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
             if part.isdigit():
                 extra_pages.append(int(part))
 
+    ddl_files_list: list[str] = []
+    if args.ddl_files:
+        ddl_files_list = [f.strip() for f in args.ddl_files.split(",") if f.strip()]
+
     return AppConfig(
         input_dir=args.input_dir,
         output_dir=args.output_dir,
@@ -95,6 +119,11 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
         include_layout=args.include_layout,
         include_shared_components=not args.no_shared_components,
         verbose=args.verbose,
+        enable_ddl=not args.no_ddl,
+        ddl_files=ddl_files_list,
+        enable_html=not args.no_html,
+        html_output=args.html_output,
+        author_name=args.author_name,
     )
 
 
