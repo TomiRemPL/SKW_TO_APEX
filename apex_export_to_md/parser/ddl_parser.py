@@ -31,8 +31,8 @@ def split_into_blocks(sql: str) -> list[str]:
 
     # Krok 1: wydziel bloki PL/SQL (od create...package do / na osobnej linii)
     plsql_pattern = re.compile(
-        r'(create\s+(?:or\s+replace\s+)?(?:PACKAGE|package)\s+(?:BODY\s+|body\s+)?.*?)\n\s*/\s*$',
-        re.DOTALL | re.MULTILINE,
+        r'(create\s+(?:or\s+replace\s+)?package\s+(?:body\s+)?.*?)\n\s*/\s*$',
+        re.DOTALL | re.MULTILINE | re.IGNORECASE,
     )
     remaining = sql
     plsql_blocks: list[str] = []
@@ -666,11 +666,28 @@ def parse_ddl(sql: str) -> DbSchema:
                 if result:
                     fk_constraints.append(result)
 
+            elif "PACKAGE" in upper and upper.startswith("CREATE"):
+                # PACKAGE musi być przed INDEX/VIEW — body PL/SQL
+                # może zawierać słowa INDEX/VIEW w kodzie
+                pkg = parse_package(stripped)
+                if pkg:
+                    if pkg.name in packages:
+                        existing = packages[pkg.name]
+                        if pkg.spec_source:
+                            existing.spec_subprograms = pkg.spec_subprograms
+                            existing.spec_source = pkg.spec_source
+                        if pkg.body_source:
+                            existing.body_subprograms = pkg.body_subprograms
+                            existing.body_source = pkg.body_source
+                        if pkg.constants:
+                            existing.constants = existing.constants or pkg.constants
+                    else:
+                        packages[pkg.name] = pkg
+
             elif "INDEX" in upper and upper.startswith("CREATE"):
-                if "PACKAGE" not in upper and "VIEW" not in upper:
-                    idx = parse_create_index(stripped)
-                    if idx and idx.name not in indexes:
-                        indexes[idx.name] = idx
+                idx = parse_create_index(stripped)
+                if idx and idx.name not in indexes:
+                    indexes[idx.name] = idx
 
             elif upper.startswith("COMMENT ON"):
                 result = parse_comment_on(stripped)
@@ -691,26 +708,9 @@ def parse_ddl(sql: str) -> DbSchema:
                     sequences[seq.name] = seq
 
             elif "VIEW" in upper and upper.startswith("CREATE"):
-                if "PACKAGE" not in upper:
-                    view = parse_create_view(stripped)
-                    if view and view.name not in views:
-                        views[view.name] = view
-
-            elif "PACKAGE" in upper and upper.startswith("CREATE"):
-                pkg = parse_package(stripped)
-                if pkg:
-                    if pkg.name in packages:
-                        existing = packages[pkg.name]
-                        if pkg.spec_source:
-                            existing.spec_subprograms = pkg.spec_subprograms
-                            existing.spec_source = pkg.spec_source
-                        if pkg.body_source:
-                            existing.body_subprograms = pkg.body_subprograms
-                            existing.body_source = pkg.body_source
-                        if pkg.constants:
-                            existing.constants = existing.constants or pkg.constants
-                    else:
-                        packages[pkg.name] = pkg
+                view = parse_create_view(stripped)
+                if view and view.name not in views:
+                    views[view.name] = view
 
         except Exception as e:
             logger.warning("Błąd parsowania bloku: %s — %s", stripped[:60], e)
