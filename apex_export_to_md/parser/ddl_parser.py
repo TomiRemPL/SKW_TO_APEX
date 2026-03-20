@@ -626,3 +626,149 @@ def _parse_parameters(params_text: str) -> list[DbParameter]:
             ))
 
     return params
+
+
+# ---------------------------------------------------------------------------
+# Orchestrator — parse_ddl i parse_ddl_files
+# ---------------------------------------------------------------------------
+
+def parse_ddl(sql: str) -> DbSchema:
+    """Parsuj pełny plik SQL DDL i zwróć DbSchema.
+
+    Pipeline: split → classify → extract → dedup → merge packages → assign comments.
+    """
+    blocks = split_into_blocks(sql)
+
+    tables: dict[str, DbTable] = {}
+    fk_constraints: list[tuple[str, DbConstraint]] = []
+    indexes: dict[str, DbIndex] = {}
+    table_comments: dict[str, str] = {}
+    column_comments: dict[str, dict[str, str]] = {}
+    views: dict[str, DbView] = {}
+    sequences: dict[str, DbSequence] = {}
+    packages: dict[str, DbPackage] = {}
+
+    for block in blocks:
+        stripped = block.strip()
+        if not stripped:
+            continue
+
+        upper = stripped.upper().lstrip()
+
+        try:
+            if upper.startswith("CREATE TABLE"):
+                table = parse_create_table(stripped)
+                if table and table.name not in tables:
+                    tables[table.name] = table
+
+            elif upper.startswith("ALTER TABLE"):
+                result = parse_alter_table_fk(stripped)
+                if result:
+                    fk_constraints.append(result)
+
+            elif "INDEX" in upper and upper.startswith("CREATE"):
+                if "PACKAGE" not in upper and "VIEW" not in upper:
+                    idx = parse_create_index(stripped)
+                    if idx and idx.name not in indexes:
+                        indexes[idx.name] = idx
+
+            elif upper.startswith("COMMENT ON"):
+                result = parse_comment_on(stripped)
+                if result:
+                    obj_type, obj_name, col_name, text = result
+                    if obj_type == "TABLE":
+                        if obj_name not in table_comments:
+                            table_comments[obj_name] = text
+                    elif obj_type == "COLUMN":
+                        if obj_name not in column_comments:
+                            column_comments[obj_name] = {}
+                        if col_name not in column_comments[obj_name]:
+                            column_comments[obj_name][col_name] = text
+
+            elif upper.startswith("CREATE SEQUENCE"):
+                seq = parse_create_sequence(stripped)
+                if seq and seq.name not in sequences:
+                    sequences[seq.name] = seq
+
+            elif "VIEW" in upper and upper.startswith("CREATE"):
+                if "PACKAGE" not in upper:
+                    view = parse_create_view(stripped)
+                    if view and view.name not in views:
+                        views[view.name] = view
+
+            elif "PACKAGE" in upper and upper.startswith("CREATE"):
+                pkg = parse_package(stripped)
+                if pkg:
+                    if pkg.name in packages:
+                        existing = packages[pkg.name]
+                        if pkg.spec_source:
+                            existing.spec_subprograms = pkg.spec_subprograms
+                            existing.spec_source = pkg.spec_source
+                        if pkg.body_source:
+                            existing.body_subprograms = pkg.body_subprograms
+                            existing.body_source = pkg.body_source
+                        if pkg.constants:
+                            existing.constants = existing.constants or pkg.constants
+                    else:
+                        packages[pkg.name] = pkg
+
+        except Exception as e:
+            logger.warning("Błąd parsowania bloku: %s — %s", stripped[:60], e)
+
+    # --- Post-processing ---
+
+    # Przypisz FK constraints do tabel
+    for table_name, constraint in fk_constraints:
+        if table_name in tables:
+            existing_names = {c.name for c in tables[table_name].constraints}
+            if constraint.name not in existing_names:
+                tables[table_name].constraints.append(constraint)
+
+    # Przypisz indeksy do tabel
+    for idx in indexes.values():
+        if idx.table_name in tables:
+            tables[idx.table_name].indexes.append(idx)
+
+    # Przypisz komentarze tabel/widoków
+    for obj_name, comment in table_comments.items():
+        if obj_name in views:
+            views[obj_name].comment = comment
+        elif obj_name in tables:
+            tables[obj_name].comment = comment
+
+    # Przypisz komentarze kolumn
+    for table_name, cols in column_comments.items():
+        if table_name in tables:
+            for col in tables[table_name].columns:
+                if col.name in cols:
+                    col.comment = cols[col.name]
+
+    # Ustaw visibility prywatnych subprogramów w body
+    for pkg in packages.values():
+        spec_names = {s.name for s in pkg.spec_subprograms}
+        for sub in pkg.body_subprograms:
+            if sub.name not in spec_names:
+                sub.visibility = "private"
+
+    return DbSchema(
+        tables=list(tables.values()),
+        views=list(views.values()),
+        packages=list(packages.values()),
+        sequences=list(sequences.values()),
+    )
+
+
+def parse_ddl_files(files: list[Path]) -> DbSchema:
+    """Parsuj wiele plików SQL i połącz w jeden DbSchema."""
+    combined_sql_parts: list[str] = []
+    for f in files:
+        path = Path(f)
+        try:
+            content = path.read_text(encoding="utf-8")
+            combined_sql_parts.append(content)
+            logger.info("Wczytano plik SQL: %s (%d znaków)", path.name, len(content))
+        except Exception as e:
+            logger.warning("Nie udało się wczytać pliku %s: %s", path, e)
+
+    combined_sql = "\n\n".join(combined_sql_parts)
+    return parse_ddl(combined_sql)

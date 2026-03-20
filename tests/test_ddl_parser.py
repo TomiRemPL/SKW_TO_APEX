@@ -10,6 +10,8 @@ from apex_export_to_md.parser.ddl_parser import (
     parse_create_sequence,
     parse_create_view,
     parse_package,
+    parse_ddl,
+    parse_ddl_files,
 )
 from apex_export_to_md.models.db_models import DbSchema
 
@@ -316,3 +318,103 @@ END PKG;'''
         pkg = parse_package(sql)
         assert "Komentarz ważny" in pkg.body_source
         assert "Jeszcze komentarz" in pkg.body_source
+
+
+class TestParseDdl:
+    def test_full_parse(self):
+        sql = '''
+        CREATE TABLE "T1" ("ID" NUMBER NOT NULL, CONSTRAINT "T1_PK" PRIMARY KEY ("ID") USING INDEX ENABLE);
+        ALTER TABLE "T2" ADD CONSTRAINT "T2_FK" FOREIGN KEY ("FK_ID") REFERENCES "T1" ("ID") ENABLE;
+        CREATE INDEX "T2_IDX" ON "T2" ("FK_ID");
+        COMMENT ON TABLE "T1" IS 'Tabela glowna';
+        COMMENT ON COLUMN "T1"."ID" IS 'Klucz glowny';
+        CREATE SEQUENCE "SEQ1" MINVALUE 0 MAXVALUE 999 INCREMENT BY 1 START WITH 100;
+        CREATE OR REPLACE VIEW "V1" ("A", "B") AS SELECT a, b FROM T1;
+        create or replace PACKAGE PKG AS
+            PROCEDURE P1;
+        END PKG;
+        /
+        '''
+        schema = parse_ddl(sql)
+        assert len(schema.tables) == 1
+        assert schema.tables[0].name == "T1"
+        assert schema.tables[0].comment == "Tabela glowna"
+        assert schema.tables[0].columns[0].comment == "Klucz glowny"
+        assert len(schema.views) == 1
+        assert len(schema.sequences) == 1
+        assert len(schema.packages) == 1
+
+    def test_deduplication_first_wins(self):
+        """Zduplikowane COMMENT ON — pierwszy wygrywa."""
+        sql = '''
+        CREATE TABLE "T" ("ID" NUMBER);
+        COMMENT ON TABLE "T" IS 'Pierwszy komentarz';
+        COMMENT ON TABLE "T" IS 'Drugi komentarz';
+        '''
+        schema = parse_ddl(sql)
+        assert schema.tables[0].comment == "Pierwszy komentarz"
+
+    def test_index_deduplication(self):
+        sql = '''
+        CREATE TABLE "T" ("ID" NUMBER);
+        CREATE INDEX "IDX" ON "T" ("ID");
+        CREATE INDEX "IDX" ON "T" ("ID");
+        '''
+        schema = parse_ddl(sql)
+        assert len(schema.tables[0].indexes) == 1
+
+    def test_package_spec_and_body_merged(self):
+        sql = '''
+        create or replace PACKAGE PKG AS
+            PROCEDURE PUB;
+        END PKG;
+        /
+        create or replace PACKAGE BODY PKG AS
+            PROCEDURE PRIV IS BEGIN NULL; END PRIV;
+            PROCEDURE PUB IS BEGIN NULL; END PUB;
+        END PKG;
+        /
+        '''
+        schema = parse_ddl(sql)
+        assert len(schema.packages) == 1
+        pkg = schema.packages[0]
+        assert pkg.name == "PKG"
+        assert len(pkg.spec_subprograms) == 1
+        assert len(pkg.body_subprograms) == 2
+        priv = [s for s in pkg.body_subprograms if s.name == "PRIV"]
+        assert priv[0].visibility == "private"
+
+    def test_malformed_block_skipped(self):
+        sql = '''
+        CREATE TABLE "T" ("ID" NUMBER);
+        CREATE UNIQUE INDEX "BAD" ON "T" (;
+        '''
+        schema = parse_ddl(sql)
+        assert len(schema.tables) == 1
+        assert len(schema.tables[0].indexes) == 0
+
+    def test_comment_on_view(self):
+        """COMMENT ON TABLE z nazwą widoku — trafia do widoku."""
+        sql = '''
+        CREATE OR REPLACE VIEW "V1" AS SELECT 1 FROM DUAL;
+        COMMENT ON TABLE "V1" IS 'Widok testowy';
+        '''
+        schema = parse_ddl(sql)
+        assert schema.views[0].comment == "Widok testowy"
+
+
+class TestParseDdlFiles:
+    def test_parse_single_file(self, tmp_path):
+        f = tmp_path / "test.sql"
+        f.write_text('CREATE TABLE "T" ("ID" NUMBER);', encoding="utf-8")
+        schema = parse_ddl_files([f])
+        assert len(schema.tables) == 1
+
+    def test_parse_multiple_files(self, tmp_path):
+        f1 = tmp_path / "tables.sql"
+        f1.write_text('CREATE TABLE "T1" ("ID" NUMBER);', encoding="utf-8")
+        f2 = tmp_path / "views.sql"
+        f2.write_text('CREATE OR REPLACE VIEW "V1" AS SELECT 1 FROM DUAL;', encoding="utf-8")
+        schema = parse_ddl_files([f1, f2])
+        assert len(schema.tables) == 1
+        assert len(schema.views) == 1
