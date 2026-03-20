@@ -319,3 +319,140 @@ def _parse_inline_constraint(elem: str) -> DbConstraint | None:
 def _parse_column_list(s: str) -> list[str]:
     """Parsuj listę kolumn z nawiasu: ("A", "B") → ["A", "B"]."""
     return [c.strip().strip('"') for c in s.split(",") if c.strip()]
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie ALTER TABLE (FK, UNIQUE)
+# ---------------------------------------------------------------------------
+
+def parse_alter_table_fk(sql: str) -> tuple[str, DbConstraint] | None:
+    """Parsuj ALTER TABLE ... ADD CONSTRAINT (FK lub UNIQUE)."""
+    # FK
+    m = re.match(
+        r'ALTER\s+TABLE\s+"?(\w+)"?\s+ADD\s+CONSTRAINT\s+"?(\w+)"?\s+'
+        r'FOREIGN\s+KEY\s*\(([^)]+)\)\s*'
+        r'REFERENCES\s+"?(\w+)"?\s*\(([^)]+)\)',
+        sql, re.IGNORECASE | re.DOTALL,
+    )
+    if m:
+        return m.group(1), DbConstraint(
+            name=m.group(2),
+            constraint_type="FK",
+            columns=_parse_column_list(m.group(3)),
+            ref_table=m.group(4),
+            ref_columns=_parse_column_list(m.group(5)),
+        )
+
+    # UNIQUE via ALTER TABLE
+    m = re.match(
+        r'ALTER\s+TABLE\s+"?(\w+)"?\s+ADD\s+CONSTRAINT\s+"?(\w+)"?\s+'
+        r'UNIQUE\s*\(([^)]+)\)',
+        sql, re.IGNORECASE,
+    )
+    if m:
+        return m.group(1), DbConstraint(
+            name=m.group(2),
+            constraint_type="UQ",
+            columns=_parse_column_list(m.group(3)),
+        )
+
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie CREATE INDEX
+# ---------------------------------------------------------------------------
+
+def parse_create_index(sql: str) -> DbIndex | None:
+    """Parsuj CREATE [UNIQUE] INDEX."""
+    m = re.match(
+        r'CREATE\s+(UNIQUE\s+)?INDEX\s+"?(\w+)"?\s+ON\s+"?(\w+)"?\s*\(([^)]+)\)',
+        sql, re.IGNORECASE,
+    )
+    if not m:
+        logger.warning("Pominięto malformowany index: %s", sql[:80])
+        return None
+
+    return DbIndex(
+        name=m.group(2),
+        table_name=m.group(3),
+        columns=_parse_column_list(m.group(4)),
+        unique=bool(m.group(1)),
+    )
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie COMMENT ON
+# ---------------------------------------------------------------------------
+
+def parse_comment_on(sql: str) -> tuple[str, str, str | None, str] | None:
+    """Parsuj COMMENT ON TABLE/COLUMN.
+
+    Zwraca: (typ_obiektu, nazwa_obiektu, nazwa_kolumny|None, tekst_komentarza)
+    Obsługuje '' (escape Oracle) wewnątrz tekstu komentarza.
+    """
+    # Wspólny helper: wyciągnij tekst między IS '...' (z uwzgl. '')
+    def _extract_comment_text(s: str, start: int) -> str | None:
+        """Wyciągnij tekst komentarza od pozycji start (po IS ')."""
+        in_text = []
+        i = start
+        while i < len(s):
+            ch = s[i]
+            if ch == "'":
+                if i + 1 < len(s) and s[i + 1] == "'":
+                    in_text.append("''")
+                    i += 2
+                    continue
+                else:
+                    return "".join(in_text)
+            in_text.append(ch)
+            i += 1
+        return "".join(in_text) if in_text else None
+
+    # COMMENT ON COLUMN "TABLE"."COLUMN" IS '...'
+    m = re.match(
+        r"COMMENT\s+ON\s+COLUMN\s+\"?(\w+)\"?\.\"?(\w+)\"?\s+IS\s+'",
+        sql, re.IGNORECASE,
+    )
+    if m:
+        text = _extract_comment_text(sql, m.end())
+        if text is not None:
+            return ("COLUMN", m.group(1), m.group(2), text)
+
+    # COMMENT ON TABLE "TABLE" IS '...'
+    m = re.match(
+        r"COMMENT\s+ON\s+TABLE\s+\"?(\w+)\"?\s+IS\s+'",
+        sql, re.IGNORECASE,
+    )
+    if m:
+        text = _extract_comment_text(sql, m.end())
+        if text is not None:
+            return ("TABLE", m.group(1), None, text)
+
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Parsowanie CREATE SEQUENCE
+# ---------------------------------------------------------------------------
+
+def parse_create_sequence(sql: str) -> DbSequence | None:
+    """Parsuj CREATE SEQUENCE."""
+    m = re.match(r'CREATE\s+SEQUENCE\s+"?(\w+)"?', sql, re.IGNORECASE)
+    if not m:
+        return None
+
+    name = m.group(1)
+
+    def _extract(pattern: str) -> str | None:
+        m2 = re.search(pattern, sql, re.IGNORECASE)
+        return m2.group(1) if m2 else None
+
+    return DbSequence(
+        name=name,
+        min_value=_extract(r'MINVALUE\s+(\d+)'),
+        max_value=_extract(r'MAXVALUE\s+(\d+)'),
+        increment_by=_extract(r'INCREMENT\s+BY\s+(\d+)'),
+        start_with=_extract(r'START\s+WITH\s+(\d+)'),
+        cache=_extract(r'CACHE\s+(\d+)'),
+    )

@@ -4,6 +4,10 @@ import pytest
 from apex_export_to_md.parser.ddl_parser import (
     split_into_blocks,
     parse_create_table,
+    parse_alter_table_fk,
+    parse_create_index,
+    parse_comment_on,
+    parse_create_sequence,
 )
 from apex_export_to_md.models.db_models import DbSchema
 
@@ -128,3 +132,97 @@ class TestParseCreateTable:
         table = parse_create_table(sql)
         assert table.columns[0].default is not None
         assert "NEXTVAL" in table.columns[0].default
+
+
+class TestParseAlterTableFK:
+    def test_foreign_key(self):
+        sql = '''ALTER TABLE "B_ANKIETA" ADD CONSTRAINT "B_ANKIETA_B_AUDYT_FK"
+                 FOREIGN KEY ("ID_FK_B_AUDYT")
+                 REFERENCES "B_AUDYT" ("ID_PK_B_AUDYT") ENABLE'''
+        result = parse_alter_table_fk(sql)
+        assert result is not None
+        table_name, constraint = result
+        assert table_name == "B_ANKIETA"
+        assert constraint.name == "B_ANKIETA_B_AUDYT_FK"
+        assert constraint.constraint_type == "FK"
+        assert constraint.columns == ["ID_FK_B_AUDYT"]
+        assert constraint.ref_table == "B_AUDYT"
+        assert constraint.ref_columns == ["ID_PK_B_AUDYT"]
+
+    def test_unique_constraint_via_alter(self):
+        """ALTER TABLE z UNIQUE — parsuje jako constraint UQ."""
+        sql = '''ALTER TABLE "T" ADD CONSTRAINT "T_UQ" UNIQUE ("A", "B")'''
+        result = parse_alter_table_fk(sql)
+        assert result is not None
+        _, c = result
+        assert c.constraint_type == "UQ"
+
+
+class TestParseCreateIndex:
+    def test_unique_index(self):
+        sql = 'CREATE UNIQUE INDEX "B_AUDYT_PK" ON "B_AUDYT" ("ID_PK_B_AUDYT")'
+        idx = parse_create_index(sql)
+        assert idx is not None
+        assert idx.name == "B_AUDYT_PK"
+        assert idx.table_name == "B_AUDYT"
+        assert idx.columns == ["ID_PK_B_AUDYT"]
+        assert idx.unique is True
+
+    def test_regular_index(self):
+        sql = 'CREATE INDEX "B_AK_IDX1" ON "B_AUDYT_KONTROLA" ("ID_FK_B_AUDYT")'
+        idx = parse_create_index(sql)
+        assert idx.unique is False
+
+    def test_composite_index(self):
+        sql = 'CREATE INDEX "IDX" ON "T" ("A", "B")'
+        idx = parse_create_index(sql)
+        assert idx.columns == ["A", "B"]
+
+    def test_malformed_index_returns_none(self):
+        """Niekompletny CREATE INDEX — brak kolumn."""
+        sql = 'CREATE UNIQUE INDEX "SYS_IL0000082378C00005$$" ON "B_SL_C_PYTANIE" ('
+        idx = parse_create_index(sql)
+        assert idx is None
+
+
+class TestParseCommentOn:
+    def test_table_comment(self):
+        sql = """COMMENT ON TABLE "B_AUDYT" IS 'Tabela audytow.'"""
+        result = parse_comment_on(sql)
+        assert result is not None
+        obj_type, obj_name, col_name, text = result
+        assert obj_type == "TABLE"
+        assert obj_name == "B_AUDYT"
+        assert col_name is None
+        assert text == "Tabela audytow."
+
+    def test_column_comment(self):
+        sql = """COMMENT ON COLUMN "B_AUDYT"."STATUS_AUDYTU" IS 'Status audytu: Otwarty=edycja'"""
+        result = parse_comment_on(sql)
+        assert result is not None
+        obj_type, obj_name, col_name, text = result
+        assert obj_type == "COLUMN"
+        assert obj_name == "B_AUDYT"
+        assert col_name == "STATUS_AUDYTU"
+        assert text == "Status audytu: Otwarty=edycja"
+
+    def test_multiline_comment(self):
+        """Komentarz z wieloliniowym SQL wewnątrz."""
+        sql = """COMMENT ON TABLE "B_KONTROLA" IS 'WITH k AS (\nSELECT a FROM b\n)'"""
+        result = parse_comment_on(sql)
+        assert result is not None
+        _, _, _, text = result
+        assert "WITH k AS" in text
+
+
+class TestParseCreateSequence:
+    def test_sequence(self):
+        sql = '''CREATE SEQUENCE "DAW_SEQ_B_C_ANAKIETA_PK"
+                 MINVALUE 0 MAXVALUE 9999999 INCREMENT BY 1
+                 START WITH 1203 NOCACHE NOORDER NOCYCLE'''
+        seq = parse_create_sequence(sql)
+        assert seq is not None
+        assert seq.name == "DAW_SEQ_B_C_ANAKIETA_PK"
+        assert seq.start_with == "1203"
+        assert seq.increment_by == "1"
+        assert seq.min_value == "0"
