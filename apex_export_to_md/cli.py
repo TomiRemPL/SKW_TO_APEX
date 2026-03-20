@@ -18,6 +18,10 @@ from apex_export_to_md.parser.shared_parser import (
 from apex_export_to_md.filters.page_filter import PageFilter
 from apex_export_to_md.renderers.human_renderer import HumanRenderer
 from apex_export_to_md.renderers.llm_renderer import LLMRenderer
+from apex_export_to_md.parser.ddl_parser import parse_ddl_files
+from apex_export_to_md.renderers.db_human_renderer import DbHumanRenderer
+from apex_export_to_md.renderers.db_llm_renderer import DbLLMRenderer
+from apex_export_to_md.linker.apex_db_linker import ApexDbLinker
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -147,6 +151,22 @@ def find_app_root(input_dir: Path) -> Path:
     return input_dir
 
 
+def find_sql_files(input_path: Path, config: AppConfig) -> list[Path]:
+    """Znajdź pliki SQL w katalogu eksportu.
+
+    Jeśli config.ddl_files podany — użyj wskazanych plików.
+    W przeciwnym razie — auto-wykryj *.sql.
+    """
+    if config.ddl_files:
+        return [Path(f) for f in config.ddl_files if Path(f).exists()]
+
+    sql_files = list(input_path.rglob("*.sql"))
+    if sql_files:
+        logging.info("Znaleziono %d plików SQL: %s",
+                     len(sql_files), [f.name for f in sql_files])
+    return sql_files
+
+
 def run_pipeline(config: AppConfig) -> None:
     """Uruchom pełny pipeline: parse → filter → render → zapis."""
     input_path = Path(config.input_dir)
@@ -208,6 +228,48 @@ def run_pipeline(config: AppConfig) -> None:
         out_path = output_dir / f"{config.output_prefix}_llm.md"
         out_path.write_text(content, encoding="utf-8")
         logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
+
+    # --- Pipeline DDL ---
+    sql_files = find_sql_files(input_path, config)
+    schema = None
+
+    if sql_files and config.enable_ddl:
+        schema = parse_ddl_files(sql_files)
+        logging.info("Sparsowano DDL: %d tabel, %d widoków, %d pakietów, %d sekwencji",
+                     len(schema.tables), len(schema.views),
+                     len(schema.packages), len(schema.sequences))
+
+        if config.output_format in ("both", "human"):
+            db_renderer = DbHumanRenderer(config)
+            content = db_renderer.render(schema)
+            out_path = output_dir / f"{config.output_prefix}_db_human.md"
+            out_path.write_text(content, encoding="utf-8")
+            logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
+
+        if config.output_format in ("both", "llm"):
+            db_renderer = DbLLMRenderer(config)
+            content = db_renderer.render(schema)
+            out_path = output_dir / f"{config.output_prefix}_db_llm.md"
+            out_path.write_text(content, encoding="utf-8")
+            logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
+
+    # --- Pipeline HTML ---
+    if schema and config.enable_html:
+        linker = ApexDbLinker(app, schema)
+        links = linker.find_links()
+        logging.info("Znaleziono %d powiązań APEX↔DB", len(links))
+
+        # Lazy import — HtmlRenderer może nie istnieć jeszcze (Task 11)
+        try:
+            from apex_export_to_md.renderers.html_renderer import HtmlRenderer
+            html_renderer = HtmlRenderer(config)
+            html_content = html_renderer.render(app, schema, links)
+            html_name = config.html_output or f"{config.output_prefix}_interactive.html"
+            html_path = output_dir / html_name
+            html_path.write_text(html_content, encoding="utf-8")
+            logging.info("Zapisano: %s (%d znaków)", html_path, len(html_content))
+        except ImportError:
+            logging.warning("HtmlRenderer niedostępny — pominięto generowanie HTML")
 
 
 def main() -> None:
