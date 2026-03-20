@@ -41,15 +41,26 @@ class ApexDbLinker:
 
         # LOV-y (nie przypisane do strony — page_id=0)
         for lov in self._app.lovs:
-            sql = lov.sql_query or ""
-            if sql:
-                objects = self._find_db_objects_in_sql(sql)
-                if objects:
-                    links.append(ApexDbLink(
-                        page_id=0, page_name="(shared)",
-                        db_objects=objects,
-                        source_type="lov", source_name=lov.name,
-                    ))
+            objects: list[str] = []
+            # LOV oparty o tabelę/widok
+            if lov.source_table:
+                upper_name = lov.source_table.upper()
+                if upper_name in {n.upper() for n in self._db_names}:
+                    # Zwróć oryginalną nazwę z _db_names
+                    for n in self._db_names:
+                        if n.upper() == upper_name:
+                            objects.append(n)
+                            break
+            # LOV oparty o SQL
+            if lov.sql_query:
+                objects.extend(self._find_db_objects_in_sql(lov.sql_query))
+            objects = list(dict.fromkeys(objects))
+            if objects:
+                links.append(ApexDbLink(
+                    page_id=0, page_name="(shared)",
+                    db_objects=objects,
+                    source_type="lov", source_name=lov.name,
+                ))
 
         return links
 
@@ -107,7 +118,7 @@ class ApexDbLinker:
         sql_upper = sql.upper()
 
         for name in self._db_names:
-            pattern = r'(?<![A-Z0-9_])' + re.escape(name) + r'(?![A-Z0-9_])'
+            pattern = r'(?<![A-Z0-9_])' + re.escape(name.upper()) + r'(?![A-Z0-9_])'
             if re.search(pattern, sql_upper):
                 found.append(name)
 

@@ -116,6 +116,21 @@ class TestApexDbLinker:
         page2_links = [l for l in links if l.page_id == 2]
         assert len(page2_links) == 0
 
+    def test_lov_source_table(self, db_schema):
+        """LOV oparty o tabelę (nie SQL) powinien generować link."""
+        app = ApexApp(
+            name="TEST", id="1", alias="T",
+            lovs=[
+                LOV(name="LOV_TABELA", source_type="Table / View",
+                    source_table="B_KONTROLA"),
+            ],
+        )
+        linker = ApexDbLinker(app, db_schema)
+        links = linker.find_links()
+        assert len(links) == 1
+        assert links[0].db_objects == ["B_KONTROLA"]
+        assert links[0].source_type == "lov"
+
     def test_no_false_positive_prefix(self, apex_app, db_schema):
         """B_AUDYT nie powinien matchować B_AUDYT_KONTROLA (word boundary)."""
         linker = ApexDbLinker(apex_app, db_schema)
