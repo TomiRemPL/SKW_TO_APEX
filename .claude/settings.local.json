@@ -1,8 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx -y @anthropic-ai/mcp-server-fetch --version)",
-      "Bash(uvx mcp-server-fetch:*)"
+      "Bash(python *)",
+      "Bash(python -c *)",
+      "Bash(python -m pytest *)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)",
+      "mcp__filesystem__read_text_file",
+      "mcp__serena__read_file",
+      "mcp__serena__activate_project",
+      "mcp__serena__get_symbols_overview",
+      "mcp__serena__list_dir",
+      "mcp__serena__find_symbol",
+      "Skill(update-config)",
+      "Bash(powershell -NoProfile -Command \"[console]::beep\\(800,300\\)\")",
+      "Bash(echo \"exit: $?\")"
     ]
   }
 }

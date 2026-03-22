@@ -1,6 +1,6 @@
 # APEX Export to Markdown Converter
 
-Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Oracle APEX (format YAML readable) na czytelne pliki Markdown — w dwóch wariantach: dla człowieka i dla LLM.
+Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Oracle APEX (format YAML readable) na czytelne pliki Markdown — w dwóch wariantach: dla człowieka i dla LLM. Dodatkowo parsuje pliki DDL/PL/SQL i generuje dokumentację schematu bazy danych oraz interaktywną stronę HTML z diagramem relacji.
 
 ---
 
@@ -14,13 +14,15 @@ Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Orac
 6. [Przypadki użycia](#przypadki-użycia)
 7. [Format wyjściowy — human](#format-wyjściowy--human)
 8. [Format wyjściowy — LLM](#format-wyjściowy--llm)
-9. [Architektura](#architektura)
-10. [Heurystyki filtrowania stron](#heurystyki-filtrowania-stron)
-11. [Konfiguracja](#konfiguracja)
-12. [Rozbudowa](#rozbudowa)
-13. [Testy](#testy)
-14. [Znane ograniczenia](#znane-ograniczenia)
-15. [Licencja](#licencja)
+9. [Pipeline DDL — dokumentacja bazy danych](#pipeline-ddl--dokumentacja-bazy-danych)
+10. [Interaktywny HTML](#interaktywny-html)
+11. [Architektura](#architektura)
+12. [Heurystyki filtrowania stron](#heurystyki-filtrowania-stron)
+13. [Konfiguracja](#konfiguracja)
+14. [Rozbudowa](#rozbudowa)
+15. [Testy](#testy)
+16. [Znane ograniczenia](#znane-ograniczenia)
+17. [Licencja](#licencja)
 
 ---
 
@@ -38,6 +40,10 @@ Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Orac
 - Wyodrębnia strony, regiony, kolumny, elementy formularza, przyciski, procesy PL/SQL, akcje dynamiczne, rozgałęzienia, walidacje, LOV-y, schematy autoryzacji, nawigację i role ACL
 - Filtruje strony standardowe APEX (administracyjne, logowanie), pozostawiając strony użytkownika
 - Generuje dwa pliki Markdown: `*_human.md` (czytelny, z tabelami i nagłówkami) i `*_llm.md` (skondensowany, liniowy)
+- **Parsuje pliki DDL/PL/SQL** — tabele, widoki, pakiety (spec + body), sekwencje, constrainty, indeksy, komentarze
+- **Generuje dokumentację bazy danych** — `*_db_human.md` z diagramem Mermaid ER + `*_db_llm.md` w skondensowanym formacie
+- **Wykrywa powiązania APEX↔DB** — automatycznie łączy strony APEX z tabelami/widokami na podstawie heurystyk SQL
+- **Generuje interaktywny HTML** — self-contained strona z vis.js (offline), 3 zakładki: diagram relacji, przeglądarka DB, mapa APEX↔DB
 
 **Dla kogo?** Dla programistów Oracle APEX, którzy chcą przeglądać strukturę aplikacji lub przekazywać ją do analiz przez AI.
 
@@ -99,6 +105,9 @@ usage: apex_export_to_md [-h] [--output-dir OUTPUT_DIR] [--output-prefix OUTPUT_
                          [--page-filter PAGE_FILTER] [--extra-pages EXTRA_PAGES]
                          [--include-internal-ids] [--include-layout]
                          [--no-shared-components] [--verbose]
+                         [--no-ddl] [--ddl-files DDL_FILES [DDL_FILES ...]]
+                         [--no-html] [--html-output HTML_OUTPUT]
+                         [--author-name AUTHOR_NAME]
                          input_dir
 
 Konwertuje eksport Oracle APEX (readable YAML) na Markdown.
@@ -114,12 +123,17 @@ Minimalne polecenie — generuje oba formaty w bieżącym katalogu:
 python -m apex_export_to_md program/readable/application/
 ```
 
-Po wykonaniu powstaną dwa pliki:
+Po wykonaniu powstaną pliki (w zależności od wykrytych danych):
 
 ```
-apex_export_human.md   # format czytelny dla człowieka
-apex_export_llm.md     # format skondensowany dla LLM
+apex_export_human.md           # APEX — format czytelny dla człowieka
+apex_export_llm.md             # APEX — format skondensowany dla LLM
+apex_export_db_human.md        # Baza danych — z diagramem Mermaid ER
+apex_export_db_llm.md          # Baza danych — skondensowany
+apex_export_interactive.html   # Interaktywna strona HTML (vis.js)
 ```
+
+Pliki `_db_*` i `.html` powstają automatycznie, gdy w katalogu eksportu zostanie wykryty plik `*.sql` z DDL.
 
 ---
 
@@ -245,6 +259,51 @@ Flaga (bez wartości). Włącza szczegółowe logi (poziom DEBUG) — pokazuje m
 
 - **Domyślnie:** wyłączone (poziom INFO)
 - **Przykład:** `--verbose`
+
+---
+
+#### `--no-ddl`
+
+Flaga (bez wartości). Wyłącza pipeline DDL — nie parsuje plików SQL i nie generuje plików `*_db_human.md` / `*_db_llm.md`.
+
+- **Domyślnie:** DDL jest włączony (jeśli wykryto pliki `*.sql`)
+- **Przykład:** `--no-ddl`
+
+---
+
+#### `--ddl-files PLIK1 [PLIK2 ...]`
+
+Jawne wskazanie plików DDL/SQL do sparsowania. Jeśli pominięto, narzędzie automatycznie szuka plików `*.sql` w katalogu eksportu i katalogach nadrzędnych.
+
+- **Domyślnie:** automatyczne wykrywanie
+- **Przykład:** `--ddl-files schema.sql triggers.sql`
+
+---
+
+#### `--no-html`
+
+Flaga (bez wartości). Wyłącza generowanie interaktywnej strony HTML.
+
+- **Domyślnie:** HTML jest generowany (jeśli sparsowano DDL)
+- **Przykład:** `--no-html`
+
+---
+
+#### `--html-output ŚCIEŻKA`
+
+Jawna ścieżka do pliku HTML wyjściowego. Jeśli pominięto, plik powstaje w `output_dir` z sufiksem `_interactive.html`.
+
+- **Domyślnie:** `<output_dir>/<output_prefix>_interactive.html`
+- **Przykład:** `--html-output docs/schema_viewer.html`
+
+---
+
+#### `--author-name NAZWA`
+
+Nazwa autora wyświetlana w stopce generowanego pliku HTML.
+
+- **Domyślnie:** `Tomasz Rembiasz`
+- **Przykład:** `--author-name "Jan Kowalski"`
 
 ---
 
@@ -380,7 +439,39 @@ python -m apex_export_to_md program/readable/application/ \
 
 ---
 
-### 13. Pełny verbose z wszystkimi opcjami
+### 13. Tylko APEX, bez DDL i HTML
+
+Generuje wyłącznie pliki Markdown dla APEX — bez parsowania bazy danych i bez strony HTML:
+
+```bash
+python -m apex_export_to_md program/readable/application/ --no-ddl --no-html
+```
+
+---
+
+### 14. Wskazanie konkretnego pliku DDL
+
+Narzędzie automatycznie szuka `*.sql`, ale można jawnie podać plik(i):
+
+```bash
+python -m apex_export_to_md program/readable/application/ \
+  --ddl-files ./SKW_TO_APEX_DDL.sql
+```
+
+---
+
+### 15. Zmiana autora w HTML
+
+Domyślny autor to "Tomasz Rembiasz". Aby zmienić:
+
+```bash
+python -m apex_export_to_md program/readable/application/ \
+  --author-name "Jan Kowalski"
+```
+
+---
+
+### 16. Pełny verbose z wszystkimi opcjami
 
 Kompletne wywołanie z logowaniem DEBUG — widać każdą pominiętą stronę i etapy pipeline'u:
 
@@ -393,6 +484,8 @@ python -m apex_export_to_md program/readable/application/ \
   --page-filter prefix:DAW_ \
   --extra-pages 1 \
   --no-shared-components \
+  --ddl-files ./SKW_TO_APEX_DDL.sql \
+  --author-name "Tomasz Rembiasz" \
   --verbose
 ```
 
@@ -406,6 +499,11 @@ DEBUG: Pomijam stronę standardową: Login Page (ID=9999)
 INFO: Po filtracji: 12 stron
 INFO: Zapisano: docs/apex/skw_v2_human.md (48320 znaków)
 INFO: Zapisano: docs/apex/skw_v2_llm.md (18750 znaków)
+INFO: Pipeline DDL: sparsowano 1 plik SQL
+INFO: Zapisano: docs/apex/skw_v2_db_human.md (32100 znaków)
+INFO: Zapisano: docs/apex/skw_v2_db_llm.md (12400 znaków)
+INFO: Linker APEX↔DB: wykryto 45 powiązań
+INFO: Zapisano: docs/apex/skw_v2_interactive.html (890KB)
 ```
 
 ---
@@ -565,6 +663,106 @@ PKG_AUDYT.ZAKONCZ_AUDYT(p_audyt_id => :P4_ID);
 
 ---
 
+## Pipeline DDL — dokumentacja bazy danych
+
+Pipeline DDL automatycznie parsuje pliki `*.sql` zawierające definicje DDL i PL/SQL, generując dokumentację schematu bazy danych.
+
+### Wykrywanie plików SQL
+
+Narzędzie szuka plików `*.sql` w następujących lokalizacjach (w kolejności):
+1. Katalog eksportu APEX (`input_dir`)
+2. Katalogi nadrzędne (do 3 poziomów w górę)
+3. Jawnie wskazane pliki (opcja `--ddl-files`)
+
+### Co jest parsowane
+
+| Obiekt | Źródło DDL | Przykład |
+|--------|-----------|---------|
+| Tabele | `CREATE TABLE` | Kolumny, typy danych, wartości domyślne, NOT NULL |
+| Constrainty | `ALTER TABLE ADD CONSTRAINT` | PK, FK (z tabelą referencyjną), UNIQUE, CHECK |
+| Indeksy | `CREATE INDEX` / `CREATE UNIQUE INDEX` | Nazwy, kolumny, unikalność |
+| Widoki | `CREATE OR REPLACE VIEW` | Kolumny (z SELECT), pełne SQL |
+| Pakiety | `CREATE OR REPLACE PACKAGE [BODY]` | Spec + body merge, podprogramy (public/private) |
+| Sekwencje | `CREATE SEQUENCE` | Nazwa |
+| Komentarze | `COMMENT ON TABLE/COLUMN` | Komentarze tabel i kolumn |
+
+### Obsługa PL/SQL
+
+Parser obsługuje pełne pakiety PL/SQL:
+- **Spec** — wyodrębniane procedury i funkcje z sygnaturami
+- **Body** — zachowane źródło, prywatne podprogramy oznaczane jako `private`
+- **Merge** — spec i body tego samego pakietu łączone w jeden obiekt `DbPackage`
+
+Bloki PL/SQL są dzielone separatorem `/` (poza stringami), a bloki DDL separatorem `;`.
+
+### Format wyjściowy — DB Human (`*_db_human.md`)
+
+Zawiera:
+- Nagłówek z nazwą schematu
+- **Diagram Mermaid ER** — relacje FK między tabelami, automatycznie wygenerowany
+- Sekcje dla każdej tabeli: kolumny (tabela MD), constrainty, indeksy, komentarze
+- Sekcje widoków z kolumnami i SQL
+- Sekcje pakietów z podprogramami (public i private)
+- Lista sekwencji
+
+### Format wyjściowy — DB LLM (`*_db_llm.md`)
+
+Skondensowany format liniowy z prefiksami:
+
+| Prefiks | Znaczenie |
+|---------|-----------|
+| `SCHEMA:DB` | Nagłówek schematu |
+| `TBL:<nazwa>` | Tabela |
+| `COL:<nazwa>\|<typ>` | Kolumna tabeli |
+| `CONSTRAINT:<typ>` | Constraint |
+| `IDX:<nazwa>` | Indeks |
+| `VW:<nazwa>` | Widok |
+| `PKG:<nazwa>` | Pakiet |
+| `SUB:<nazwa>` | Podprogram pakietu |
+| `SEQ:<nazwa>` | Sekwencja |
+
+---
+
+## Interaktywny HTML
+
+Narzędzie generuje self-contained stronę HTML z interaktywnym widokiem schematu bazy danych i powiązań z APEX. Plik nie wymaga połączenia z internetem — biblioteka **vis.js 9.1.6** jest osadzona inline.
+
+### 3 zakładki
+
+1. **Diagram relacji** — interaktywny graf vis.js Network:
+   - Węzły = tabele i widoki
+   - Krawędzie = relacje FK (z etykietami nazw constraintów)
+   - Fizyka symulacji (siły sprężystości) — drag & drop, zoom, pan
+   - Kolory: tabele (niebieski), widoki (zielony)
+
+2. **Baza danych** — przeglądarka schematu:
+   - Drzewo tabel/widoków/pakietów/sekwencji (panel lewy)
+   - Panel szczegółów (prawy): kolumny, constrainty, indeksy, komentarze, podprogramy
+   - Klikanie w drzewo otwiera szczegóły obiektu
+
+3. **APEX↔DB** — mapa powiązań:
+   - Lewa kolumna: strony APEX i shared components (LOV-y)
+   - Prawa kolumna: obiekty bazy danych (tabele, widoki, pakiety)
+   - **Dwukierunkowe podświetlanie**: kliknięcie strony APEX podświetla powiązane obiekty DB i odwrotnie
+   - Źródła powiązań: `region` (SQL/tabela), `process` (kod PL/SQL), `validation`, `lov`
+
+### Heurystyki linkera APEX↔DB
+
+Linker (`ApexDbLinker`) wykrywa powiązania automatycznie:
+- Skanuje SQL regionów, kod procesów, wyrażenia walidacji, SQL LOV-ów
+- Szuka nazw tabel, widoków i pakietów jako **całych słów** (word boundary regex)
+- Dopasowuje **longest-first** — aby `B_AUDYT_KONTROLA` nie było fałszywie dopasowane jako `B_AUDYT`
+- Obsługuje `source_table` regionów i LOV-ów (bezpośrednie referencje bez SQL)
+- Case-insensitive matching
+
+### Branding
+
+- Logo SVG z inicjałami "TR" w nagłówku
+- Stopka: `Wygenerowano przez apex_export_to_md | Autor: <author_name> | Współpraca z Claude (Anthropic)`
+- Nazwa autora konfigurowalna opcją `--author-name`
+
+---
+
 ## Architektura
 
 ### Pipeline przetwarzania
@@ -574,44 +772,73 @@ input_dir/
     f*.yaml          (definicja aplikacji)
     pages/
         p00001.yaml
-        p00002.yaml
         ...
     shared_components/
         ...
+    *.sql              (pliki DDL — opcjonalnie)
 
          |
          v
   [find_app_root]   -- wykrywa katalog application/ rekursywnie
          |
          v
-  [parse_app_definition]  -- app name, ID, alias z f*.yaml
+  ┌──────────────────────────────────────────────┐
+  │            Pipeline APEX                      │
+  │                                               │
+  │  [parse_app_definition]  -- app name, ID      │
+  │         |                                     │
+  │  [parse_all_pages]       -- pages/p*.yaml     │
+  │         |                                     │
+  │  [PageFilter.filter_pages]  -- filtrowanie    │
+  │         |                                     │
+  │  [parse_shared_components]  -- LOV, auth...   │
+  │         |                                     │
+  │  [ApexApp]                                    │
+  │       /   \                                   │
+  │      v     v                                  │
+  │ [HumanRenderer] [LLMRenderer]                 │
+  │      |           |                            │
+  │      v           v                            │
+  │ *_human.md    *_llm.md                        │
+  └──────────────────────────────────────────────┘
          |
-         v
-  [parse_all_pages]       -- parsuje pages/p*.yaml → lista ApexPage
+         v  (jeśli znaleziono *.sql)
+  ┌──────────────────────────────────────────────┐
+  │            Pipeline DDL                       │
+  │                                               │
+  │  [find_sql_files]      -- szuka *.sql         │
+  │         |                                     │
+  │  [parse_ddl_files]     -- DDL/PL/SQL parser   │
+  │         |                                     │
+  │  [DbSchema]            -- tabele, widoki...   │
+  │       /   \                                   │
+  │      v     v                                  │
+  │ [DbHumanRenderer] [DbLLMRenderer]             │
+  │      |              |                         │
+  │      v              v                         │
+  │ *_db_human.md   *_db_llm.md                   │
+  └──────────────────────────────────────────────┘
          |
-         v
-  [PageFilter.filter_pages]  -- filtruje wg page_filter + extra_pages
-         |
-         v
-  [parse_shared_components]  -- LOV-y, auth, nav, app_items, ACL...
-         |
-         v
-  [ApexApp]              -- agregat wszystkich danych
-         |
-       /   \
-      v     v
-[HumanRenderer] [LLMRenderer]
-      |           |
-      v           v
-*_human.md    *_llm.md
+         v  (jeśli DDL + APEX)
+  ┌──────────────────────────────────────────────┐
+  │            Pipeline HTML                      │
+  │                                               │
+  │  [ApexDbLinker]   -- heurystyki SQL           │
+  │         |                                     │
+  │  [HtmlRenderer]   -- vis.js, 3 zakładki       │
+  │         |                                     │
+  │         v                                     │
+  │  *_interactive.html                           │
+  └──────────────────────────────────────────────┘
 ```
 
 ### Moduły
 
 | Moduł | Plik | Odpowiedzialność |
 |-------|------|-----------------|
-| `cli.py` | `apex_export_to_md/cli.py` | Parsowanie argumentów CLI, orkiestracja pipeline'u |
+| `cli.py` | `apex_export_to_md/cli.py` | Parsowanie argumentów CLI, orkiestracja 3 pipeline'ów |
 | `config.py` | `apex_export_to_md/config.py` | Dataclass `AppConfig`, stałe heurystyk |
+| **Pipeline APEX** | | |
 | `models/apex_models.py` | `models/` | Dataclassy: `ApexApp`, `ApexPage`, `Region`, `Column`, `Process` itp. |
 | `parser/page_parser.py` | `parser/` | Parsowanie `pages/p*.yaml` → `ApexPage` |
 | `parser/shared_parser.py` | `parser/` | Parsowanie `shared_components/` → LOV, Auth, Nav itp. |
@@ -620,6 +847,15 @@ input_dir/
 | `renderers/base_renderer.py` | `renderers/` | ABC `BaseRenderer` — interfejs + pomocnicze metody kodu |
 | `renderers/human_renderer.py` | `renderers/` | Markdown z nagłówkami, tabelami i blokami kodu |
 | `renderers/llm_renderer.py` | `renderers/` | Format liniowy `PREFIX:wartość\|...` |
+| **Pipeline DDL** | | |
+| `models/db_models.py` | `models/` | Dataclassy schematu DB: `DbSchema`, `DbTable`, `DbColumn`, `DbConstraint`, `DbView`, `DbPackage`, `DbSequence` itp. |
+| `parser/ddl_parser.py` | `parser/` | Parser DDL/PL/SQL: `parse_ddl_files()`, regex state machine, block splitter, package merge |
+| `renderers/db_human_renderer.py` | `renderers/` | MD z diagramem Mermaid ER, tabelami kolumn/constraintów |
+| `renderers/db_llm_renderer.py` | `renderers/` | Skondensowany format liniowy DB (`TBL:`, `COL:`, `PKG:` itp.) |
+| **Pipeline HTML** | | |
+| `linker/apex_db_linker.py` | `linker/` | `ApexDbLinker` — heurystyki SQL, word boundary matching |
+| `renderers/html_renderer.py` | `renderers/` | Self-contained HTML z vis.js, 3 zakładki, branding |
+| `renderers/vendor/vis-network.min.js` | `vendor/` | Bundled vis.js 9.1.6 (offline) |
 
 ---
 
@@ -672,6 +908,7 @@ Plik `apex_export_to_md/config.py` zawiera dwa elementy:
 Wszystkie pola odpowiadają bezpośrednio opcjom CLI. Wartości domyślne:
 
 ```python
+# --- Pipeline APEX ---
 output_dir: str = "."
 output_prefix: str = "apex_export"
 output_format: str = "both"       # "both" | "human" | "llm"
@@ -682,6 +919,12 @@ include_internal_ids: bool = False
 include_layout: bool = False
 include_shared_components: bool = True
 verbose: bool = False
+# --- Pipeline DDL i HTML ---
+enable_ddl: bool = True           # False = --no-ddl
+ddl_files: list[str] = []         # jawne pliki SQL (--ddl-files)
+enable_html: bool = True          # False = --no-html
+html_output: str = ""             # jawna ścieżka HTML (--html-output)
+author_name: str = "Tomasz Rembiasz"  # --author-name
 ```
 
 ### Stałe heurystyk filtrowania
@@ -788,6 +1031,7 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 
 | Plik | Co testuje |
 |------|-----------|
+| **Pipeline APEX** | |
 | `test_config.py` | `AppConfig` — wartości domyślne i pola |
 | `test_models.py` | Dataclassy modelu APEX |
 | `test_yaml_helpers.py` | Funkcje pomocnicze parsera YAML |
@@ -797,7 +1041,18 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 | `test_human_renderer.py` | Format human Markdown |
 | `test_llm_renderer.py` | Format LLM liniowy |
 | `test_cli.py` | Parsowanie argumentów CLI |
-| `test_integration.py` | Integracyjny end-to-end pipeline |
+| `test_integration.py` | Integracyjny end-to-end pipeline APEX |
+| **Pipeline DDL** | |
+| `test_db_models.py` | Dataclassy schematu DB (`DbSchema`, `DbTable` itp.) |
+| `test_ddl_parser.py` | Parser DDL/PL/SQL: bloki, tabele, constrainty, widoki, pakiety, komentarze |
+| `test_db_human_renderer.py` | Renderer DB human z diagramem Mermaid ER |
+| `test_db_llm_renderer.py` | Renderer DB LLM (prefiksy `TBL:`, `PKG:` itp.) |
+| **Pipeline HTML** | |
+| `test_apex_db_linker.py` | Linker APEX↔DB: regiony, procesy, walidacje, LOV-y |
+| `test_html_renderer.py` | HtmlRenderer: vis.js, 3 zakładki, branding, dane JSON |
+| `test_cli_ddl.py` | Argumenty CLI dla DDL: `--no-ddl`, `--ddl-files`, `--no-html`, `--html-output`, `--author-name` |
+| **Integracyjne** | |
+| `test_integration_ddl.py` | Pełny pipeline DDL z prawdziwym `SKW_TO_APEX_DDL.sql` (8 testów) |
 
 ---
 

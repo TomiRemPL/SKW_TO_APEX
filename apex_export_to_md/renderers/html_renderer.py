@@ -334,11 +334,25 @@ function initDiagram() {
     color: { color: "#999" }
   }));
   const container = document.getElementById("er-network");
-  const network = new vis.Network(container, { nodes, edges }, {
+  // 1. Tworzymy sieć z layoutem hierarchicznym, żeby vis.js obliczył pozycje
+  const network = new vis.Network(container, { nodes: new vis.DataSet(nodes), edges }, {
     layout: { hierarchical: { direction: "UD", sortMethod: "hubsize", nodeSpacing: 200 } },
     physics: false,
-    interaction: { hover: true },
+    interaction: { hover: true, dragNodes: true },
     edges: { smooth: { type: "cubicBezier" } }
+  });
+  // 2. Po pierwszym renderze: zapisz pozycje, wyłącz hierarchię, przywróć pozycje
+  network.once("afterDrawing", () => {
+    const positions = network.getPositions();
+    network.setOptions({
+      layout: { hierarchical: { enabled: false } },
+      physics: { enabled: false }
+    });
+    Object.keys(positions).forEach(id => {
+      network.body.nodes[id].x = positions[id].x;
+      network.body.nodes[id].y = positions[id].y;
+    });
+    network.redraw();
   });
   network.on("click", params => {
     if (params.nodes.length) showNodeDetail(params.nodes[0]);
