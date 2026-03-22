@@ -1,10 +1,10 @@
 # apex_export_to_md/renderers/html_renderer.py
-"""Renderer interaktywnego HTML — self-contained plik z vis.js.
+"""Renderer interaktywnego HTML — self-contained plik z vis.js i Prism.js.
 
 Zawiera 3 zakładki:
 1. Diagram relacji (vis.js network graph)
 2. Przeglądarka bazy danych (drzewo + panel szczegółów)
-3. Mapa APEX ↔ DB (połączenia stron ze tabelami)
+3. Mapa APEX ↔ DB (połączenia stron ze tabelami + panel szczegółów strony)
 
 Branding: logo TR (inline SVG), autor, stopka.
 """
@@ -116,8 +116,114 @@ class HtmlRenderer:
                         "label": c.name,
                     })
 
-        # Strony APEX
-        pages = [{"id": p.id, "name": p.name} for p in app.pages]
+        # Strony APEX — pełne dane
+        pages = []
+        for p in app.pages:
+            pages.append({
+                "id": p.id,
+                "name": p.name,
+                "title": p.title or p.name,
+                "page_mode": p.page_mode,
+                "regions": [
+                    {
+                        "name": r.name,
+                        "type": r.type,
+                        "title": r.title or r.name,
+                        "source_table": r.source_table or "",
+                        "source_sql": r.source_sql or "",
+                        "parent_region": r.parent_region or "",
+                        "editable": r.editable,
+                        "allowed_operations": r.allowed_operations,
+                        "columns": [
+                            {
+                                "name": col.name,
+                                "type": col.type,
+                                "heading": col.heading or "",
+                                "source_column": col.source_column or "",
+                                "data_type": col.data_type or "",
+                                "link_target": col.link_target or "",
+                                "lov": col.lov or "",
+                                "primary_key": col.primary_key,
+                            }
+                            for col in r.columns
+                        ],
+                    }
+                    for r in p.regions
+                ],
+                "items": [
+                    {
+                        "name": it.name,
+                        "type": it.type,
+                        "label": it.label or "",
+                        "source_column": it.source_column or "",
+                        "lov": it.lov or "",
+                        "default_value": it.default_value or "",
+                    }
+                    for it in p.items
+                ],
+                "buttons": [
+                    {
+                        "name": b.name,
+                        "label": b.label or b.name,
+                        "action": b.action or "",
+                        "target_page": b.target_page,
+                        "is_hot": b.is_hot,
+                    }
+                    for b in p.buttons
+                ],
+                "processes": [
+                    {
+                        "name": pr.name,
+                        "type": pr.type,
+                        "language": pr.language or "",
+                        "point": pr.point,
+                        "code": pr.code or "",
+                        "condition": pr.condition or "",
+                        "when_button_pressed": pr.when_button_pressed or "",
+                    }
+                    for pr in p.processes
+                ],
+                "dynamic_actions": [
+                    {
+                        "name": da.name,
+                        "event": da.event,
+                        "selection_type": da.selection_type or "",
+                        "trigger_selector": da.trigger_selector or "",
+                        "actions": [
+                            {
+                                "type": step.type,
+                                "code": step.code or "",
+                                "affected_elements": step.affected_elements or "",
+                                "fire_on_initialization": step.fire_on_initialization,
+                            }
+                            for step in da.actions
+                        ],
+                    }
+                    for da in p.dynamic_actions
+                ],
+                "validations": [
+                    {
+                        "name": v.name,
+                        "type": v.type,
+                        "code": v.code or "",
+                        "condition": v.condition or "",
+                    }
+                    for v in p.validations
+                ],
+                "branches": [
+                    {
+                        "name": br.name or "",
+                        "type": br.type,
+                        "target_page": br.target_page,
+                        "target_url": br.target_url or "",
+                        "point": br.point,
+                        "condition": br.condition or "",
+                    }
+                    for br in p.branches
+                ],
+                "css_inline": p.css_inline or "",
+                "js_inline": p.js_inline or "",
+            })
 
         # Linki APEX↔DB
         link_data = [
@@ -148,6 +254,9 @@ class HtmlRenderer:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{app_name} — Dokumentacja projektu</title>
+<style>
+{self._prism_css_inline()}
+</style>
 <style>
 {self._css()}
 </style>
@@ -185,23 +294,29 @@ class HtmlRenderer:
 
   <div id="tab-map" class="tab-content" style="display:none">
     <div class="map-layout">
-      <div id="apex-pages" class="map-column">
-        <h3>Strony APEX</h3>
-        <div id="page-list"></div>
+      <div class="map-sidebar">
+        <div id="apex-pages" class="map-column">
+          <h3>Strony APEX</h3>
+          <div id="page-list"></div>
+        </div>
+        <div id="db-objects" class="map-column">
+          <h3>Obiekty bazy danych</h3>
+          <div id="db-list"></div>
+        </div>
       </div>
-      <div id="map-connections" class="map-connections"></div>
-      <div id="db-objects" class="map-column">
-        <h3>Obiekty bazy danych</h3>
-        <div id="db-list"></div>
+      <div id="page-detail-panel" class="page-detail-panel">
+        <div class="page-detail-placeholder">
+          \u2190 Kliknij na stron\u0119 APEX, aby zobaczy\u0107 szczeg\u00f3\u0142y
+        </div>
       </div>
     </div>
   </div>
 </main>
 
 <footer>
-  <span>Wygenerowano narzędziem <strong>apex_export_to_md</strong></span>
+  <span>Wygenerowano narz\u0119dziem <strong>apex_export_to_md</strong></span>
   <span>Autor: <strong>{author}</strong></span>
-  <span>Współpraca: <strong>Claude</strong> (Anthropic)</span>
+  <span>Wsp\u00f3\u0142praca: <strong>Claude</strong> (Anthropic)</span>
 </footer>
 
 <script>
@@ -214,6 +329,10 @@ const DATA = {data_json};
 </script>
 
 <script>
+{self._prism_js_inline()}
+</script>
+
+<script>
 {self._javascript()}
 </script>
 
@@ -221,15 +340,10 @@ const DATA = {data_json};
 </html>'''
 
     def _vis_js_inline(self) -> str:
-        """Zwróć vis-network.min.js jako inline string.
-
-        Plik jest ładowany z bundled resource przy imporcie modułu.
-        Jeśli niedostępny, zwraca minimalny stub z komunikatem.
-        """
+        """Zwróć vis-network.min.js jako inline string."""
         vis_path = Path(__file__).parent / "vendor" / "vis-network.min.js"
         if vis_path.exists():
             return vis_path.read_text(encoding="utf-8")
-        # Fallback: CDN + ostrzeżenie w konsoli
         logger.warning("vis-network.min.js nie znaleziony w vendor/ — HTML nie będzie działał offline")
         return (
             '/* vis-network not bundled — fallback */\n'
@@ -240,6 +354,21 @@ const DATA = {data_json};
             '  document.head.appendChild(s);\n'
             '});\n'
         )
+
+    def _prism_js_inline(self) -> str:
+        """Zwróć prism.min.js jako inline string."""
+        prism_path = Path(__file__).parent / "vendor" / "prism.min.js"
+        if prism_path.exists():
+            return prism_path.read_text(encoding="utf-8")
+        logger.warning("prism.min.js nie znaleziony w vendor/")
+        return '/* prism.js not bundled */\n'
+
+    def _prism_css_inline(self) -> str:
+        """Zwróć prism.min.css jako inline string."""
+        css_path = Path(__file__).parent / "vendor" / "prism.min.css"
+        if css_path.exists():
+            return css_path.read_text(encoding="utf-8")
+        return '/* prism.css not bundled */\n'
 
     def _logo_svg(self) -> str:
         """Inline SVG logo — inicjały TR w geometrycznym okręgu."""
@@ -282,15 +411,63 @@ main { padding: 16px 24px; min-height: 70vh; }
 table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 13px; }
 th, td { border: 1px solid #ddd; padding: 6px 10px; text-align: left; }
 th { background: #f0f0f0; font-weight: 600; }
+/* === MAP LAYOUT === */
 .map-layout { display: flex; gap: 16px; align-items: flex-start; }
-.map-column { flex: 1; background: #fff; border: 1px solid #ddd; border-radius: 4px;
-              padding: 12px; max-height: 70vh; overflow-y: auto; }
+.map-sidebar { display: flex; flex-direction: column; gap: 12px; width: 320px;
+               flex-shrink: 0; }
+.map-column { background: #fff; border: 1px solid #ddd; border-radius: 4px;
+              padding: 12px; max-height: 35vh; overflow-y: auto; }
 .map-column h3 { font-size: 14px; color: #1a365d; margin-bottom: 8px; }
 .map-item { padding: 6px 10px; cursor: pointer; border-radius: 3px;
             font-size: 13px; margin: 2px 0; }
 .map-item:hover { background: #e8edf3; }
 .map-item.highlight { background: #d4a843; color: #1a365d; font-weight: 600; }
-.map-connections { width: 60px; }
+.map-item.selected { background: #1a365d; color: white; font-weight: 600; }
+/* === PAGE DETAIL PANEL === */
+.page-detail-panel { flex: 1; background: #fff; border: 1px solid #ddd;
+                     border-radius: 4px; padding: 16px; max-height: 80vh;
+                     overflow-y: auto; }
+.page-detail-placeholder { color: #999; font-style: italic; text-align: center;
+                           padding: 40px 20px; }
+.page-detail-panel h2 { font-size: 18px; color: #1a365d; margin-bottom: 4px; }
+.page-detail-panel .page-meta { color: #666; font-size: 13px; margin-bottom: 16px; }
+/* === COLLAPSIBLE SECTIONS === */
+.section { margin-bottom: 12px; border: 1px solid #e2e8f0; border-radius: 4px; }
+.section-header { display: flex; align-items: center; gap: 8px; padding: 10px 14px;
+                  background: #f7fafc; cursor: pointer; user-select: none;
+                  border-radius: 4px; }
+.section-header:hover { background: #edf2f7; }
+.section-header h3 { font-size: 14px; color: #1a365d; margin: 0; flex: 1; }
+.section-badge { background: #1a365d; color: white; border-radius: 10px;
+                 padding: 1px 8px; font-size: 11px; font-weight: 600; }
+.section-arrow { font-size: 10px; color: #999; transition: transform 0.2s; }
+.section.open .section-arrow { transform: rotate(90deg); }
+.section-body { display: none; padding: 12px 14px; border-top: 1px solid #e2e8f0; }
+.section.open .section-body { display: block; }
+/* === CODE BLOCKS (Prism overrides) === */
+.page-detail-panel pre[class*="language-"] { margin: 8px 0; border-radius: 4px;
+    font-size: 12px; max-height: 400px; overflow: auto; }
+.page-detail-panel code[class*="language-"] { font-family: "Fira Code", Consolas,
+    "Courier New", monospace; font-size: 12px; }
+/* === SUBSECTIONS === */
+.subsection { margin: 8px 0; padding: 8px 0; border-bottom: 1px solid #f0f0f0; }
+.subsection:last-child { border-bottom: none; }
+.subsection-title { font-weight: 600; color: #2d3748; font-size: 13px;
+                    margin-bottom: 4px; }
+.subsection-meta { font-size: 12px; color: #718096; margin-bottom: 6px; }
+.badge { display: inline-block; padding: 1px 6px; border-radius: 3px;
+         font-size: 11px; font-weight: 500; margin-right: 4px; }
+.badge-type { background: #e2e8f0; color: #4a5568; }
+.badge-hot { background: #fed7d7; color: #c53030; }
+.badge-point { background: #c6f6d5; color: #276749; }
+.badge-event { background: #bee3f8; color: #2b6cb0; }
+.badge-trigger { background: #fefcbf; color: #975a16; }
+.badge-lang { background: #e9d8fd; color: #6b46c1; }
+.badge-pk { background: #fed7d7; color: #c53030; font-weight: 700; }
+.badge-link { background: #bee3f8; color: #2b6cb0; }
+.db-links-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.db-link-chip { background: #edf2f7; border: 1px solid #cbd5e0; border-radius: 4px;
+                padding: 2px 8px; font-size: 12px; color: #2d3748; }
 footer { display: flex; justify-content: center; gap: 24px; padding: 16px;
          background: #1a365d; color: #aaa; font-size: 12px; }
 footer strong { color: #d4a843; }
@@ -302,7 +479,7 @@ code { font-family: "Fira Code", Consolas, monospace; }
 '''
 
     def _javascript(self) -> str:
-        """Logika JS — zakładki, diagram, przeglądarka, mapa."""
+        """Logika JS — zakładki, diagram, przeglądarka, mapa, szczegóły strony."""
         return '''
 // === TABS ===
 function switchTab(name) {
@@ -334,14 +511,12 @@ function initDiagram() {
     color: { color: "#999" }
   }));
   const container = document.getElementById("er-network");
-  // 1. Tworzymy sieć z layoutem hierarchicznym, żeby vis.js obliczył pozycje
   const network = new vis.Network(container, { nodes: new vis.DataSet(nodes), edges }, {
     layout: { hierarchical: { direction: "UD", sortMethod: "hubsize", nodeSpacing: 200 } },
     physics: false,
     interaction: { hover: true, dragNodes: true },
     edges: { smooth: { type: "cubicBezier" } }
   });
-  // 2. Po pierwszym renderze: zapisz pozycje, wyłącz hierarchię, przywróć pozycje
   network.once("afterDrawing", () => {
     const positions = network.getPositions();
     network.setOptions({
@@ -375,15 +550,15 @@ function showNodeDetail(name) {
   t.columns.forEach(c => {
     html += "<tr><td>" + c.name + "</td><td>" + c.type + "</td>"
          + "<td>" + (c.nullable ? "NULL" : "NOT NULL") + "</td>"
-         + "<td>" + (c.default || "\u2014") + "</td>"
-         + "<td>" + (c.comment || "\u2014") + "</td></tr>";
+         + "<td>" + (c.default || "\\u2014") + "</td>"
+         + "<td>" + (c.comment || "\\u2014") + "</td></tr>";
   });
   html += "</table>";
   if (t.constraints.length) {
     html += "<h4>Constraints</h4><ul>";
     t.constraints.forEach(c => {
       let desc = c.type + ": " + c.name;
-      if (c.type === "FK") desc += " \u2192 " + c.ref_table + "(" + c.ref_columns.join(",") + ")";
+      if (c.type === "FK") desc += " \\u2192 " + c.ref_table + "(" + c.ref_columns.join(",") + ")";
       if (c.type === "CHK") desc += " " + c.check_expr;
       html += "<li>" + desc + "</li>";
     });
@@ -429,16 +604,16 @@ function showObject(type, name) {
       html += "<tr><td>" + c.name + "</td><td>" + c.type +
         (c.identity ? " (IDENTITY)" : "") + "</td>" +
         "<td>" + (c.nullable ? "NULL" : "NOT NULL") + "</td>" +
-        "<td>" + (c.default || "\u2014") + "</td>" +
-        "<td>" + (c.comment || "\u2014") + "</td></tr>";
+        "<td>" + (c.default || "\\u2014") + "</td>" +
+        "<td>" + (c.comment || "\\u2014") + "</td></tr>";
     });
     html += "</table>";
     if (t.constraints.length) {
       html += "<h4>Constraints</h4><ul>";
       t.constraints.forEach(c => {
         let d = "<strong>" + c.type + "</strong>: " + c.name + " (" + c.columns.join(", ") + ")";
-        if (c.type === "FK") d += " \u2192 " + c.ref_table;
-        if (c.type === "CHK") d += " \u2014 " + c.check_expr;
+        if (c.type === "FK") d += " \\u2192 " + c.ref_table;
+        if (c.type === "CHK") d += " \\u2014 " + c.check_expr;
         html += "<li>" + d + "</li>";
       });
       html += "</ul>";
@@ -457,8 +632,9 @@ function showObject(type, name) {
     let html = "<h3>Widok: " + v.name + "</h3>";
     if (v.comment) html += "<p><em>" + v.comment + "</em></p>";
     if (v.columns.length) html += "<p><strong>Kolumny:</strong> " + v.columns.join(", ") + "</p>";
-    if (v.sql) html += "<pre><code>" + escapeHtml(v.sql) + "</code></pre>";
+    if (v.sql) html += codeBlock(v.sql, "sql");
     detail.innerHTML = html;
+    highlightCode(detail);
   } else if (type === "package") {
     const p = DATA.packages.find(x => x.name === name);
     if (!p) return;
@@ -466,14 +642,15 @@ function showObject(type, name) {
     if (p.spec.length) {
       html += "<h4>Specyfikacja</h4><table><tr><th>Nazwa</th><th>Typ</th><th>Parametry</th><th>Zwraca</th><th>Opis</th></tr>";
       p.spec.forEach(s => {
-        html += "<tr><td>" + s.name + "</td><td>" + s.type + "</td><td>" + (s.params||"\u2014") + "</td><td>" + (s["return"]||"\u2014") + "</td><td>" + (s.desc||"\u2014") + "</td></tr>";
+        html += "<tr><td>" + s.name + "</td><td>" + s.type + "</td><td>" + (s.params||"\\u2014") + "</td><td>" + (s["return"]||"\\u2014") + "</td><td>" + (s.desc||"\\u2014") + "</td></tr>";
       });
       html += "</table>";
     }
     if (p.body_source) {
-      html += "<details><summary>Implementacja (body)</summary><pre><code>" + escapeHtml(p.body_source) + "</code></pre></details>";
+      html += "<details><summary>Implementacja (body)</summary>" + codeBlock(p.body_source, "plsql") + "</details>";
     }
     detail.innerHTML = html;
+    highlightCode(detail);
   } else if (type === "sequence") {
     const s = DATA.sequences.find(x => x.name === name);
     if (!s) return;
@@ -481,8 +658,35 @@ function showObject(type, name) {
   }
 }
 
+// === HELPERS ===
 function escapeHtml(str) {
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function codeBlock(code, lang) {
+  if (!code) return "";
+  return "<pre class=\\"language-" + lang + "\\"><code class=\\"language-" + lang + "\\">" + escapeHtml(code) + "</code></pre>";
+}
+
+function highlightCode(container) {
+  if (typeof Prism !== "undefined") {
+    container.querySelectorAll("pre code").forEach(el => Prism.highlightElement(el));
+  }
+}
+
+function detectLang(code, langHint) {
+  if (langHint) {
+    const h = langHint.toLowerCase();
+    if (h.includes("plsql") || h.includes("pl/sql")) return "plsql";
+    if (h.includes("javascript") || h.includes("js")) return "javascript";
+  }
+  if (!code) return "sql";
+  const upper = code.toUpperCase();
+  if (upper.includes("BEGIN") || upper.includes("DECLARE") || upper.includes("EXCEPTION"))
+    return "plsql";
+  if (code.includes("function") || code.includes("var ") || code.includes("apex."))
+    return "javascript";
+  return "sql";
 }
 
 // === MAP ===
@@ -490,14 +694,12 @@ function initMap() {
   window._mapInit = true;
   const pageList = document.getElementById("page-list");
   const dbList = document.getElementById("db-list");
-  // Strony APEX
   let pHtml = "";
   DATA.pages.forEach(p => {
-    pHtml += "<div class=\\"map-item\\" data-page=\\""+ p.id +"\\" onclick=\\"highlightFromPage("+ p.id +")\\">" +
+    pHtml += "<div class=\\"map-item\\" data-page=\\""+ p.id +"\\" onclick=\\"selectPage("+ p.id +")\\">" +
              "Strona " + p.id + ": " + p.name + "</div>";
   });
   pageList.innerHTML = pHtml;
-  // Obiekty DB
   let dHtml = "";
   const allObjects = [...DATA.tables.map(t=>t.name), ...DATA.views.map(v=>v.name)];
   allObjects.forEach(n => {
@@ -506,19 +708,24 @@ function initMap() {
   dbList.innerHTML = dHtml;
 }
 
-function highlightFromPage(pageId) {
+function selectPage(pageId) {
+  // Podświetl stronę i powiązane obiekty DB
   clearHighlights();
+  document.querySelectorAll("[data-page]").forEach(e => e.classList.remove("selected"));
+  document.querySelectorAll("[data-page=\\""+ pageId +"\\"]").forEach(e => e.classList.add("selected"));
   const linked = DATA.links.filter(l => l.page_id === pageId);
   const objects = new Set();
   linked.forEach(l => l.objects.forEach(o => objects.add(o)));
-  document.querySelectorAll("[data-page=\\""+ pageId +"\\"]").forEach(e => e.classList.add("highlight"));
   objects.forEach(o => {
     document.querySelectorAll("[data-obj=\\""+ o +"\\"]").forEach(e => e.classList.add("highlight"));
   });
+  // Pokaż szczegóły strony
+  showPageDetail(pageId);
 }
 
 function highlightFromObject(name) {
   clearHighlights();
+  document.querySelectorAll("[data-page]").forEach(e => e.classList.remove("selected"));
   const linked = DATA.links.filter(l => l.objects.includes(name));
   const pages = new Set(linked.map(l => l.page_id));
   document.querySelectorAll("[data-obj=\\""+ name +"\\"]").forEach(e => e.classList.add("highlight"));
@@ -531,11 +738,227 @@ function clearHighlights() {
   document.querySelectorAll(".map-item").forEach(e => e.classList.remove("highlight"));
 }
 
+// === PAGE DETAIL ===
+function showPageDetail(pageId) {
+  const page = DATA.pages.find(p => p.id === pageId);
+  if (!page) return;
+  const panel = document.getElementById("page-detail-panel");
+  let html = "<h2>Strona " + page.id + ": " + page.name + "</h2>";
+  html += "<div class=\\"page-meta\\">";
+  if (page.title && page.title !== page.name) html += "Tytu\\u0142: " + escapeHtml(page.title) + " | ";
+  html += "Tryb: " + page.page_mode;
+  html += "</div>";
+
+  // Powiązania DB
+  const linked = DATA.links.filter(l => l.page_id === pageId);
+  if (linked.length) {
+    const dbObjs = new Set();
+    linked.forEach(l => l.objects.forEach(o => dbObjs.add(o)));
+    html += "<div class=\\"db-links-list\\" style=\\"margin-bottom:12px\\">";
+    dbObjs.forEach(o => { html += "<span class=\\"db-link-chip\\">" + o + "</span>"; });
+    html += "</div>";
+  }
+
+  // Regiony
+  if (page.regions.length) {
+    html += section("Regiony", page.regions.length, renderRegions(page.regions), true);
+  }
+  // Elementy formularza
+  if (page.items.length) {
+    html += section("Elementy formularza", page.items.length, renderItems(page.items));
+  }
+  // Przyciski
+  if (page.buttons.length) {
+    html += section("Przyciski", page.buttons.length, renderButtons(page.buttons));
+  }
+  // Procesy
+  if (page.processes.length) {
+    html += section("Procesy", page.processes.length, renderProcesses(page.processes));
+  }
+  // Dynamic Actions
+  if (page.dynamic_actions.length) {
+    html += section("Dynamic Actions", page.dynamic_actions.length, renderDynamicActions(page.dynamic_actions));
+  }
+  // Walidacje
+  if (page.validations.length) {
+    html += section("Walidacje", page.validations.length, renderValidations(page.validations));
+  }
+  // Branching
+  if (page.branches.length) {
+    html += section("Branching", page.branches.length, renderBranches(page.branches));
+  }
+  // Inline CSS
+  if (page.css_inline) {
+    html += section("Inline CSS", null, codeBlock(page.css_inline, "css"));
+  }
+  // Inline JS
+  if (page.js_inline) {
+    html += section("Inline JavaScript", null, codeBlock(page.js_inline, "javascript"));
+  }
+
+  panel.innerHTML = html;
+  highlightCode(panel);
+
+  // Domyślnie otwórz sekcję Regiony
+  const firstSection = panel.querySelector(".section");
+  if (firstSection) firstSection.classList.add("open");
+}
+
+function section(title, count, bodyHtml, openByDefault) {
+  const badge = count !== null ? " <span class=\\"section-badge\\">" + count + "</span>" : "";
+  return "<div class=\\"section" + (openByDefault ? " open" : "") + "\\">" +
+    "<div class=\\"section-header\\" onclick=\\"this.parentElement.classList.toggle('open')\\">" +
+    "<span class=\\"section-arrow\\">\\u25B6</span>" +
+    "<h3>" + title + badge + "</h3></div>" +
+    "<div class=\\"section-body\\">" + bodyHtml + "</div></div>";
+}
+
+function renderRegions(regions) {
+  let html = "";
+  regions.forEach(r => {
+    html += "<div class=\\"subsection\\">";
+    html += "<div class=\\"subsection-title\\">" + escapeHtml(r.title || r.name) + "</div>";
+    html += "<div class=\\"subsection-meta\\">";
+    html += "<span class=\\"badge badge-type\\">" + r.type + "</span>";
+    if (r.source_table) html += " \\u2190 tabela: <strong>" + r.source_table + "</strong>";
+    if (r.editable) html += " <span class=\\"badge badge-hot\\">edytowalny</span>";
+    if (r.allowed_operations.length) html += " [" + r.allowed_operations.join(", ") + "]";
+    if (r.parent_region) html += " | region nadrz\\u0119dny: " + r.parent_region;
+    html += "</div>";
+    if (r.source_sql) {
+      html += codeBlock(r.source_sql, "sql");
+    }
+    if (r.columns.length) {
+      html += "<table><tr><th>Kolumna</th><th>Typ</th><th>Nag\\u0142\\u00f3wek</th><th>\\u0179r\\u00f3d\\u0142o</th><th>Info</th></tr>";
+      r.columns.forEach(c => {
+        let info = "";
+        if (c.primary_key) info += "<span class=\\"badge badge-pk\\">PK</span> ";
+        if (c.link_target) info += "<span class=\\"badge badge-link\\">\\u2192 str." + c.link_target + "</span> ";
+        if (c.lov) info += "LOV: " + c.lov;
+        html += "<tr><td>" + c.name + "</td><td>" + c.type + "</td>" +
+          "<td>" + (c.heading || "\\u2014") + "</td>" +
+          "<td>" + (c.source_column || "\\u2014") + "</td>" +
+          "<td>" + (info || "\\u2014") + "</td></tr>";
+      });
+      html += "</table>";
+    }
+    html += "</div>";
+  });
+  return html;
+}
+
+function renderItems(items) {
+  let html = "<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\\u015blnie</th></tr>";
+  items.forEach(it => {
+    html += "<tr><td>" + it.name + "</td><td>" + it.type + "</td>" +
+      "<td>" + (it.label || "\\u2014") + "</td>" +
+      "<td>" + (it.source_column || "\\u2014") + "</td>" +
+      "<td>" + (it.lov || "\\u2014") + "</td>" +
+      "<td>" + (it.default_value || "\\u2014") + "</td></tr>";
+  });
+  return html + "</table>";
+}
+
+function renderButtons(buttons) {
+  let html = "";
+  buttons.forEach(b => {
+    html += "<div class=\\"subsection\\">";
+    html += "<span class=\\"subsection-title\\">" + b.name + "</span>";
+    if (b.is_hot) html += " <span class=\\"badge badge-hot\\">PRIMARY</span>";
+    html += "<div class=\\"subsection-meta\\">";
+    html += "Label: <strong>" + (b.label || b.name) + "</strong>";
+    if (b.action) html += " | Akcja: " + b.action;
+    if (b.target_page) html += " | \\u2192 Strona " + b.target_page;
+    html += "</div></div>";
+  });
+  return html;
+}
+
+function renderProcesses(processes) {
+  let html = "";
+  processes.forEach(pr => {
+    html += "<div class=\\"subsection\\">";
+    html += "<div class=\\"subsection-title\\">" + escapeHtml(pr.name) + "</div>";
+    html += "<div class=\\"subsection-meta\\">";
+    html += "<span class=\\"badge badge-type\\">" + pr.type + "</span>";
+    if (pr.language) html += " <span class=\\"badge badge-lang\\">" + pr.language + "</span>";
+    html += " <span class=\\"badge badge-point\\">" + pr.point + "</span>";
+    if (pr.when_button_pressed) html += " | przycisk: <strong>" + pr.when_button_pressed + "</strong>";
+    if (pr.condition) html += " | warunek: " + escapeHtml(pr.condition);
+    html += "</div>";
+    if (pr.code) {
+      const lang = detectLang(pr.code, pr.language);
+      html += codeBlock(pr.code, lang);
+    }
+    html += "</div>";
+  });
+  return html;
+}
+
+function renderDynamicActions(das) {
+  let html = "";
+  das.forEach(da => {
+    html += "<div class=\\"subsection\\">";
+    html += "<div class=\\"subsection-title\\">" + escapeHtml(da.name) + "</div>";
+    html += "<div class=\\"subsection-meta\\">";
+    html += "<span class=\\"badge badge-event\\">" + da.event + "</span>";
+    if (da.selection_type) html += " <span class=\\"badge badge-trigger\\">" + da.selection_type + "</span>";
+    if (da.trigger_selector) html += " \\u2192 " + escapeHtml(da.trigger_selector);
+    html += "</div>";
+    if (da.actions.length) {
+      da.actions.forEach((step, i) => {
+        html += "<div style=\\"margin-left:16px;margin-top:6px\\">";
+        html += "<strong>Krok " + (i+1) + ":</strong> " + step.type;
+        if (step.affected_elements) html += " \\u2192 " + escapeHtml(step.affected_elements);
+        if (step.fire_on_initialization) html += " <span class=\\"badge badge-point\\">init</span>";
+        if (step.code) {
+          const lang = detectLang(step.code, step.type);
+          html += codeBlock(step.code, lang);
+        }
+        html += "</div>";
+      });
+    }
+    html += "</div>";
+  });
+  return html;
+}
+
+function renderValidations(validations) {
+  let html = "";
+  validations.forEach(v => {
+    html += "<div class=\\"subsection\\">";
+    html += "<div class=\\"subsection-title\\">" + escapeHtml(v.name) + "</div>";
+    html += "<div class=\\"subsection-meta\\">";
+    html += "<span class=\\"badge badge-type\\">" + v.type + "</span>";
+    if (v.condition) html += " | warunek: " + escapeHtml(v.condition);
+    html += "</div>";
+    if (v.code) {
+      html += codeBlock(v.code, detectLang(v.code, "plsql"));
+    }
+    html += "</div>";
+  });
+  return html;
+}
+
+function renderBranches(branches) {
+  let html = "";
+  branches.forEach(br => {
+    html += "<div class=\\"subsection\\">";
+    html += "<div class=\\"subsection-title\\">" + (br.name || br.type) + "</div>";
+    html += "<div class=\\"subsection-meta\\">";
+    if (br.target_page) html += "\\u2192 Strona " + br.target_page;
+    if (br.target_url) html += "\\u2192 URL: " + escapeHtml(br.target_url);
+    html += " <span class=\\"badge badge-point\\">" + br.point + "</span>";
+    if (br.condition) html += " | warunek: " + escapeHtml(br.condition);
+    html += "</div></div>";
+  });
+  return html;
+}
+
 // === SEARCH ===
 function handleSearch(query) {
   if (!query || query.length < 2) return;
   const q = query.toUpperCase();
-  // Podświetl w drzewie przeglądarki
   document.querySelectorAll(".tree-item").forEach(el => {
     el.style.display = el.textContent.toUpperCase().includes(q) ? "" : "none";
   });
