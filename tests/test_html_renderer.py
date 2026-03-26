@@ -105,6 +105,13 @@ class TestHtmlRenderer:
         html = r.render(sample_app, sample_schema, sample_links)
         assert "FK1" in html
 
+    def test_error_codes_in_html_data(self, config, sample_app, sample_schema, sample_links):
+        sample_schema.packages[0].error_codes = [(-20001, "Test error")]
+        renderer = HtmlRenderer(config)
+        html = renderer.render(sample_app, sample_schema, sample_links)
+        assert "-20001" in html
+        assert "Test error" in html
+
     def test_links_in_data(self, config, sample_app, sample_schema, sample_links):
         r = HtmlRenderer(config)
         html = r.render(sample_app, sample_schema, sample_links)

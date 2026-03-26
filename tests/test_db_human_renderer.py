@@ -132,6 +132,18 @@ class TestDbHumanRenderer:
         assert "SEQ1" in result
         assert "100" in result
 
+    def test_error_codes_rendered(self, config, sample_schema):
+        sample_schema.packages[0].error_codes = [
+            (-20001, "Audyt nie istnieje."),
+            (-20010, "Nie mozna dodac kontroli."),
+        ]
+        renderer = DbHumanRenderer(config)
+        result = renderer.render(sample_schema)
+        assert "Kody błędów" in result
+        assert "-20001" in result
+        assert "Audyt nie istnieje." in result
+        assert "-20010" in result
+
     def test_mermaid_fk_relationship(self, config, sample_schema):
         r = DbHumanRenderer(config)
         result = r.render(sample_schema)

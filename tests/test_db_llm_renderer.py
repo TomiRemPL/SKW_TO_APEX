@@ -104,6 +104,15 @@ class TestDbLLMRenderer:
         result = r.render(sample_schema)
         assert "SEQ:SEQ1|START:100|INCR:1" in result
 
+    def test_error_codes_rendered(self, config, sample_schema):
+        sample_schema.packages[0].error_codes = [
+            (-20001, "Audyt nie istnieje."),
+        ]
+        renderer = DbLLMRenderer(config)
+        result = renderer.render(sample_schema)
+        assert "ERR:-20001" in result
+        assert "Audyt nie istnieje." in result
+
     def test_code_lines_count(self, config, sample_schema):
         r = DbLLMRenderer(config)
         result = r.render(sample_schema)

@@ -112,6 +112,9 @@ class DbLLMRenderer(DbBaseRenderer):
         for const in pkg.constants:
             lines.append(f"  CONST:{const}")
 
+        for code, text in pkg.error_codes:
+            lines.append(f"  ERR:{code}|{text}")
+
         if pkg.body_source:
             line_count = len(pkg.body_source.strip().split("\n"))
             lines.append(f"  CODE:{line_count} lines")

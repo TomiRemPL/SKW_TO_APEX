@@ -98,6 +98,7 @@ class HtmlRenderer:
                     for s in p.body_subprograms
                 ],
                 "body_source": p.body_source,
+                "error_codes": [{"code": c, "text": t} for c, t in p.error_codes],
             })
 
         # Sekwencje

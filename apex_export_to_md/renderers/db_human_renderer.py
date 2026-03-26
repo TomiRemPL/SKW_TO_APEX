@@ -215,6 +215,15 @@ class DbHumanRenderer(DbBaseRenderer):
                 lines.append(f"- **{sub.name}**({params}) — {desc}")
             lines.append("")
 
+        if pkg.error_codes:
+            lines.append("#### Kody błędów")
+            lines.append("")
+            lines.append("| Kod | Opis |")
+            lines.append("|-----|------|")
+            for code, text in pkg.error_codes:
+                lines.append(f"| {code} | {text} |")
+            lines.append("")
+
         if pkg.body_source and self._should_include_code():
             lines.append("#### Implementacja (body)")
             lines.append("")
