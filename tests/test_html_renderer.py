@@ -116,3 +116,22 @@ class TestHtmlRenderer:
         r = HtmlRenderer(config)
         html = r.render(sample_app, sample_schema, sample_links)
         assert "Home" in html
+
+    def test_package_constants_in_html(self, config, sample_schema, sample_app, sample_links):
+        sample_schema.packages[0].constants = ["C_STATUS_OTWARTY CONSTANT VARCHAR2(20) := 'Otwarty'"]
+        renderer = HtmlRenderer(config)
+        html = renderer.render(sample_app, sample_schema, sample_links)
+        assert "C_STATUS_OTWARTY" in html
+
+    def test_body_subprogram_params_in_html(self, config, sample_schema, sample_app, sample_links):
+        from apex_export_to_md.models.db_models import DbSubprogram, DbParameter
+        sample_schema.packages[0].body_subprograms = [
+            DbSubprogram(
+                name="PRIV_PROC", subprogram_type="PROCEDURE",
+                visibility="private",
+                parameters=[DbParameter(name="p_id", data_type="NUMBER", direction="IN")],
+            )
+        ]
+        renderer = HtmlRenderer(config)
+        html = renderer.render(sample_app, sample_schema, sample_links)
+        assert "p_id IN NUMBER" in html

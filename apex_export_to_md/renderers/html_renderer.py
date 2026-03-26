@@ -94,10 +94,14 @@ class HtmlRenderer:
                 "body": [
                     {"name": s.name, "type": s.subprogram_type,
                      "visibility": s.visibility,
+                     "params": ", ".join(f"{pr.name} {pr.direction} {pr.data_type}"
+                                         for pr in s.parameters),
+                     "return": s.return_type or "",
                      "desc": s.description or ""}
                     for s in p.body_subprograms
                 ],
                 "body_source": p.body_source,
+                "constants": p.constants,
                 "error_codes": [{"code": c, "text": t} for c, t in p.error_codes],
             })
 
