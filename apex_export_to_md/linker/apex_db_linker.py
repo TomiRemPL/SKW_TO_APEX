@@ -28,7 +28,8 @@ class ApexDbLinker:
         self._schema = schema
         # Zbierz nazwy obiektów DB, sortuj od najdłuższych
         self._db_names = sorted(
-            [t.name for t in schema.tables] + [v.name for v in schema.views],
+            [t.name for t in schema.tables] + [v.name for v in schema.views]
+            + [p.name for p in schema.packages],
             key=lambda x: -len(x),
         )
 
@@ -106,6 +107,20 @@ class ApexDbLinker:
                         db_objects=objects,
                         source_type="validation", source_name=val.name,
                     ))
+
+        # Dynamic actions (tylko PL/SQL code)
+        for da in page.dynamic_actions:
+            da_objects: list[str] = []
+            for step in da.actions:
+                if step.code and "SQL" in (step.type or "").upper():
+                    da_objects.extend(self._find_db_objects_in_sql(step.code))
+            da_objects = list(dict.fromkeys(da_objects))
+            if da_objects:
+                links.append(ApexDbLink(
+                    page_id=page.id, page_name=page.name,
+                    db_objects=da_objects,
+                    source_type="dynamic_action", source_name=da.name,
+                ))
 
         return links
 
