@@ -144,6 +144,18 @@ class TestDbHumanRenderer:
         assert "Audyt nie istnieje." in result
         assert "-20010" in result
 
+    def test_sequence_cache_rendered(self, config):
+        schema = DbSchema(
+            sequences=[
+                DbSequence(name="SEQ1", start_with="1", increment_by="1", nocache=True),
+                DbSequence(name="SEQ2", start_with="1", increment_by="1", cache="20"),
+            ],
+        )
+        renderer = DbHumanRenderer(config)
+        result = renderer.render(schema)
+        assert "NOCACHE" in result
+        assert "| Cache |" in result
+
     def test_mermaid_fk_relationship(self, config, sample_schema):
         r = DbHumanRenderer(config)
         result = r.render(sample_schema)

@@ -33,6 +33,10 @@ class DbLLMRenderer(DbBaseRenderer):
                 parts.append(f"START:{seq.start_with}")
             if seq.increment_by:
                 parts.append(f"INCR:{seq.increment_by}")
+            if seq.nocache:
+                parts.append("NOCACHE")
+            elif seq.cache:
+                parts.append(f"CACHE:{seq.cache}")
             lines.append("|".join(parts))
 
         return "\n".join(lines)

@@ -72,6 +72,7 @@ class DbSequence:
     increment_by: str | None = None
     start_with: str | None = None
     cache: str | None = None
+    nocache: bool = False
 
 
 @dataclass

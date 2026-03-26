@@ -473,3 +473,24 @@ class TestErrorCodesExtraction:
         assert len(pkg.error_codes) == 1
         assert pkg.error_codes[0][0] == -20030
         assert pkg.error_codes[0][1] == "Tylko szef misji moze zamrozic audyt. "
+
+
+class TestSequenceNocache:
+    def test_nocache_detected(self):
+        sql = 'CREATE SEQUENCE "SEQ1" MINVALUE 1 MAXVALUE 999 INCREMENT BY 1 START WITH 1 NOCACHE NOORDER NOCYCLE'
+        seq = parse_create_sequence(sql)
+        assert seq is not None
+        assert seq.nocache is True
+        assert seq.cache is None
+
+    def test_cache_number(self):
+        sql = 'CREATE SEQUENCE "SEQ2" MINVALUE 1 INCREMENT BY 1 CACHE 20'
+        seq = parse_create_sequence(sql)
+        assert seq.nocache is False
+        assert seq.cache == "20"
+
+    def test_no_cache_clause(self):
+        sql = 'CREATE SEQUENCE "SEQ3" INCREMENT BY 1'
+        seq = parse_create_sequence(sql)
+        assert seq.nocache is False
+        assert seq.cache is None

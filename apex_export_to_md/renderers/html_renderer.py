@@ -103,7 +103,8 @@ class HtmlRenderer:
 
         # Sekwencje
         sequences = [{"name": s.name, "start": s.start_with or "",
-                       "incr": s.increment_by or ""}
+                       "incr": s.increment_by or "",
+                       "cache": "NOCACHE" if s.nocache else (s.cache or "")}
                      for s in schema.sequences]
 
         # FK edges dla diagramu

@@ -455,6 +455,7 @@ def parse_create_sequence(sql: str) -> DbSequence | None:
         increment_by=_extract(r'INCREMENT\s+BY\s+(\d+)'),
         start_with=_extract(r'START\s+WITH\s+(\d+)'),
         cache=_extract(r'CACHE\s+(\d+)'),
+        nocache=bool(re.search(r'\bNOCACHE\b', sql, re.IGNORECASE)),
     )
 
 

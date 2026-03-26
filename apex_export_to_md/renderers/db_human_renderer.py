@@ -47,14 +47,16 @@ class DbHumanRenderer(DbBaseRenderer):
         if schema.sequences:
             lines.append("## Sekwencje")
             lines.append("")
-            lines.append("| Nazwa | Start | Increment | Min | Max |")
-            lines.append("|-------|-------|-----------|-----|-----|")
+            lines.append("| Nazwa | Start | Increment | Min | Max | Cache |")
+            lines.append("|-------|-------|-----------|-----|-----|-------|")
             for seq in schema.sequences:
+                cache = "NOCACHE" if seq.nocache else (seq.cache or "—")
                 lines.append(
                     f"| {seq.name} | {seq.start_with or '—'} "
                     f"| {seq.increment_by or '—'} "
                     f"| {seq.min_value or '—'} "
-                    f"| {seq.max_value or '—'} |"
+                    f"| {seq.max_value or '—'} "
+                    f"| {cache} |"
                 )
             lines.append("")
 
