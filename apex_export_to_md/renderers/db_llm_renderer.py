@@ -74,7 +74,7 @@ class DbLLMRenderer(DbBaseRenderer):
                 lines.append(f"  FK:{c.name}|{cols}→{c.ref_table}.{ref_cols}")
             elif c.constraint_type == "UQ":
                 cols = ",".join(c.columns)
-                lines.append(f"  UQ:{cols}")
+                lines.append(f"  UQ:{c.name}|{cols}")
             elif c.constraint_type == "CHK":
                 lines.append(f"  CHK:{c.check_expression or ''}")
 

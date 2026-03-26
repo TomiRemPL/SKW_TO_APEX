@@ -117,3 +117,12 @@ class TestDbLLMRenderer:
         r = DbLLMRenderer(config)
         result = r.render(sample_schema)
         assert "CODE:3 lines" in result
+
+    def test_uq_constraint_name_rendered(self, config, sample_schema):
+        from apex_export_to_md.models.db_models import DbConstraint
+        sample_schema.tables[0].constraints.append(
+            DbConstraint(name="UQ_STATUS", constraint_type="UQ", columns=["STATUS_AUDYTU"])
+        )
+        renderer = DbLLMRenderer(config)
+        result = renderer.render(sample_schema)
+        assert "UQ:UQ_STATUS|STATUS_AUDYTU" in result
