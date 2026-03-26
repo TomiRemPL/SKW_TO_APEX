@@ -106,6 +106,7 @@ class DbPackage:
     constants: list[str] = field(default_factory=list)
     spec_source: str = ""             # kod specyfikacji
     body_source: str = ""             # kod body z komentarzami
+    error_codes: list[tuple[int, str]] = field(default_factory=list)  # (kod, tekst) z RAISE_APPLICATION_ERROR
 
 
 @dataclass

@@ -491,6 +491,30 @@ def parse_create_view(sql: str) -> DbView | None:
 # Parsowanie PACKAGE (spec i body)
 # ---------------------------------------------------------------------------
 
+def _extract_error_codes(source: str) -> list[tuple[int, str]]:
+    """Wyciągnij kody błędów z RAISE_APPLICATION_ERROR w kodzie PL/SQL.
+
+    Zwraca listę (kod, tekst) posortowaną po kodzie.
+    Tekst = pierwszy string literal po kodzie (przed || jeśli jest konkatenacja).
+    """
+    codes: list[tuple[int, str]] = []
+    for m in re.finditer(
+        r"RAISE_APPLICATION_ERROR\(\s*(-\d+)\s*,\s*'([^']*)'",
+        source, re.IGNORECASE,
+    ):
+        code = int(m.group(1))
+        text = m.group(2)
+        codes.append((code, text))
+    # Deduplikacja po kodzie, zachowaj pierwszy
+    seen: set[int] = set()
+    unique: list[tuple[int, str]] = []
+    for code, text in codes:
+        if code not in seen:
+            seen.add(code)
+            unique.append((code, text))
+    return sorted(unique, key=lambda x: x[0], reverse=True)
+
+
 def parse_package(sql: str) -> DbPackage | None:
     """Parsuj PACKAGE spec lub PACKAGE BODY."""
     m = re.match(
@@ -517,6 +541,7 @@ def parse_package(sql: str) -> DbPackage | None:
     if is_body:
         pkg.body_subprograms = subprograms
         pkg.body_source = source
+        pkg.error_codes = _extract_error_codes(source)
     else:
         pkg.spec_subprograms = subprograms
         pkg.spec_source = source

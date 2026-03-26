@@ -418,3 +418,58 @@ class TestParseDdlFiles:
         schema = parse_ddl_files([f1, f2])
         assert len(schema.tables) == 1
         assert len(schema.views) == 1
+
+
+class TestErrorCodesExtraction:
+    def test_error_codes_extracted_from_body(self):
+        sql = '''create or replace PACKAGE BODY PKG_TEST AS
+            PROCEDURE P1(p_id NUMBER) IS
+            BEGIN
+                RAISE_APPLICATION_ERROR(-20001,
+                    'Audyt nie istnieje.');
+                RAISE_APPLICATION_ERROR(-20010,
+                    'Nie mozna dodac kontroli.');
+            END P1;
+        END PKG_TEST;'''
+        pkg = parse_package(sql)
+        assert pkg is not None
+        assert len(pkg.error_codes) == 2
+        assert pkg.error_codes[0] == (-20001, "Audyt nie istnieje.")
+        assert pkg.error_codes[1] == (-20010, "Nie mozna dodac kontroli.")
+
+    def test_error_codes_empty_for_spec(self):
+        sql = '''create or replace PACKAGE PKG_TEST AS
+            PROCEDURE P1(p_id NUMBER);
+        END PKG_TEST;'''
+        pkg = parse_package(sql)
+        assert pkg is not None
+        assert pkg.error_codes == []
+
+    def test_error_codes_with_concatenation(self):
+        """Kody z dynamicznym tekstem — wyciągamy tylko statyczną część."""
+        sql = """create or replace PACKAGE BODY PKG_T AS
+            PROCEDURE P1 IS
+            BEGIN
+                RAISE_APPLICATION_ERROR(-20001,
+                    'Audyt o ID=' || p_id || ' nie istnieje.');
+            END P1;
+        END PKG_T;"""
+        pkg = parse_package(sql)
+        assert len(pkg.error_codes) == 1
+        assert pkg.error_codes[0][0] == -20001
+        assert pkg.error_codes[0][1] == "Audyt o ID="
+
+    def test_error_codes_multiline_string(self):
+        """RAISE z tekstem rozbitym na wiele linii z konkatenacją."""
+        sql = """create or replace PACKAGE BODY PKG_T AS
+            PROCEDURE P1 IS
+            BEGIN
+                RAISE_APPLICATION_ERROR(-20030,
+                    'Tylko szef misji moze zamrozic audyt. ' ||
+                    'Status: ' || v_status);
+            END P1;
+        END PKG_T;"""
+        pkg = parse_package(sql)
+        assert len(pkg.error_codes) == 1
+        assert pkg.error_codes[0][0] == -20030
+        assert pkg.error_codes[0][1] == "Tylko szef misji moze zamrozic audyt. "
