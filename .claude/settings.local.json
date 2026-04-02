@@ -16,7 +16,9 @@
       "Bash(powershell -NoProfile -Command \"[console]::beep\\(800,300\\)\")",
       "Bash(echo \"exit: $?\")",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(ls:*)",
+      "Bash(setx CLAUDE_CODE_USE_POWERSHELL_TOOL:*)"
     ]
   }
 }
