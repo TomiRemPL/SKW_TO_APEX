@@ -45,7 +45,7 @@ server-cache:
 
 regions: 
 - # ====== Region: Przerywnik ==================================
-  id: 273335866880595123
+  id: 7349799104433
   identification: 
     name: Przerywnik
     type: Static Content
@@ -95,7 +95,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: P2_SKUTECZNOSC_OCENA ========================
-  id: 271995752579552326
+  id: 1347464100147230
   identification: 
     name: P2_SKUTECZNOSC_OCENA
     type: Interactive Grid
@@ -141,7 +141,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 271995808737552327
+    id: 1347407942147229
     edit: 
       enabled: true
       allowed-operations: 
@@ -185,14 +185,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 273304476251408273
+      id: 38740428291283
       identification: 
         name: Primary Report
         alias: 3042406
 
   columns: 
   - # ====== Column: B_OCENA_PRZELAMANA_UZASADNIENIE =============
-    id: 271996867621552337
+    id: 1346349058147219
     identification: 
       column-name: B_OCENA_PRZELAMANA_UZASADNIENIE
       type: Textarea
@@ -250,7 +250,7 @@ regions:
       hide: true
 
   - # ====== Column: B_OCENA_CZY_NADPISANA =======================
-    id: 271996757220552336
+    id: 1346459459147220
     identification: 
       column-name: B_OCENA_CZY_NADPISANA
       type: Switch
@@ -300,7 +300,7 @@ regions:
       hide: true
 
   - # ====== Column: B_OCENA_NADPISANA ===========================
-    id: 271996649096552335
+    id: 1346567583147221
     identification: 
       column-name: B_OCENA_NADPISANA
       type: Number Field
@@ -347,7 +347,7 @@ regions:
       hide: true
 
   - # ====== Column: B_OCENA_LICZONA =============================
-    id: 271996507462552334
+    id: 1346709217147222
     identification: 
       column-name: B_OCENA_LICZONA
       type: Number Field
@@ -394,7 +394,7 @@ regions:
       hide: true
 
   - # ====== Column: ID_PK_B_OCENA ===============================
-    id: 271996429129552333
+    id: 1346787550147223
     identification: 
       column-name: ID_PK_B_OCENA
       type: Hidden
@@ -425,7 +425,7 @@ regions:
       sort: false
 
   - # ====== Column: B_SL_C_PYTANIE_DZIEDZINA_ID =================
-    id: 271996298778552332
+    id: 1346917901147224
     identification: 
       column-name: B_SL_C_PYTANIE_DZIEDZINA_ID
       type: Hidden
@@ -459,7 +459,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_KONTROLA ============================
-    id: 271996196301552331
+    id: 1347020378147225
     identification: 
       column-name: ID_FK_B_KONTROLA
       type: Hidden
@@ -493,7 +493,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_AUDYT ===============================
-    id: 271996124961552330
+    id: 1347091718147226
     identification: 
       column-name: ID_FK_B_AUDYT
       type: Hidden
@@ -527,7 +527,7 @@ regions:
       sort: false
 
   - # ====== Column: APEX$ROW_ACTION =============================
-    id: 271996050551552329
+    id: 1347166128147227
     identification: 
       column-name: APEX$ROW_ACTION
       type: Actions Menu
@@ -536,10 +536,10 @@ regions:
       sequence: 20
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: APEX$ROW_SELECTOR ===========================
-    id: 271995904467552328
+    id: 1347312212147228
     identification: 
       column-name: APEX$ROW_SELECTOR
       type: Row Selector
@@ -553,10 +553,10 @@ regions:
       sequence: 10
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
 - # ====== Region: Przerywnik ==================================
-  id: 136091006245002853
+  id: 137252210434696703
   identification: 
     name: Przerywnik
     type: Static Content
@@ -606,7 +606,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: P2_SKUTECZNOSC ==============================
-  id: 99681844894736331
+  id: 173661371784963225
   identification: 
     name: P2_SKUTECZNOSC
     title: Adekwatność
@@ -653,7 +653,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 99681767761736330
+    id: 173661448917963226
     edit: 
       enabled: true
       allowed-operations: 
@@ -698,14 +698,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 17096473050593435
+      id: 290439689730292991
       identification: 
         name: Primary Report
         alias: 2904397
 
   columns: 
   - # ====== Column: ID_PK_B_ANKIETA =============================
-    id: 99681695684736329
+    id: 173661520994963227
     identification: 
       column-name: ID_PK_B_ANKIETA
       type: Hidden
@@ -736,7 +736,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_AUDYT ===============================
-    id: 99681556111736328
+    id: 173661660567963228
     identification: 
       column-name: ID_FK_B_AUDYT
       type: Hidden
@@ -770,7 +770,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_KONTROLA ============================
-    id: 99681426009736327
+    id: 173661790669963229
     identification: 
       column-name: ID_FK_B_KONTROLA
       type: Hidden
@@ -804,7 +804,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_SL_C_PYTANIE ========================
-    id: 99681335186736326
+    id: 173661881492963230
     identification: 
       column-name: ID_FK_B_SL_C_PYTANIE
       type: Hidden
@@ -838,7 +838,7 @@ regions:
       sort: false
 
   - # ====== Column: B_SL_C_PYTANIE_WAGA =========================
-    id: 99681313713736325
+    id: 173661902965963231
     identification: 
       column-name: B_SL_C_PYTANIE_WAGA
       type: Hidden
@@ -872,7 +872,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA ==============
-    id: 99681126977736324
+    id: 173662089701963232
     identification: 
       column-name: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
       type: Hidden
@@ -906,7 +906,7 @@ regions:
       sort: false
 
   - # ====== Column: SHORT_DESCRIPTION_FR_ =======================
-    id: 99681111643736323
+    id: 173662105035963233
     identification: 
       column-name: SHORT_DESCRIPTION_FR_
       type: Hidden
@@ -940,7 +940,7 @@ regions:
       sort: false
 
   - # ====== Column: REFERENCE_ID ================================
-    id: 99680976466736322
+    id: 173662240212963234
     identification: 
       column-name: REFERENCE_ID
       type: Hidden
@@ -974,7 +974,7 @@ regions:
       sort: false
 
   - # ====== Column: B_ANKIETA_ODPOWIEDZ =========================
-    id: 99680834897736321
+    id: 173662381781963235
     identification: 
       column-name: B_ANKIETA_ODPOWIEDZ
       type: Select List
@@ -996,7 +996,7 @@ regions:
 
     list-of-values: 
       type: Shared Component
-      list-of-values: B_SL_C_ODPOWIEDZ # 17216107384976181
+      list-of-values: B_SL_C_ODPOWIEDZ # 290559324064675737
       display-extra-values: true
       display-null-value: true
 
@@ -1030,7 +1030,7 @@ regions:
       hide: true
 
   - # ====== Column: B_ANKIETA_OCENA_WAZONA_LICZ =================
-    id: 99680795733736320
+    id: 173662420945963236
     identification: 
       column-name: B_ANKIETA_OCENA_WAZONA_LICZ
       type: Number Field
@@ -1074,7 +1074,7 @@ regions:
       hide: false
 
   - # ====== Column: B_ANKIETA_KOMENTARZ =========================
-    id: 99680687409736319
+    id: 173662529269963237
     identification: 
       column-name: B_ANKIETA_KOMENTARZ
       type: Textarea
@@ -1136,7 +1136,7 @@ regions:
       hide: true
 
   - # ====== Column: B_ANKIETA_LINK_DOKUMENTACJA =================
-    id: 99680604996736318
+    id: 173662611682963238
     identification: 
       column-name: B_ANKIETA_LINK_DOKUMENTACJA
       type: Textarea
@@ -1194,7 +1194,7 @@ regions:
       hide: true
 
   - # ====== Column: APEX$ROW_ACTION =============================
-    id: 99680298078736315
+    id: 173662918600963241
     identification: 
       column-name: APEX$ROW_ACTION
       type: Actions Menu
@@ -1203,10 +1203,10 @@ regions:
       sequence: 20
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: APEX$ROW_SELECTOR ===========================
-    id: 99680157890736314
+    id: 173663058788963242
     identification: 
       column-name: APEX$ROW_SELECTOR
       type: Row Selector
@@ -1220,10 +1220,10 @@ regions:
       sequence: 10
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU ====
-    id: 99679967560736312
+    id: 173663249118963244
     identification: 
       column-name: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
       type: Date Picker
@@ -1275,7 +1275,7 @@ regions:
       hide: true
 
   - # ====== Column: PYTANIE_TEKST ===============================
-    id: 17307946442275858
+    id: 290651163121975414
     identification: 
       column-name: PYTANIE_TEKST
       type: Display Only
@@ -1331,7 +1331,7 @@ regions:
       hide: true
 
   - # ====== Column: PYTANIE_KOLEJNOSC ===========================
-    id: 17308033104275859
+    id: 290651249783975415
     identification: 
       column-name: PYTANIE_KOLEJNOSC
       type: Display Only
@@ -1378,7 +1378,7 @@ regions:
       hide: true
 
 - # ====== Region: P2_ADEKWATNOSC_OCENA ========================
-  id: 17308116217275860
+  id: 290651332896975416
   identification: 
     name: P2_ADEKWATNOSC_OCENA
     type: Interactive Grid
@@ -1424,7 +1424,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 23198234978598549
+    id: 296541451658298105
     edit: 
       enabled: true
       allowed-operations: 
@@ -1468,14 +1468,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 23233237111605456
+      id: 296576453791305012
       identification: 
         name: Primary Report
         alias: 2965765
 
   columns: 
   - # ====== Column: ID_FK_B_AUDYT ===============================
-    id: 23198348048598550
+    id: 296541564728298106
     identification: 
       column-name: ID_FK_B_AUDYT
       type: Hidden
@@ -1509,7 +1509,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_KONTROLA ============================
-    id: 23198403705598551
+    id: 296541620385298107
     identification: 
       column-name: ID_FK_B_KONTROLA
       type: Hidden
@@ -1543,7 +1543,7 @@ regions:
       sort: false
 
   - # ====== Column: B_SL_C_PYTANIE_DZIEDZINA_ID =================
-    id: 23198510733598552
+    id: 296541727413298108
     identification: 
       column-name: B_SL_C_PYTANIE_DZIEDZINA_ID
       type: Hidden
@@ -1577,7 +1577,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_PK_B_OCENA ===============================
-    id: 23198610168598553
+    id: 296541826848298109
     identification: 
       column-name: ID_PK_B_OCENA
       type: Hidden
@@ -1608,7 +1608,7 @@ regions:
       sort: false
 
   - # ====== Column: B_OCENA_LICZONA =============================
-    id: 23198755520598554
+    id: 296541972200298110
     identification: 
       column-name: B_OCENA_LICZONA
       type: Number Field
@@ -1655,7 +1655,7 @@ regions:
       hide: true
 
   - # ====== Column: B_OCENA_NADPISANA ===========================
-    id: 23198843077598555
+    id: 296542059757298111
     identification: 
       column-name: B_OCENA_NADPISANA
       type: Number Field
@@ -1702,7 +1702,7 @@ regions:
       hide: true
 
   - # ====== Column: APEX$ROW_ACTION =============================
-    id: 23198929067598556
+    id: 296542145747298112
     identification: 
       column-name: APEX$ROW_ACTION
       type: Actions Menu
@@ -1711,10 +1711,10 @@ regions:
       sequence: 20
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: APEX$ROW_SELECTOR ===========================
-    id: 23199081079598557
+    id: 296542297759298113
     identification: 
       column-name: APEX$ROW_SELECTOR
       type: Row Selector
@@ -1728,10 +1728,10 @@ regions:
       sequence: 10
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: B_OCENA_CZY_NADPISANA =======================
-    id: 23199222549598559
+    id: 296542439229298115
     identification: 
       column-name: B_OCENA_CZY_NADPISANA
       type: Switch
@@ -1781,7 +1781,7 @@ regions:
       hide: true
 
   - # ====== Column: B_OCENA_PRZELAMANA_UZASADNIENIE =============
-    id: 23199285507598560
+    id: 296542502187298116
     identification: 
       column-name: B_OCENA_PRZELAMANA_UZASADNIENIE
       type: Textarea
@@ -1839,7 +1839,7 @@ regions:
       hide: true
 
 - # ====== Region: P2_ADEKWATNOSC ==============================
-  id: 23200524177598572
+  id: 296543740857298128
   identification: 
     name: P2_ADEKWATNOSC
     title: Adekwatność
@@ -1886,7 +1886,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 23200659443598573
+    id: 296543876123298129
     edit: 
       enabled: true
       allowed-operations: 
@@ -1931,14 +1931,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 29485717943784280
+      id: 302828934623483836
       identification: 
         name: Primary Report
         alias: 3028290
 
   columns: 
   - # ====== Column: APEX$ROW_SELECTOR ===========================
-    id: 23200716987598574
+    id: 296543933667298130
     identification: 
       column-name: APEX$ROW_SELECTOR
       type: Row Selector
@@ -1952,10 +1952,10 @@ regions:
       sequence: 10
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: APEX$ROW_ACTION =============================
-    id: 23200878004598575
+    id: 296544094684298131
     identification: 
       column-name: APEX$ROW_ACTION
       type: Actions Menu
@@ -1964,10 +1964,10 @@ regions:
       sequence: 20
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Column: PYTANIE_TEKST ===============================
-    id: 23200938461598576
+    id: 296544155141298132
     identification: 
       column-name: PYTANIE_TEKST
       type: Display Only
@@ -2023,7 +2023,7 @@ regions:
       hide: true
 
   - # ====== Column: ID_PK_B_ANKIETA =============================
-    id: 23201012892598577
+    id: 296544229572298133
     identification: 
       column-name: ID_PK_B_ANKIETA
       type: Hidden
@@ -2054,7 +2054,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_AUDYT ===============================
-    id: 23201086456598578
+    id: 296544303136298134
     identification: 
       column-name: ID_FK_B_AUDYT
       type: Hidden
@@ -2088,7 +2088,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_KONTROLA ============================
-    id: 23201210784598579
+    id: 296544427464298135
     identification: 
       column-name: ID_FK_B_KONTROLA
       type: Hidden
@@ -2122,7 +2122,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_SL_C_PYTANIE ========================
-    id: 23201322927598580
+    id: 296544539607298136
     identification: 
       column-name: ID_FK_B_SL_C_PYTANIE
       type: Hidden
@@ -2156,7 +2156,7 @@ regions:
       sort: false
 
   - # ====== Column: B_SL_C_PYTANIE_WAGA =========================
-    id: 23201403332598581
+    id: 296544620012298137
     identification: 
       column-name: B_SL_C_PYTANIE_WAGA
       type: Hidden
@@ -2190,7 +2190,7 @@ regions:
       sort: false
 
   - # ====== Column: ID_FK_B_SL_C_PYTANIE_DZIEDZINA ==============
-    id: 23201541980598582
+    id: 296544758660298138
     identification: 
       column-name: ID_FK_B_SL_C_PYTANIE_DZIEDZINA
       type: Hidden
@@ -2224,7 +2224,7 @@ regions:
       sort: false
 
   - # ====== Column: SHORT_DESCRIPTION_FR_ =======================
-    id: 23201603406598583
+    id: 296544820086298139
     identification: 
       column-name: SHORT_DESCRIPTION_FR_
       type: Hidden
@@ -2258,7 +2258,7 @@ regions:
       sort: false
 
   - # ====== Column: REFERENCE_ID ================================
-    id: 23201713931598584
+    id: 296544930611298140
     identification: 
       column-name: REFERENCE_ID
       type: Hidden
@@ -2292,7 +2292,7 @@ regions:
       sort: false
 
   - # ====== Column: B_ANKIETA_ODPOWIEDZ =========================
-    id: 23201820126598585
+    id: 296545036806298141
     identification: 
       column-name: B_ANKIETA_ODPOWIEDZ
       type: Select List
@@ -2314,7 +2314,7 @@ regions:
 
     list-of-values: 
       type: Shared Component
-      list-of-values: B_SL_C_ODPOWIEDZ # 17216107384976181
+      list-of-values: B_SL_C_ODPOWIEDZ # 290559324064675737
       display-extra-values: true
       display-null-value: true
 
@@ -2348,7 +2348,7 @@ regions:
       hide: true
 
   - # ====== Column: B_ANKIETA_OCENA_WAZONA_LICZ =================
-    id: 23201917207598586
+    id: 296545133887298142
     identification: 
       column-name: B_ANKIETA_OCENA_WAZONA_LICZ
       type: Number Field
@@ -2395,7 +2395,7 @@ regions:
       hide: true
 
   - # ====== Column: B_ANKIETA_KOMENTARZ =========================
-    id: 23202025887598587
+    id: 296545242567298143
     identification: 
       column-name: B_ANKIETA_KOMENTARZ
       type: Textarea
@@ -2457,7 +2457,7 @@ regions:
       hide: true
 
   - # ====== Column: B_ANKIETA_LINK_DOKUMENTACJA =================
-    id: 23202131432598588
+    id: 296545348112298144
     identification: 
       column-name: B_ANKIETA_LINK_DOKUMENTACJA
       type: Textarea
@@ -2515,7 +2515,7 @@ regions:
       hide: true
 
   - # ====== Column: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU ====
-    id: 23202219315598589
+    id: 296545435995298145
     identification: 
       column-name: DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU
       type: Date Picker
@@ -2567,7 +2567,7 @@ regions:
       hide: true
 
   - # ====== Column: PYTANIE_KOLEJNOSC ===========================
-    id: 23202367284598590
+    id: 296545583964298146
     identification: 
       column-name: PYTANIE_KOLEJNOSC
       type: Display Only
@@ -2615,7 +2615,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P2_AUDYT_ID ==============================
-  id: 99682499828736337
+  id: 173660716850963219
   identification: 
     name: P2_AUDYT_ID
     type: Select List
@@ -2625,7 +2625,8 @@ page-items:
     alignment: Left
 
   settings: 
-    page-action-on-selection: None
+    page-action-on-selection: Submit Page
+    execute-validations: true
 
   multiple-values: 
     type: No
@@ -2653,7 +2654,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: B_AUDYT.B_AUDYT_NUMER_AUDYTU # 15641858188447220
+    list-of-values: B_AUDYT.B_AUDYT_NUMER_AUDYTU # 288985074868146776
     display-extra-values: true
     display-null-value: false
 
@@ -2676,7 +2677,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P2_KONTROLA_ID ===========================
-  id: 99682413361736336
+  id: 173660803317963220
   identification: 
     name: P2_KONTROLA_ID
     type: Select List
@@ -2686,7 +2687,8 @@ page-items:
     alignment: Left
 
   settings: 
-    page-action-on-selection: None
+    page-action-on-selection: Submit Page
+    execute-validations: true
 
   multiple-values: 
     type: No
@@ -2714,7 +2716,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: B_LISTA_KONTROLI_DO_AUDYTU # 17078910224506206
+    list-of-values: B_LISTA_KONTROLI_DO_AUDYTU # 290422126904205762
     display-extra-values: true
     display-null-value: false
 
@@ -2738,7 +2740,7 @@ page-items:
 
 buttons: 
 - # ====== Button: WyliczOcenę =================================
-  id: 23200306126598570
+  id: 296543522806298126
   identification: 
     button-name: WyliczOcenę
     label: _______ Wylicz i zapisz ocenę końcową _______
@@ -2771,7 +2773,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Oblicz ocenę ważoną AD ==============
-  id: 267042272316461836
+  id: 6300944363237720
   identification: 
     name: Oblicz ocenę ważoną AD
 
@@ -2783,13 +2785,13 @@ dynamic-actions:
   when: 
     event: Change
     selection-type: Column(s)
-    interactive-grid: P2_ADEKWATNOSC # 23200524177598572
+    interactive-grid: P2_ADEKWATNOSC # 296543740857298128
     column(s): 
     - B_ANKIETA_ODPOWIEDZ
 
   actions: 
   - # ====== Action: Set Value ===================================
-    id: 273336043114595125
+    id: 7173565104431
     identification: 
       action: Set Value
 
@@ -2827,14 +2829,14 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: Oblicz ocenę ważoną AD # 267042272316461836
+      event: Oblicz ocenę ważoną AD # 6300944363237720
       fire-when-event-result-is: True
       fire-on-initialization: true
       stop-execution-on-error: true
       wait-for-result: true
 
 - # ====== Dynamic Action: Ustawienie B_APP_ID_AUDYT ===========
-  id: 99682266943736335
+  id: 173660949735963221
   identification: 
     name: Ustawienie B_APP_ID_AUDYT
 
@@ -2851,7 +2853,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Execute Server-side Code ====================
-    id: 99682120133736334
+    id: 173661096545963222
     identification: 
       action: Execute Server-side Code
 
@@ -2863,17 +2865,18 @@ dynamic-actions:
         end;
       items-to-submit: 
       - P2_AUDYT_ID
+      - B_APP_ID_AUDYT
 
     execution: 
       sequence: 10
-      event: Ustawienie B_APP_ID_AUDYT # 99682266943736335
+      event: Ustawienie B_APP_ID_AUDYT # 173660949735963221
       fire-when-event-result-is: True
-      fire-on-initialization: false
+      fire-on-initialization: true
       stop-execution-on-error: true
       wait-for-result: true
 
   - # ====== Action: Przeladowanie regionow ======================
-    id: 99680335706736316
+    id: 173662880972963240
     identification: 
       name: Przeladowanie regionow
       action: Refresh
@@ -2887,12 +2890,12 @@ dynamic-actions:
 
     execution: 
       sequence: 20
-      event: Ustawienie B_APP_ID_AUDYT # 99682266943736335
+      event: Ustawienie B_APP_ID_AUDYT # 173660949735963221
       fire-when-event-result-is: True
-      fire-on-initialization: false
+      fire-on-initialization: true
 
 - # ====== Dynamic Action: Ustawienie B_APP_ID_KONTROLI ========
-  id: 99682061710736333
+  id: 173661154968963223
   identification: 
     name: Ustawienie B_APP_ID_KONTROLI
 
@@ -2909,7 +2912,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Execute Server-side Code ====================
-    id: 99681983140736332
+    id: 173661233538963224
     identification: 
       action: Execute Server-side Code
 
@@ -2921,17 +2924,18 @@ dynamic-actions:
         End;
       items-to-submit: 
       - P2_KONTROLA_ID
+      - ' B_APP_ID_KONTROLI'
 
     execution: 
       sequence: 10
-      event: Ustawienie B_APP_ID_KONTROLI # 99682061710736333
+      event: Ustawienie B_APP_ID_KONTROLI # 173661154968963223
       fire-when-event-result-is: True
-      fire-on-initialization: false
+      fire-on-initialization: true
       stop-execution-on-error: true
       wait-for-result: true
 
   - # ====== Action: Przeladowanie regionow ======================
-    id: 99680499800736317
+    id: 173662716878963239
     identification: 
       name: Przeladowanie regionow
       action: Refresh
@@ -2945,12 +2949,12 @@ dynamic-actions:
 
     execution: 
       sequence: 20
-      event: Ustawienie B_APP_ID_KONTROLI # 99682061710736333
+      event: Ustawienie B_APP_ID_KONTROLI # 173661154968963223
       fire-when-event-result-is: True
-      fire-on-initialization: false
+      fire-on-initialization: true
 
 - # ====== Dynamic Action: Oblicz ocenę ważoną SK ==============
-  id: 99679847755736311
+  id: 173663368923963245
   identification: 
     name: Oblicz ocenę ważoną SK
 
@@ -2962,13 +2966,13 @@ dynamic-actions:
   when: 
     event: Change
     selection-type: Column(s)
-    interactive-grid: P2_SKUTECZNOSC # 99681844894736331
+    interactive-grid: P2_SKUTECZNOSC # 173661371784963225
     column(s): 
     - B_ANKIETA_ODPOWIEDZ
 
   actions: 
   - # ====== Action: Set Value ===================================
-    id: 99679739512736310
+    id: 173663477166963246
     identification: 
       action: Set Value
 
@@ -3022,14 +3026,14 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: Oblicz ocenę ważoną SK # 99679847755736311
+      event: Oblicz ocenę ważoną SK # 173663368923963245
       fire-when-event-result-is: True
       fire-on-initialization: true
       stop-execution-on-error: true
       wait-for-result: true
 
   - # ====== Action: Oblicz ocenę adekwatnosci ===================
-    id: 23199714478598564
+    id: 296542931158298120
     identification: 
       name: Oblicz ocenę adekwatnosci
       action: Execute Server-side Code
@@ -3102,23 +3106,23 @@ dynamic-actions:
 
     execution: 
       sequence: 30
-      event: Oblicz ocenę ważoną SK # 99679847755736311
+      event: Oblicz ocenę ważoną SK # 173663368923963245
       fire-when-event-result-is: True
       fire-on-initialization: false
       stop-execution-on-error: true
       wait-for-result: true
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
 processes: 
 - # ====== Process: P2_ADEKWATNOSC - DMI =======================
-  id: 273335938055595124
+  id: 7278624104432
   identification: 
     name: P2_ADEKWATNOSC - DMI
     type: Interactive Grid - Automatic Row Processing (DML)
     execution-chain: None
-    editable-region: P2_ADEKWATNOSC # 23200524177598572
+    editable-region: P2_ADEKWATNOSC # 296543740857298128
 
   settings: 
     target-type: Region Source
@@ -3138,7 +3142,7 @@ processes:
     execution-scope: For Created and Modified Rows
 
 - # ====== Process: WyliczenieOceny - SKUTECZNOSC ==============
-  id: 271997042677552339
+  id: 1346174002147217
   identification: 
     name: WyliczenieOceny - SKUTECZNOSC
     type: Execute Code
@@ -3231,12 +3235,12 @@ processes:
     display-location: Inline in Notification
 
 - # ====== Process: P2_SKUTECZNOSC - DMI =======================
-  id: 271996896114552338
+  id: 1346320565147218
   identification: 
     name: P2_SKUTECZNOSC - DMI
     type: Interactive Grid - Automatic Row Processing (DML)
     execution-chain: None
-    editable-region: P2_SKUTECZNOSC_OCENA # 271995752579552326
+    editable-region: P2_SKUTECZNOSC_OCENA # 1347464100147230
 
   settings: 
     target-type: Region Source
@@ -3256,12 +3260,12 @@ processes:
     execution-scope: For Created and Modified Rows
 
 - # ====== Process: P2_SKUTECZNOSC - Save Interactive Grid Data 
-  id: 99680053840736313
+  id: 173663162838963243
   identification: 
     name: P2_SKUTECZNOSC - Save Interactive Grid Data
     type: Interactive Grid - Automatic Row Processing (DML)
     execution-chain: None
-    editable-region: P2_SKUTECZNOSC # 99681844894736331
+    editable-region: P2_SKUTECZNOSC # 173661371784963225
 
   settings: 
     target-type: Region Source
@@ -3281,12 +3285,12 @@ processes:
     execution-scope: For Created and Modified Rows
 
 - # ====== Process: P2_ADEKWATNOSC_OCENA - Save Interactive Grid
-  id: 23199139912598558
+  id: 296542356592298114
   identification: 
     name: P2_ADEKWATNOSC_OCENA - Save Interactive Grid Data
     type: Interactive Grid - Automatic Row Processing (DML)
     execution-chain: None
-    editable-region: P2_ADEKWATNOSC_OCENA # 17308116217275860
+    editable-region: P2_ADEKWATNOSC_OCENA # 290651332896975416
 
   settings: 
     target-type: Region Source
@@ -3306,7 +3310,7 @@ processes:
     execution-scope: For Created and Modified Rows
 
 - # ====== Process: WyliczenieOceny - ADEKWATNOSC ==============
-  id: 23199543488598562
+  id: 296542760168298118
   identification: 
     name: WyliczenieOceny - ADEKWATNOSC
     type: Execute Code

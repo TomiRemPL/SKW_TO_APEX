@@ -1,9 +1,9 @@
 ---
-# ====== Application: SKW_2_APEX =============================
-id: 160
+# ====== Application: SKW_2_APEX (Working Copy: tr_20260318) =
+id: 338
 identification: 
-  name: SKW_2_APEX
-  alias: START338
+  name: 'SKW_2_APEX (Working Copy: tr_20260318)'
+  alias: START338141
   version: Release 1.0
 
 row-search: 
@@ -31,7 +31,7 @@ advanced:
 
 authentication: 
   public-user: APEX_PUBLIC_USER
-  authentication-scheme: ADFS Authentication Scheme # 40458398296031578
+  authentication-scheme: ADFS Authentication Scheme # 313801614975731134
 
 authorization: 
   authorization-scheme: Must Not Be Public User
@@ -102,11 +102,11 @@ navigation-menu:
   - js-navCollapsed--hidden
   - t-TreeNav--classic
   list-position: Side
-  list: Navigation Menu # 52550476058029660
+  list: Navigation Menu # 325893692737729216
 
 navigation-bar: 
   implementation: List
-  list: Navigation Bar # 52834303076029317
+  list: Navigation Bar # 326177519755728873
   list-template: Navigation Bar
   template-options: 
   - '#DEFAULT#'
@@ -121,12 +121,17 @@ attributes:
   add-"built-with-apex"-to-footer: false
   auto-dismiss-success-messages: false
 
+working-copy: 
+  created-on: '18-Mar-2026 09:31:36'
+  created-by: TREMBIASZ
+  name: tr_20260318
+
 subscription: 
-  version-number: 8941380532190
+  version-number: 8941436059553
 
 substitutions: 
 - # ====== Substitution: APP_NAME ==============================
-  id: 273343216679699555
+  id: 481090696025609724
   identification: 
     name: APP_NAME
 
@@ -134,7 +139,7 @@ substitutions:
     static-value: SKW_2_APEX
 
 - # ====== Substitution: APP_COPYRIGHT =========================
-  id: 273343216679699554
+  id: 481090696025609723
   identification: 
     name: APP_COPYRIGHT
 
@@ -143,7 +148,7 @@ substitutions:
 
 component-settings: 
 - # ====== Component Setting: NATIVE_GEOCODING =================
-  id: 1462713638043284
+  id: 274805930317742840
   identification: 
     name: NATIVE_GEOCODING
     type: Process
@@ -155,7 +160,7 @@ component-settings:
     version-number: 115213198
 
 - # ====== Component Setting: NATIVE_OPEN_AI_ASSISTANT =========
-  id: 1476143065043281
+  id: 274819359744742837
   identification: 
     name: NATIVE_OPEN_AI_ASSISTANT
     type: Dynamic Action
@@ -164,7 +169,7 @@ component-settings:
     version-number: 115213205
 
 - # ====== Component Setting: NATIVE_BOSS ======================
-  id: 1489628972043280
+  id: 274832845651742836
   identification: 
     name: NATIVE_BOSS
     type: REST Data Source
@@ -173,7 +178,7 @@ component-settings:
     version-number: 115213206
 
 - # ====== Component Setting: NATIVE_SELECT_MANY ===============
-  id: 1504929648043274
+  id: 274848146327742830
   identification: 
     name: NATIVE_SELECT_MANY
     type: Item
@@ -182,7 +187,7 @@ component-settings:
     version-number: 115213218
 
 - # ====== Component Setting: NATIVE_ADFBC =====================
-  id: 37319745457119673
+  id: 310662962136819229
   identification: 
     name: NATIVE_ADFBC
     type: REST Data Source
@@ -191,7 +196,7 @@ component-settings:
     version-number: 8772782069192
 
 - # ====== Component Setting: NATIVE_DISPLAY_SELECTOR ==========
-  id: 52546739235029671
+  id: 325889955914729227
   identification: 
     name: NATIVE_DISPLAY_SELECTOR
     type: Region
@@ -200,7 +205,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_DATE_PICKER_APEX ==========
-  id: 52546993138029669
+  id: 325890209817729225
   identification: 
     name: NATIVE_DATE_PICKER_APEX
     type: Item
@@ -209,7 +214,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_GEOCODED_ADDRESS ==========
-  id: 52547279927029669
+  id: 325890496606729225
   identification: 
     name: NATIVE_GEOCODED_ADDRESS
     type: Item
@@ -218,7 +223,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_MAP_REGION ================
-  id: 52547580654029669
+  id: 325890797333729225
   identification: 
     name: NATIVE_MAP_REGION
     type: Region
@@ -227,7 +232,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_SINGLE_CHECKBOX ===========
-  id: 52547853219029669
+  id: 325891069898729225
   identification: 
     name: NATIVE_SINGLE_CHECKBOX
     type: Item
@@ -236,7 +241,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_IR ========================
-  id: 52548224552029669
+  id: 325891441231729225
   identification: 
     name: NATIVE_IR
     type: Region
@@ -245,7 +250,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_COLOR_PICKER ==============
-  id: 52548453619029668
+  id: 325891670298729224
   identification: 
     name: NATIVE_COLOR_PICKER
     type: Item
@@ -254,7 +259,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_STAR_RATING ===============
-  id: 52548829663029668
+  id: 325892046342729224
   identification: 
     name: NATIVE_STAR_RATING
     type: Item
@@ -263,7 +268,7 @@ component-settings:
     version-number: 1
 
 - # ====== Component Setting: NATIVE_YES_NO ====================
-  id: 52549058782029668
+  id: 325892275461729224
   identification: 
     name: NATIVE_YES_NO
     type: Item
@@ -273,7 +278,7 @@ component-settings:
 
 application-settings: 
 - # ====== Application Setting: FEEDBACK_ATTACHMENTS_YN ========
-  id: 52840395438029246
+  id: 326183612117728802
   identification: 
     name: FEEDBACK_ATTACHMENTS_YN
 
@@ -289,10 +294,10 @@ application-settings:
     version-number: 1
 
   configuration: 
-    build-option: 'Feature: Feedback' # 52836960903029292
+    build-option: 'Feature: Feedback' # 326180177582728848
 
 - # ====== Application Setting: ACCESS_CONTROL_SCOPE ===========
-  id: 52840743174029244
+  id: 326183959853728800
   identification: 
     name: ACCESS_CONTROL_SCOPE
 
@@ -308,7 +313,7 @@ application-settings:
     version-number: 52866390
 
   configuration: 
-    build-option: 'Feature: Access Control' # 52836843194029292
+    build-option: 'Feature: Access Control' # 326180059873728848
 
   comments: 
     comments: The default access level given to authenticated users who are not in the access control list

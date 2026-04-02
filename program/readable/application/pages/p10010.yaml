@@ -5,7 +5,7 @@ identification:
   name: Configuration Options
   alias: CONFIGURATION-OPTIONS
   title: Configuration Options
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -52,11 +52,11 @@ help:
     <p><em><strong>Note:</strong> Changes made here will not be reflected for individual end users currently running the application. Once the end user signs out and then signs back in the revised feature settings will be invoked.</em></p>
 
 configuration: 
-  build-option: 'Feature: Configuration Options' # 52837250212029292
+  build-option: 'Feature: Configuration Options' # 326180466891728848
 
 regions: 
 - # ====== Region: Buttons =====================================
-  id: 52849580911029192
+  id: 326192797590728748
   identification: 
     name: Buttons
     type: Static Content
@@ -94,7 +94,7 @@ regions:
       show-line-breaks: true
 
 - # ====== Region: Configuration Options =======================
-  id: 52849812044029176
+  id: 326193028723728732
   identification: 
     name: Configuration Options
     type: Interactive Report
@@ -163,7 +163,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52850322408029175
+    id: 326193539087728731
     link: 
       link-column: Exclude Link Column
 
@@ -225,14 +225,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52855873909029123
+      id: 326199090588728679
       identification: 
         name: Primary Report
         alias: 173985
 
     columns: 
     - # ====== Column: ID ==========================================
-      id: 52850704322029135
+      id: 326193921001728691
       identification: 
         column-name: ID
         type: Hidden
@@ -250,7 +250,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: APPLICATION_OPTION ==========================
-      id: 52851052725029132
+      id: 326194269404728688
       identification: 
         column-name: APPLICATION_OPTION
         type: Plain Text
@@ -291,7 +291,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: STATUS ======================================
-      id: 52851474035029132
+      id: 326194690714728688
       identification: 
         column-name: STATUS
         type: Plain Text
@@ -332,7 +332,7 @@ regions:
         escape-special-characters: false
 
     - # ====== Column: DESCRIPTION =================================
-      id: 52851915099029130
+      id: 326195131778728686
       identification: 
         column-name: DESCRIPTION
         type: Plain Text
@@ -373,7 +373,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: UPDATED =====================================
-      id: 52852284207029130
+      id: 326195500886728686
       identification: 
         column-name: UPDATED
         type: Plain Text
@@ -418,7 +418,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: UPDATED_BY ==================================
-      id: 52852675606029130
+      id: 326195892285728686
       identification: 
         column-name: UPDATED_BY
         type: Plain Text
@@ -459,7 +459,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: CURRENT_STATUS ==============================
-      id: 52853125383029129
+      id: 326196342062728685
       identification: 
         column-name: CURRENT_STATUS
         type: Plain Text
@@ -544,14 +544,14 @@ regions:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52856764624029120
+  id: 326199981303728676
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Configuration Options # 52849812044029176
+    region: Configuration Options # 326193028723728732
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -576,14 +576,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: APPLY_CHANGES ===============================
-  id: 52857473269029120
+  id: 326200689948728676
   identification: 
     button-name: APPLY_CHANGES
     label: Apply Changes
 
   layout: 
     sequence: 10
-    region: Buttons # 52849580911029192
+    region: Buttons # 326192797590728748
     slot: NEXT
     start-new-layout: false
     start-new-row: true
@@ -605,7 +605,7 @@ buttons:
 
 processes: 
 - # ====== Process: Update =====================================
-  id: 52857926454029119
+  id: 326201143133728675
   identification: 
     name: Update
     type: Execute Code
@@ -641,7 +641,7 @@ processes:
 
 branches: 
 - # ====== Branch: Branch to Admin Page ========================
-  id: 52858295376029119
+  id: 326201512055728675
   identification: 
     name: Branch to Admin Page
 

@@ -38,7 +38,7 @@ server-cache:
 
 regions: 
 - # ====== Region: My Info =====================================
-  id: 38537921640024047
+  id: 311881138319723603
   identification: 
     name: My Info
     type: Static Content
@@ -72,7 +72,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Copyright ===================================
-  id: 38538168101024049
+  id: 311881384780723605
   identification: 
     name: Copyright
     type: Static Content
@@ -108,7 +108,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Tytuł =======================================
-  id: 52848970111029208
+  id: 326192186790728764
   identification: 
     name: Tytuł
     title: SKW_2_APEX by DAW

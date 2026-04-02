@@ -5,7 +5,7 @@ identification:
   name: Settings
   alias: SETTINGS
   title: Settings
-  page-group: User Settings # 53041389221028585
+  page-group: User Settings # 326384605900728141
 
 appearance: 
   page-mode: Modal Dialog
@@ -48,11 +48,11 @@ help:
   help-text: This page contains a list of settings applicable to the current application user.
 
 configuration: 
-  build-option: 'Feature: User Settings' # 53041886939028585
+  build-option: 'Feature: User Settings' # 326385103618728141
 
 regions: 
 - # ====== Region: &APP_USER. ==================================
-  id: 53046539743028575
+  id: 326389756422728131
   identification: 
     name: '&APP_USER.'
     type: Static Content
@@ -100,7 +100,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: &APP_USER. ==================================
-  id: 53046831437028575
+  id: 326390048116728131
   identification: 
     name: '&APP_USER.'
     type: Cards
@@ -154,7 +154,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 53047338721028574
+    id: 326390555400728130
     appearance: 
       layout: Horizontal (Row)
 
@@ -193,13 +193,13 @@ regions:
       show-total-count: false
 
 - # ====== Region: Settings ====================================
-  id: 53047787498028570
+  id: 326391004177728126
   identification: 
     name: Settings
     type: List
 
   source: 
-    list: User Settings # 53045487634028578
+    list: User Settings # 326388704313728134
 
   layout: 
     sequence: 30

@@ -14,7 +14,9 @@
       "mcp__serena__find_symbol",
       "Skill(update-config)",
       "Bash(powershell -NoProfile -Command \"[console]::beep\\(800,300\\)\")",
-      "Bash(echo \"exit: $?\")"
+      "Bash(echo \"exit: $?\")",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

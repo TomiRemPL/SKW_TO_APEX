@@ -5,7 +5,7 @@ identification:
   name: Application Error Log
   alias: APPLICATION-ERROR-LOG
   title: Application Error Log
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -50,11 +50,11 @@ help:
     <p>Click on the column headings to sort and filter data, or click on the <strong>Actions</strong> button to customize column display and many additional advanced features. Click the <strong>Reset</strong> button to reset the interactive report back to the default settings.</p>
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Application Error Log =======================
-  id: 52909659576028927
+  id: 326252876255728483
   identification: 
     name: Application Error Log
     type: Interactive Report
@@ -105,7 +105,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52910274485028927
+    id: 326253491164728483
     link: 
       link-column: Exclude Link Column
 
@@ -167,14 +167,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52915245853028921
+      id: 326258462532728477
       identification: 
         name: Primary Report
         alias: 174578
 
     columns: 
     - # ====== Column: STEP_ID =====================================
-      id: 52910691650028925
+      id: 326253908329728481
       identification: 
         column-name: STEP_ID
         type: Plain Text
@@ -215,7 +215,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: USERID ======================================
-      id: 52911118350028924
+      id: 326254335029728480
       identification: 
         column-name: USERID
         type: Plain Text
@@ -256,7 +256,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ERR_TIME ====================================
-      id: 52911466534028924
+      id: 326254683213728480
       identification: 
         column-name: ERR_TIME
         type: Plain Text
@@ -298,7 +298,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: SQLERRM =====================================
-      id: 52911939578028924
+      id: 326255156257728480
       identification: 
         column-name: SQLERRM
         type: Plain Text
@@ -339,7 +339,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: SQLERRM_COMPONENT_TYPE ======================
-      id: 52912301107028923
+      id: 326255517786728479
       identification: 
         column-name: SQLERRM_COMPONENT_TYPE
         type: Plain Text
@@ -380,7 +380,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: SQLERRM_COMPONENT_NAME ======================
-      id: 52912661598028923
+      id: 326255878277728479
       identification: 
         column-name: SQLERRM_COMPONENT_NAME
         type: Plain Text
@@ -465,14 +465,14 @@ regions:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52916140575028920
+  id: 326259357254728476
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Application Error Log # 52909659576028927
+    region: Application Error Log # 326252876255728483
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true

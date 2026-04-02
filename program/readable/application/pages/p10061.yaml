@@ -41,11 +41,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: About Page' # 52837486549029292
+  build-option: 'Feature: About Page' # 326180703228728848
 
 regions: 
 - # ====== Region: Search Dialog ===============================
-  id: 53017835689028696
+  id: 326361052368728252
   identification: 
     name: Search Dialog
     type: Dynamic Content
@@ -104,7 +104,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10061_PAGE_ID ===========================
-  id: 53018179901028695
+  id: 326361396580728251
   identification: 
     name: P10061_PAGE_ID
     type: Hidden
@@ -114,7 +114,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Search Dialog # 53017835689028696
+    region: Search Dialog # 326361052368728252
     slot: BODY
 
   advanced: 

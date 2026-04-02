@@ -38,7 +38,7 @@ server-cache:
 
 page-items: 
 - # ====== Page Item: P_ID_LOG_WYNIKU ==========================
-  id: 136091429418002857
+  id: 137251787261696699
   identification: 
     name: P_ID_LOG_WYNIKU
     type: Hidden
@@ -68,7 +68,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P_PLIK ===================================
-  id: 136091144483002854
+  id: 137252072196696702
   identification: 
     name: P_PLIK
     type: File Upload
@@ -125,7 +125,7 @@ page-items:
 
 buttons: 
 - # ====== Button: WczytajPlik =================================
-  id: 136091211338002855
+  id: 137252005341696701
   identification: 
     button-name: WczytajPlik
     label: Wczytaj plik
@@ -155,11 +155,11 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
   configuration: 
-    build-option: Commented Out # 52549358497029667
+    build-option: Commented Out # 325892575176729223
 
 processes: 
 - # ====== Process: Wczyt ======================================
-  id: 136091377169002856
+  id: 137251839510696700
   identification: 
     name: Wczyt
     type: Execute Code
@@ -246,5 +246,5 @@ processes:
     run-process: Once Per Page Visit (default)
 
   configuration: 
-    build-option: Commented Out # 52549358497029667
+    build-option: Commented Out # 325892575176729223
 

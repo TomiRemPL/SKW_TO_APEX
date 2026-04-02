@@ -5,7 +5,7 @@ identification:
   name: Log Messages
   alias: LOG-MESSAGES
   title: Log Messages
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -25,7 +25,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -43,11 +43,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Automation Execution ========================
-  id: 52938915959028840
+  id: 326282132638728396
   identification: 
     name: Automation Execution
     type: Static Content
@@ -85,7 +85,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Messages ====================================
-  id: 52941306540028838
+  id: 326284523219728394
   identification: 
     name: Messages
     type: Classic Report
@@ -180,7 +180,7 @@ regions:
 
   columns: 
   - # ====== Column: MESSAGE_TIMESTAMP ===========================
-    id: 52941657508028833
+    id: 326284874187728389
     identification: 
       column-name: MESSAGE_TIMESTAMP
       type: Plain Text
@@ -214,7 +214,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: MESSAGE =====================================
-    id: 52942143270028833
+    id: 326285359949728389
     identification: 
       column-name: MESSAGE
       type: Plain Text
@@ -246,7 +246,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: MESSAGE_TYPE ================================
-    id: 52942499235028832
+    id: 326285715914728388
     identification: 
       column-name: MESSAGE_TYPE
       type: Plain Text
@@ -278,7 +278,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: PK_VALUE ====================================
-    id: 52942939417028832
+    id: 326286156096728388
     identification: 
       column-name: PK_VALUE
       type: Plain Text
@@ -311,7 +311,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10036_LOG_ID ============================
-  id: 52939334793028840
+  id: 326282551472728396
   identification: 
     name: P10036_LOG_ID
     type: Hidden
@@ -321,7 +321,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Automation Execution # 52938915959028840
+    region: Automation Execution # 326282132638728396
     slot: BODY
 
   advanced: 
@@ -341,7 +341,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10036_AUTOMATION_NAME ===================
-  id: 52939693260028839
+  id: 326282909939728395
   identification: 
     name: P10036_AUTOMATION_NAME
     type: Display Only
@@ -358,7 +358,7 @@ page-items:
 
   layout: 
     sequence: 20
-    region: Automation Execution # 52938915959028840
+    region: Automation Execution # 326282132638728396
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -390,7 +390,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10036_START_TIMESTAMP ===================
-  id: 52940118832028839
+  id: 326283335511728395
   identification: 
     name: P10036_START_TIMESTAMP
     type: Display Only
@@ -407,7 +407,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Automation Execution # 52938915959028840
+    region: Automation Execution # 326282132638728396
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -439,7 +439,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10036_STATUS ============================
-  id: 52940514009028839
+  id: 326283730688728395
   identification: 
     name: P10036_STATUS
     type: Display Only
@@ -456,7 +456,7 @@ page-items:
 
   layout: 
     sequence: 40
-    region: Automation Execution # 52938915959028840
+    region: Automation Execution # 326282132638728396
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -489,7 +489,7 @@ page-items:
 
 processes: 
 - # ====== Process: Get Log Detail =============================
-  id: 52940925263028838
+  id: 326284141942728394
   identification: 
     name: Get Log Detail
     type: Execute Code

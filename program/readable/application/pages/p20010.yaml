@@ -5,7 +5,7 @@ identification:
   name: Push Notifications
   alias: PUSH-NOTIFICATIONS
   title: Settings - Push Notifications
-  page-group: User Settings # 53041389221028585
+  page-group: User Settings # 326384605900728141
 
 appearance: 
   page-mode: Modal Dialog
@@ -49,11 +49,11 @@ help:
   help-text: This page contains the settings for controlling push notification subscription for the current user.
 
 configuration: 
-  build-option: 'Feature: Push Notifications' # 53041619461028585
+  build-option: 'Feature: Push Notifications' # 326384836140728141
 
 regions: 
 - # ====== Region: Push Notifications Not Supported ============
-  id: 53043042804028581
+  id: 326386259483728137
   identification: 
     name: Push Notifications Not Supported
     type: Static Content
@@ -105,7 +105,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Push Notifications ==========================
-  id: 53043341289028581
+  id: 326386557968728137
   identification: 
     name: Push Notifications
     type: Static Content
@@ -156,7 +156,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P20010_ENABLE_PUSH =======================
-  id: 53043850537028581
+  id: 326387067216728137
   identification: 
     name: P20010_ENABLE_PUSH
     type: Checkbox
@@ -170,7 +170,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Push Notifications # 53043341289028581
+    region: Push Notifications # 326386557968728137
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -206,7 +206,7 @@ page-items:
 
 buttons: 
 - # ====== Button: BACK ========================================
-  id: 53042571653028583
+  id: 326385788332728139
   identification: 
     button-name: BACK
     label: Settings
@@ -243,7 +243,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Change P20010_ENABLE_PUSH ===========
-  id: 53044085759028580
+  id: 326387302438728136
   identification: 
     name: Change P20010_ENABLE_PUSH
 
@@ -265,7 +265,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Subscribe to push notifications =============
-    id: 53044553189028580
+    id: 326387769868728136
     identification: 
       name: Subscribe to push notifications
       action: Execute JavaScript Code
@@ -275,12 +275,12 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: Change P20010_ENABLE_PUSH # 53044085759028580
+      event: Change P20010_ENABLE_PUSH # 326387302438728136
       fire-when-event-result-is: True
       fire-on-initialization: false
 
   - # ====== Action: Unsubscribe from push notifications =========
-    id: 53045064261028579
+    id: 326388280940728135
     identification: 
       name: Unsubscribe from push notifications
       action: Execute JavaScript Code
@@ -290,7 +290,7 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: Change P20010_ENABLE_PUSH # 53044085759028580
+      event: Change P20010_ENABLE_PUSH # 326387302438728136
       fire-when-event-result-is: False
       fire-on-initialization: false
 

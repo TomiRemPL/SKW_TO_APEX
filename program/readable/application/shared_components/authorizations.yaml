@@ -1,6 +1,6 @@
 ---
 - # ====== Authorization: AD Role ==============================
-  id: 43639706807981447
+  id: 316982923487681003
   identification: 
     name: AD Role
 
@@ -17,7 +17,7 @@
     evaluation-point: Once per Session
 
 - # ====== Authorization: Administration Rights ================
-  id: 52839508229029280
+  id: 326182724908728836
   identification: 
     name: Administration Rights
 
@@ -38,7 +38,7 @@
     error-message: Insufficient privileges, user is not an Administrator
 
 - # ====== Authorization: Reader Rights ========================
-  id: 52839564944029280
+  id: 326182781623728836
   identification: 
     name: Reader Rights
 
@@ -68,7 +68,7 @@
     error-message: You are not authorized to view this application, either because you have not been granted access, or your account has been locked. Please contact the application administrator.
 
 - # ====== Authorization: Contribution Rights ==================
-  id: 52839660084029280
+  id: 326182876763728836
   identification: 
     name: Contribution Rights
 

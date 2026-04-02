@@ -1,6 +1,6 @@
 ---
 - # ====== List of Values: B_AUDYT.B_AUDYT_NUMER_AUDYTU ========
-  id: 15641858188447220
+  id: 288985074868146776
   identification: 
     name: B_AUDYT.B_AUDYT_NUMER_AUDYTU
 
@@ -20,7 +20,7 @@
     sort-direction: Ascending (Nulls Last)
 
 - # ====== List of Values: B_KONTROLA.REFERENCE_ID =============
-  id: 15642523813447224
+  id: 288985740493146780
   identification: 
     name: B_KONTROLA.REFERENCE_ID
 
@@ -40,7 +40,7 @@
     sort-direction: Ascending (Nulls Last)
 
 - # ====== List of Values: B_SL_C_PYTANIE.B_SL_C_PYTANIE_TRESC =
-  id: 15643212967447225
+  id: 288986429647146781
   identification: 
     name: B_SL_C_PYTANIE.B_SL_C_PYTANIE_TRESC
 
@@ -60,12 +60,12 @@
     sort-direction: Ascending (Nulls Last)
 
 - # ====== List of Values: B_LISTA_KONTROLI_DO_AUDYTU ==========
-  id: 17078910224506206
+  id: 290422126904205762
   identification: 
     name: B_LISTA_KONTROLI_DO_AUDYTU
 
   subscription: 
-    version-number: 408929237
+    version-number: 8941436052457
 
   source: 
     location: Local Database
@@ -80,7 +80,7 @@
       	b.ID_PK_B_KONTROLA = A.ID_FK_B_KONTROLA
       WHERE 
         A.ID_FK_B_AUDYT = :B_APP_ID_AUDYT 
-          OR :B_APP_ID_AUDYT IS NULL
+          --OR :B_APP_ID_AUDYT IS NULL
       ORDER BY b.REFERENCE_ID || ' - ' || b.SHORT_DESCRIPTION_EN_ 
 
   column-mapping: 
@@ -89,7 +89,7 @@
     default-sort: Use Order By from Query
 
 - # ====== List of Values: B_SL_C_ODPOWIEDZ ====================
-  id: 17216107384976181
+  id: 290559324064675737
   identification: 
     name: B_SL_C_ODPOWIEDZ
 
@@ -101,35 +101,35 @@
 
   entries: 
   - # ====== Entry: TAK ==========================================
-    id: 17216474187976182
+    id: 290559690867675738
     entry: 
       sequence: 1
       display: TAK
       return: TAK
 
   - # ====== Entry: CZĘŚCIOWO ====================================
-    id: 17216855882976187
+    id: 290560072562675743
     entry: 
       sequence: 2
       display: CZĘŚCIOWO
       return: CZĘŚCIOWO
 
   - # ====== Entry: NIE ==========================================
-    id: 17217280109976187
+    id: 290560496789675743
     entry: 
       sequence: 3
       display: NIE
       return: NIE
 
   - # ====== Entry: N/A ==========================================
-    id: 17217609314976187
+    id: 290560825994675743
     entry: 
       sequence: 4
       display: N/A
       return: N/A
 
 - # ====== List of Values: ADLOV ===============================
-  id: 38716325477263310
+  id: 312059542156962866
   identification: 
     name: ADLOV
 
@@ -147,7 +147,7 @@
 
   columns: 
   - # ====== Column: IDNAME ======================================
-    id: 38722455010042435
+    id: 312065671689741991
     identification: 
       column-name: IDNAME
       show: false
@@ -162,7 +162,7 @@
       searchable: true
 
   - # ====== Column: FULLNAME ====================================
-    id: 38722832798042432
+    id: 312066049477741988
     identification: 
       column-name: FULLNAME
       show: true
@@ -180,7 +180,7 @@
       searchable: true
 
   - # ====== Column: DEPARTMENT ==================================
-    id: 38723217320042432
+    id: 312066433999741988
     identification: 
       column-name: DEPARTMENT
       show: true
@@ -198,7 +198,7 @@
       searchable: false
 
   - # ====== Column: TITLE =======================================
-    id: 38723667405042432
+    id: 312066884084741988
     identification: 
       column-name: TITLE
       show: true
@@ -216,7 +216,7 @@
       searchable: false
 
 - # ====== List of Values: DESKTOP THEME STYLES ================
-  id: 52861895457029116
+  id: 326205112136728672
   identification: 
     name: DESKTOP THEME STYLES
 
@@ -243,7 +243,7 @@
     default-sort: Use Order By from Query
 
 - # ====== List of Values: USER_THEME_PREFERENCE ===============
-  id: 52862651396029100
+  id: 326205868075728656
   identification: 
     name: USER_THEME_PREFERENCE
 
@@ -255,14 +255,14 @@
 
   entries: 
   - # ====== Entry: Allow End Users to choose Theme Style ========
-    id: 52862931045029099
+    id: 326206147724728655
     entry: 
       sequence: 1
       display: Allow End Users to choose Theme Style
       return: Yes
 
 - # ====== List of Values: TIMEFRAME (4 WEEKS) =================
-  id: 52881532871028982
+  id: 326224749550728538
   identification: 
     name: TIMEFRAME (4 WEEKS)
 
@@ -284,7 +284,7 @@
     default-sort: Use Order By from Query
 
 - # ====== List of Values: VIEW_AS_REPORT_CHART ================
-  id: 52927770240028869
+  id: 326270986919728425
   identification: 
     name: VIEW_AS_REPORT_CHART
 
@@ -296,7 +296,7 @@
 
   entries: 
   - # ====== Entry: Add Report Page ==============================
-    id: 52928063269028869
+    id: 326271279948728425
     entry: 
       sequence: 1
       display: Add Report Page
@@ -306,7 +306,7 @@
       template: <span class="fa fa-table" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
 
   - # ====== Entry: Add Chart Page ===============================
-    id: 52928540443028868
+    id: 326271757122728424
     entry: 
       sequence: 2
       display: Add Chart Page
@@ -316,7 +316,7 @@
       template: <span class="fa fa-pie-chart" aria-hidden="true"></span><span class="u-VisuallyHidden">#DISPLAY_VALUE#</span>
 
 - # ====== List of Values: ACCESS_ROLES ========================
-  id: 52960462178028808
+  id: 326303678857728364
   identification: 
     name: ACCESS_ROLES
 
@@ -337,7 +337,7 @@
     default-sort: Use Order By from Query
 
 - # ====== List of Values: EMAIL_USERNAME_FORMAT ===============
-  id: 52967969782028795
+  id: 326311186461728351
   identification: 
     name: EMAIL_USERNAME_FORMAT
 
@@ -349,14 +349,14 @@
 
   entries: 
   - # ====== Entry: Email Addresses ==============================
-    id: 52968254724028795
+    id: 326311471403728351
     entry: 
       sequence: 1
       display: Email Addresses
       return: EMAIL
 
 - # ====== List of Values: FEEDBACK_RATING =====================
-  id: 52985243077028734
+  id: 326328459756728290
   identification: 
     name: FEEDBACK_RATING
 
@@ -368,7 +368,7 @@
 
   entries: 
   - # ====== Entry: Positive =====================================
-    id: 52985537258028734
+    id: 326328753937728290
     entry: 
       sequence: 1
       display: Positive
@@ -378,7 +378,7 @@
       template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-smile-o fa-2x feedback-positive" aria-hidden="true" ></span></span>
 
   - # ====== Entry: Neutral ======================================
-    id: 52985952377028734
+    id: 326329169056728290
     entry: 
       sequence: 2
       display: Neutral
@@ -388,7 +388,7 @@
       template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-emoji-neutral fa-2x feedback-neutral" aria-hidden="true" ></span></span>
 
   - # ====== Entry: Negative =====================================
-    id: 52986345780028734
+    id: 326329562459728290
     entry: 
       sequence: 3
       display: Negative
@@ -398,7 +398,7 @@
       template: <span title="#DISPLAY_VALUE#" aria-label="#DISPLAY_VALUE#"><span class="fa fa-frown-o fa-2x feedback-negative" aria-hidden="true" ></span></span>
 
 - # ====== List of Values: FEEDBACK_STATUS =====================
-  id: 52997628364028725
+  id: 326340845043728281
   identification: 
     name: FEEDBACK_STATUS
 
@@ -410,28 +410,28 @@
 
   entries: 
   - # ====== Entry: No Action ====================================
-    id: 52997861087028725
+    id: 326341077766728281
     entry: 
       sequence: 1
       display: No Action
       return: 0
 
   - # ====== Entry: Acknowledged =================================
-    id: 52998309065028725
+    id: 326341525744728281
     entry: 
       sequence: 2
       display: Acknowledged
       return: 1
 
   - # ====== Entry: Open =========================================
-    id: 52998717236028725
+    id: 326341933915728281
     entry: 
       sequence: 3
       display: Open
       return: 3
 
   - # ====== Entry: Closed =======================================
-    id: 52999084478028725
+    id: 326342301157728281
     entry: 
       sequence: 4
       display: Closed

@@ -5,7 +5,7 @@ identification:
   name: Manage Feedback
   alias: MANAGE-FEEDBACK
   title: Manage Feedback
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -34,7 +34,7 @@ css:
     .feedback-negative { color: var(--ut-feedback-negative-text-color, var(--ut-palette-danger)); }
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -59,11 +59,11 @@ help:
     <p><em><strong>Note:</strong> If feedback recipients have been defined then feedback submissions will also be emailed to the email addresses in the feedback recipients list.</em></p>
 
 configuration: 
-  build-option: 'Feature: Feedback' # 52836960903029292
+  build-option: 'Feature: Feedback' # 326180177582728848
 
 regions: 
 - # ====== Region: Manage Feedback =============================
-  id: 52981342419028740
+  id: 326324559098728296
   identification: 
     name: Manage Feedback
     type: Interactive Report
@@ -124,7 +124,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 53004830402028720
+    id: 326348047081728276
     link: 
       link-column: Link to Custom Target
       target: 
@@ -194,14 +194,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 53014569990028703
+      id: 326357786669728259
       identification: 
         name: Primary Report
         alias: 175572
 
     columns: 
     - # ====== Column: ID ==========================================
-      id: 53005238960028714
+      id: 326348455639728270
       identification: 
         column-name: ID
         type: Hidden
@@ -219,7 +219,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE_NAME ===================================
-      id: 53005585761028713
+      id: 326348802440728269
       identification: 
         column-name: PAGE_NAME
         type: Plain Text
@@ -260,7 +260,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: CREATED =====================================
-      id: 53005960749028713
+      id: 326349177428728269
       identification: 
         column-name: CREATED
         type: Plain Text
@@ -305,7 +305,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: CREATED_BY ==================================
-      id: 53006441474028712
+      id: 326349658153728268
       identification: 
         column-name: CREATED_BY
         type: Plain Text
@@ -346,7 +346,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: FEEDBACK ====================================
-      id: 53006804637028712
+      id: 326350021316728268
       identification: 
         column-name: FEEDBACK
         type: Plain Text
@@ -387,13 +387,13 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: RATING ======================================
-      id: 53007160731028711
+      id: 326350377410728267
       identification: 
         column-name: RATING
         type: Plain Text (based on List of Values)
 
       list-of-values: 
-        list-of-values: FEEDBACK_RATING # 52985243077028734
+        list-of-values: FEEDBACK_RATING # 326328459756728290
 
       heading: 
         heading: Rating
@@ -431,7 +431,7 @@ regions:
         pivot: true
 
     - # ====== Column: RATING_ICON =================================
-      id: 53007572325028711
+      id: 326350789004728267
       identification: 
         column-name: RATING_ICON
         type: Hidden
@@ -449,13 +449,13 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: STATUS ======================================
-      id: 53008027678028710
+      id: 326351244357728266
       identification: 
         column-name: STATUS
         type: Plain Text (based on List of Values)
 
       list-of-values: 
-        list-of-values: FEEDBACK_STATUS # 52997628364028725
+        list-of-values: FEEDBACK_STATUS # 326340845043728281
 
       heading: 
         heading: Status
@@ -490,7 +490,7 @@ regions:
         pivot: true
 
     - # ====== Column: RESPONSE ====================================
-      id: 53008362424028710
+      id: 326351579103728266
       identification: 
         column-name: RESPONSE
         type: Plain Text
@@ -531,7 +531,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: USER_AGENT ==================================
-      id: 53008802849028710
+      id: 326352019528728266
       identification: 
         column-name: USER_AGENT
         type: Plain Text
@@ -572,7 +572,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: UPDATED =====================================
-      id: 53009198771028709
+      id: 326352415450728265
       identification: 
         column-name: UPDATED
         type: Plain Text
@@ -617,7 +617,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: UPDATED_BY ==================================
-      id: 53009640766028709
+      id: 326352857445728265
       identification: 
         column-name: UPDATED_BY
         type: Plain Text
@@ -658,7 +658,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE_ID =====================================
-      id: 53010043245028709
+      id: 326353259924728265
       identification: 
         column-name: PAGE_ID
         type: Plain Text
@@ -743,14 +743,14 @@ regions:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 53015459581028702
+  id: 326358676260728258
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Manage Feedback # 52981342419028740
+    region: Manage Feedback # 326324559098728296
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -776,7 +776,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Refresh Report ======================
-  id: 52981170168028740
+  id: 326324386847728296
   identification: 
     name: Refresh Report
 
@@ -788,11 +788,11 @@ dynamic-actions:
   when: 
     event: Dialog Closed
     selection-type: Region
-    region: Manage Feedback # 52981342419028740
+    region: Manage Feedback # 326324559098728296
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 53016163729028702
+    id: 326359380408728258
     identification: 
       action: Refresh
 
@@ -801,11 +801,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Manage Feedback # 52981342419028740
+      region: Manage Feedback # 326324559098728296
 
     execution: 
       sequence: 10
-      event: Refresh Report # 52981170168028740
+      event: Refresh Report # 326324386847728296
       fire-when-event-result-is: True
       fire-on-initialization: false
 

@@ -38,7 +38,7 @@ server-cache:
 
 regions: 
 - # ====== Region: Search Results ==============================
-  id: 273204534199522001
+  id: 138682480177555
   identification: 
     name: Search Results
     type: Classic Report
@@ -133,7 +133,7 @@ regions:
 
   columns: 
   - # ====== Column: ID_PK_B_KONTROLA ============================
-    id: 273202574152521961
+    id: 140642527177595
     identification: 
       column-name: ID_PK_B_KONTROLA
       type: Hidden
@@ -148,7 +148,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: REFERENCE_ID ================================
-    id: 273202116859521960
+    id: 141099820177596
     identification: 
       column-name: REFERENCE_ID
       type: Plain Text
@@ -182,7 +182,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DATA_OSTATNIEJ_KONTROLI =====================
-    id: 273201751909521960
+    id: 141464770177596
     identification: 
       column-name: DATA_OSTATNIEJ_KONTROLI
       type: Hidden
@@ -197,7 +197,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DATA_PIERWSZEJ_KONTROLI =====================
-    id: 273201331450521960
+    id: 141885229177596
     identification: 
       column-name: DATA_PIERWSZEJ_KONTROLI
       type: Hidden
@@ -212,7 +212,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: LICZBA_WYKONANYCH_KONTROLI ==================
-    id: 273200917172521960
+    id: 142299507177596
     identification: 
       column-name: LICZBA_WYKONANYCH_KONTROLI
       type: Hidden
@@ -227,7 +227,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: STATUS ======================================
-    id: 273200521695521959
+    id: 142694984177597
     identification: 
       column-name: STATUS
       type: Plain Text
@@ -261,7 +261,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: CONTROL_LEVEL ===============================
-    id: 273200136822521959
+    id: 143079857177597
     identification: 
       column-name: CONTROL_LEVEL
       type: Plain Text
@@ -295,7 +295,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DESCRIPTION_FR_ =============================
-    id: 273199682334521959
+    id: 143534345177597
     identification: 
       column-name: DESCRIPTION_FR_
       type: Plain Text
@@ -329,7 +329,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DESCRIPTION_EN_ =============================
-    id: 273199334201521959
+    id: 143882478177597
     identification: 
       column-name: DESCRIPTION_EN_
       type: Plain Text
@@ -363,7 +363,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: SHORT_DESCRIPTION_FR_ =======================
-    id: 273198973349521956
+    id: 144243330177600
     identification: 
       column-name: SHORT_DESCRIPTION_FR_
       type: Plain Text
@@ -397,7 +397,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: SHORT_DESCRIPTION_EN_ =======================
-    id: 273198546534521955
+    id: 144670145177601
     identification: 
       column-name: SHORT_DESCRIPTION_EN_
       type: Plain Text
@@ -431,7 +431,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DEFINITION_FR_ ==============================
-    id: 273198134172521955
+    id: 145082507177601
     identification: 
       column-name: DEFINITION_FR_
       type: Hidden
@@ -450,7 +450,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DEFINITION_EN_ ==============================
-    id: 273197703130521955
+    id: 145513549177601
     identification: 
       column-name: DEFINITION_EN_
       type: Hidden
@@ -469,7 +469,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: OBJECTIVE_FR_ ===============================
-    id: 273197282633521955
+    id: 145934046177601
     identification: 
       column-name: OBJECTIVE_FR_
       type: Hidden
@@ -488,7 +488,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: OBJECTIVE_EN_ ===============================
-    id: 273196888048521954
+    id: 146328631177602
     identification: 
       column-name: OBJECTIVE_EN_
       type: Hidden
@@ -507,7 +507,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: DOMAIN_PROCESS ==============================
-    id: 273196487983521954
+    id: 146728696177602
     identification: 
       column-name: DOMAIN_PROCESS
       type: Plain Text
@@ -541,7 +541,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: RISKS =======================================
-    id: 273196099258521954
+    id: 147117421177602
     identification: 
       column-name: RISKS
       type: Plain Text
@@ -575,7 +575,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: CONTROL_GROUP ===============================
-    id: 273195776757521954
+    id: 147439922177602
     identification: 
       column-name: CONTROL_GROUP
       type: Plain Text
@@ -609,13 +609,13 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: Search ======================================
-  id: 273204445262522001
+  id: 138771417177555
   identification: 
     name: Search
     type: Smart Filters
 
   source: 
-    filtered-region: Search Results # 273204534199522001
+    filtered-region: Search Results # 138682480177555
 
   layout: 
     sequence: 10
@@ -654,7 +654,7 @@ regions:
 
   facets: 
   - # ====== Facet: P3_SEARCH ====================================
-    id: 273203914635521996
+    id: 139302044177560
     identification: 
       name: P3_SEARCH
       type: Search
@@ -676,7 +676,7 @@ regions:
       store-value-encrypted-in-session-state: true
 
   - # ====== Facet: P3_CONTROL_LEVEL =============================
-    id: 273203501847521989
+    id: 139714832177567
     identification: 
       name: P3_CONTROL_LEVEL
       type: Checkbox Group
@@ -726,7 +726,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Facet: P3_STATUS ====================================
-    id: 273203147185521989
+    id: 140069494177567
     identification: 
       name: P3_STATUS
       type: Checkbox Group
@@ -775,10 +775,10 @@ regions:
       escape-special-characters: true
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Facet: P3_DOMAIN_PROCESS ============================
-    id: 271892871349489559
+    id: 1450345330209997
     identification: 
       name: P3_DOMAIN_PROCESS
       type: Checkbox Group
@@ -826,7 +826,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Facet: P3_RISKS =====================================
-    id: 271892837448489558
+    id: 1450379231209998
     identification: 
       name: P3_RISKS
       type: Checkbox Group
@@ -874,7 +874,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Facet: P3_CONTROL_GROUP =============================
-    id: 271892695804489557
+    id: 1450520875209999
     identification: 
       name: P3_CONTROL_GROUP
       type: Checkbox Group
@@ -923,7 +923,7 @@ regions:
 
   filters: 
   - # ====== Filter: P3_SEARCH ===================================
-    id: 273203914635521996
+    id: 139302044177560
     identification: 
       name: P3_SEARCH
       type: Search
@@ -945,7 +945,7 @@ regions:
       store-value-encrypted-in-session-state: true
 
   - # ====== Filter: P3_CONTROL_LEVEL ============================
-    id: 273203501847521989
+    id: 139714832177567
     identification: 
       name: P3_CONTROL_LEVEL
       type: Checkbox Group
@@ -989,7 +989,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Filter: P3_STATUS ===================================
-    id: 273203147185521989
+    id: 140069494177567
     identification: 
       name: P3_STATUS
       type: Checkbox Group
@@ -1030,10 +1030,10 @@ regions:
       escape-special-characters: true
 
     configuration: 
-      build-option: Commented Out # 52549358497029667
+      build-option: Commented Out # 325892575176729223
 
   - # ====== Filter: P3_DOMAIN_PROCESS ===========================
-    id: 271892871349489559
+    id: 1450345330209997
     identification: 
       name: P3_DOMAIN_PROCESS
       type: Checkbox Group
@@ -1074,7 +1074,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Filter: P3_RISKS ====================================
-    id: 271892837448489558
+    id: 1450379231209998
     identification: 
       name: P3_RISKS
       type: Checkbox Group
@@ -1115,7 +1115,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Filter: P3_CONTROL_GROUP ============================
-    id: 271892695804489557
+    id: 1450520875209999
     identification: 
       name: P3_CONTROL_GROUP
       type: Checkbox Group

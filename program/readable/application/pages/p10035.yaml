@@ -5,7 +5,7 @@ identification:
   name: Automations Log
   alias: AUTOMATIONS-LOG
   title: Automations Log
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -51,11 +51,11 @@ help:
     
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Automations Log =============================
-  id: 52929774824028866
+  id: 326272991503728422
   identification: 
     name: Automations Log
     type: Interactive Report
@@ -109,7 +109,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52930442637028866
+    id: 326273659316728422
     link: 
       link-column: Exclude Link Column
 
@@ -171,14 +171,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52937448112028841
+      id: 326280664791728397
       identification: 
         name: Primary Report
         alias: 174800
 
     columns: 
     - # ====== Column: ID ==========================================
-      id: 52930767134028847
+      id: 326273983813728403
       identification: 
         column-name: ID
         type: Hidden
@@ -196,7 +196,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: START_TIMESTAMP =============================
-      id: 52931162267028846
+      id: 326274378946728402
       identification: 
         column-name: START_TIMESTAMP
         type: Plain Text
@@ -238,7 +238,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: AUTOMATION_NAME =============================
-      id: 52931608740028846
+      id: 326274825419728402
       identification: 
         column-name: AUTOMATION_NAME
         type: Plain Text
@@ -279,7 +279,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: STATUS ======================================
-      id: 52932044560028846
+      id: 326275261239728402
       identification: 
         column-name: STATUS
         type: Plain Text
@@ -320,7 +320,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: SUCCESSFUL_ROW_COUNT ========================
-      id: 52932427027028845
+      id: 326275643706728401
       identification: 
         column-name: SUCCESSFUL_ROW_COUNT
         type: Plain Text
@@ -361,7 +361,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ERROR_ROW_COUNT =============================
-      id: 52932817375028845
+      id: 326276034054728401
       identification: 
         column-name: ERROR_ROW_COUNT
         type: Plain Text
@@ -402,7 +402,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: MSG_COUNT ===================================
-      id: 52933214358028845
+      id: 326276431037728401
       identification: 
         column-name: MSG_COUNT
         type: Link
@@ -453,7 +453,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: IS_JOB ======================================
-      id: 52933636305028845
+      id: 326276852984728401
       identification: 
         column-name: IS_JOB
         type: Plain Text
@@ -494,7 +494,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: END_TIMESTAMP ===============================
-      id: 52933963999028844
+      id: 326277180678728400
       identification: 
         column-name: END_TIMESTAMP
         type: Plain Text
@@ -580,14 +580,14 @@ regions:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52938287274028841
+  id: 326281503953728397
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Automations Log # 52929774824028866
+    region: Automations Log # 326272991503728422
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true

@@ -22,36 +22,28 @@ navigation:
 css: 
   inline: |
     /* Podswietlenie zaznaczonego wiersza w IR */
-    #ir-dostepne-kontrole tr.apex-highlighted > td {
+    #ir-kontrole tr.apex-highlighted > td {
         background-color: #e8f4fd !important;
     }
     
     /* Podswietlenie wiersza juz bedacego w audycie */
-    #ir-dostepne-kontrole tr.juz-w-audycie > td {
-        background-color: #eafaea !important;
+    #ir-kontrole tr.juz-w-audycie > td {
+        background-color: #2f5a5d !important;
     }
     
     /* Checkbox – rozmiar i wyrownanie */
-    #ir-dostepne-kontrole input[type="checkbox"].cb-kontrola {
+    #ir-kontrole input[type="checkbox"].cb-kontrola {
         width: 14px !important;
         height: 14px !important;
         cursor: pointer;
     }
     
-    #ir-dostepne-kontrole th input[type="checkbox"] {
-        display: block;
-        margin: 0 auto;
-    }
-    
-    #ir-kontrole input.cb-kontrola {
-        width: 14px !important;
-        height: 14px !important;
-        cursor: pointer;
-    }
     #ir-kontrole th input[type="checkbox"] {
         display: block;
         margin: 0 auto;
     }
+    
+    
 
 security: 
   authentication: Page Requires Authentication
@@ -72,7 +64,7 @@ server-cache:
 
 regions: 
 - # ====== Region: Kontrole ====================================
-  id: 236817493323877852
+  id: 36525723355821704
   identification: 
     name: Kontrole
     title: Wybierz kontrole
@@ -115,7 +107,7 @@ regions:
     - P6_ZAZNACZONE_ID
 
   layout: 
-    sequence: 40
+    sequence: 50
     parent-region: No Parent
     slot: BODY
     start-new-layout: false
@@ -147,7 +139,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 236817427178877851
+    id: 36525789500821705
     link: 
       link-column: Exclude Link Column
 
@@ -206,14 +198,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 236741590846293115
+      id: 36601625833406441
       identification: 
         name: Primary Report
         alias: 4767100
 
     columns: 
     - # ====== Column: WYBIERZ =====================================
-      id: 236817287789877850
+      id: 36525928889821706
       identification: 
         column-name: WYBIERZ
         type: Plain Text
@@ -257,7 +249,7 @@ regions:
         escape-special-characters: false
 
     - # ====== Column: ID_PK_B_KONTROLA ============================
-      id: 236817213229877849
+      id: 36526003449821707
       identification: 
         column-name: ID_PK_B_KONTROLA
         type: Plain Text
@@ -298,7 +290,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: Reference ID ================================
-      id: 236817061880877848
+      id: 36526154798821708
       identification: 
         column-name: Reference ID
         type: Plain Text
@@ -339,7 +331,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: Nazwa =======================================
-      id: 236816930638877847
+      id: 36526286040821709
       identification: 
         column-name: Nazwa
         type: Plain Text
@@ -380,7 +372,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: Poziom ======================================
-      id: 236816845863877846
+      id: 36526370815821710
       identification: 
         column-name: Poziom
         type: Plain Text
@@ -421,7 +413,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: Obszar ======================================
-      id: 236816825605877845
+      id: 36526391073821711
       identification: 
         column-name: Obszar
         type: Plain Text
@@ -462,7 +454,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: Grupa =======================================
-      id: 236816686675877844
+      id: 36526530003821712
       identification: 
         column-name: Grupa
         type: Plain Text
@@ -503,7 +495,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: W AUDYCIE ===================================
-      id: 236816573073877843
+      id: 36526643605821713
       identification: 
         column-name: W AUDYCIE
         type: Plain Text
@@ -587,13 +579,13 @@ regions:
         alignment: center
 
 - # ====== Region: Breadcrumb ==================================
-  id: 236746405115336549
+  id: 36596811564363007
   identification: 
     name: Breadcrumb
     type: Breadcrumb
 
   source: 
-    breadcrumb: Breadcrumb # 52549978164029661
+    breadcrumb: Breadcrumb # 325893194843729217
 
   layout: 
     sequence: 10
@@ -631,7 +623,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P6_ID_AUDYTU =============================
-  id: 236817676718877854
+  id: 36525539960821702
   identification: 
     name: P6_ID_AUDYTU
     type: Text Field
@@ -648,7 +640,7 @@ page-items:
     disabled: false
 
   layout: 
-    sequence: 20
+    sequence: 30
     region: No Parent
     slot: BODY
     alignment: Left
@@ -687,7 +679,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P6_ZAZNACZONE_ID =========================
-  id: 236817571772877853
+  id: 36525644906821703
   identification: 
     name: P6_ZAZNACZONE_ID
     type: Text Field
@@ -704,7 +696,7 @@ page-items:
     disabled: false
 
   layout: 
-    sequence: 30
+    sequence: 40
     region: No Parent
     slot: BODY
     alignment: Left
@@ -743,8 +735,39 @@ page-items:
     restricted-characters: All characters can be saved.
 
 buttons: 
+- # ====== Button: USUN_Z_AUDYTU ===============================
+  id: 4129436988600012
+  identification: 
+    button-name: USUN_Z_AUDYTU
+    label: Usuń zaznaczone z audytu
+
+  layout: 
+    sequence: 20
+    region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Left center
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - t-Button--danger
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
 - # ====== Button: DODAJ_DO_AUDYTU =============================
-  id: 236816511896877842
+  id: 36526704782821714
   identification: 
     button-name: DODAJ_DO_AUDYTU
     label: Dodaj zaznaczone do audytu
@@ -774,7 +797,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: DA_Checkbox_Zmiana ==================
-  id: 236816312672877840
+  id: 36526904006821716
   identification: 
     name: DA_Checkbox_Zmiana
 
@@ -791,7 +814,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Execute JavaScript Code =====================
-    id: 236816192636877839
+    id: 36527024042821717
     identification: 
       action: Execute JavaScript Code
 
@@ -816,12 +839,12 @@ dynamic-actions:
 
     execution: 
       sequence: 10
-      event: DA_Checkbox_Zmiana # 236816312672877840
+      event: DA_Checkbox_Zmiana # 36526904006821716
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 - # ====== Dynamic Action: DA_Po_Odswiezeniu ===================
-  id: 236816058845877838
+  id: 36527157833821718
   identification: 
     name: DA_Po_Odswiezeniu
 
@@ -833,33 +856,45 @@ dynamic-actions:
   when: 
     event: After Refresh
     selection-type: Region
-    region: Kontrole # 236817493323877852
+    region: Kontrole # 36525723355821704
 
   actions: 
   - # ====== Action: Przywrócenie stanu ==========================
-    id: 236815957823877837
+    id: 36527258855821719
     identification: 
       name: Przywrócenie stanu
       action: Execute JavaScript Code
 
     settings: 
-      code: |
-        (function () {
-            // APEX odtworzyl checkboxy przez p_checked_values w SQL.
-            // Synchronizujemy tylko checkbox "zaznacz wszystkie" w naglowku.
-            var total   = $('#ir-kontrole input.cb-kontrola').length;
-            var checked = $('#ir-kontrole input.cb-kontrola:checked').length;
-            $('#cb-all').prop('checked', total > 0 && total === checked);
-        }());
+      code: |2
+          (function () {
+              // Synchronizacja checkboxa "zaznacz wszystkie"
+              var total   = $('#ir-kontrole input.cb-kontrola').length;
+              var checked = $('#ir-kontrole input.cb-kontrola:checked').length;
+              $('#cb-all').prop('checked', total > 0 && total === checked);
+        
+              // Znajdź ID nagłówka kolumny "W Audycie" po tekście
+              var thId = $('#ir-kontrole th').filter(function () {
+                  return $(this).text().trim() === 'W Audycie';
+              }).attr('id');
+        
+              if (!thId) { return; } // kolumna niewidoczna lub ukryta przez użytkownika
+        
+              // Podświetl wiersze gdzie W AUDYCIE = TAK
+              $('#ir-kontrole tbody tr').each(function () {
+                  var val = $(this).find('td[headers="' + thId + '"]').text().trim();
+                  $(this).toggleClass('juz-w-audycie', val === 'TAK');
+              });
+          }());
 
     execution: 
       sequence: 10
-      event: DA_Po_Odswiezeniu # 236816058845877838
+      event: DA_Po_Odswiezeniu # 36527157833821718
       fire-when-event-result-is: True
-      fire-on-initialization: false
+      fire-on-initialization: true
 
 - # ====== Dynamic Action: DA_Zaznacz_Wszystkie ================
-  id: 236491116175026876
+  id: 36852100504672680
   identification: 
     name: DA_Zaznacz_Wszystkie
 
@@ -875,7 +910,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Execute JavaScript Code =====================
-    id: 236490994068026875
+    id: 36852222611672681
     identification: 
       action: Execute JavaScript Code
 
@@ -883,7 +918,7 @@ dynamic-actions:
       code: |
         (function () {
             var zaznaczWszystkie = $(event.target).is(':checked');
-            var $ir  = $('#ir-dostepne-kontrole');
+            var $ir  = $('#ir-kontrole');
             var listaArr = [];
         
             $ir.find('input.cb-kontrola').each(function () {
@@ -894,18 +929,96 @@ dynamic-actions:
                 }
             });
         
-            apex.item('P23_ZAZNACZONE_ID').setValue(listaArr.join(','));
+            apex.item('P6_ZAZNACZONE_ID').setValue(listaArr.join(','));
         }());
 
     execution: 
       sequence: 10
-      event: DA_Zaznacz_Wszystkie # 236491116175026876
+      event: DA_Zaznacz_Wszystkie # 36852100504672680
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 processes: 
+- # ====== Process: Usun_Kontrole ==============================
+  id: 4129569561600013
+  identification: 
+    name: Usun_Kontrole
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      /*  -- KOD PL/SQL PROCESU "Usun_Kontrole" --*/
+      DECLARE
+          v_tab  APEX_APPLICATION_GLOBAL.VC_ARR2;
+          v_err  VARCHAR2(4000);
+      BEGIN
+          -- Sprawdz czy cos zaznaczono
+          IF :P6_ZAZNACZONE_ID IS NULL OR TRIM(:P6_ZAZNACZONE_ID) = '' THEN
+              APEX_ERROR.ADD_ERROR(
+                  p_message          => 'Zaznacz przynajmniej jedną kontrolę do usunięcia.',
+                  p_display_location => APEX_ERROR.c_inline_in_notification
+              );
+              RETURN;
+          END IF;
+          -- Rozdziel liste ID przecinkami i iteruj
+          v_tab := APEX_UTIL.STRING_TO_TABLE(:P6_ZAZNACZONE_ID, ',');
+          FOR i IN 1 .. v_tab.COUNT LOOP
+              IF TRIM(v_tab(i)) IS NOT NULL THEN
+                  BEGIN
+                      -- Etap 1: Usun ankiete i oceny (BEZ COMMIT)
+                      PKG_ANKIETA.USUN_ANKIETE(
+                          p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),
+                          p_id_kontrola => TO_NUMBER(TRIM(v_tab(i)))
+                      );
+                      -- Etap 2: Usun kontrole z audytu (COMMIT wewnatrz)
+                      -- Jesli status audytu != Otwarty, rzuci wyjatek
+                      -- i cala operacja (lacznie z USUN_ANKIETE) zostanie wycofana
+                      PKG_AUDYT.USUN_KONTROLE(
+                          p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),
+                          p_id_kontrola => TO_NUMBER(TRIM(v_tab(i))),
+                          p_uzytkownik  => :APP_USER
+                      );
+                  EXCEPTION
+                      WHEN OTHERS THEN
+                          v_err := SQLERRM;
+                          -- Pomijamy ORA-20022 (kontrola nie jest w audycie)
+                          IF INSTR(v_err, 'ORA-20022') = 0 THEN
+                              APEX_ERROR.ADD_ERROR(
+                                  p_message          => 'Błąd usuwania: ' || v_err,
+                                  p_display_location => APEX_ERROR.c_inline_in_notification
+                              );
+                              RETURN;
+                          END IF;
+                  END;
+              END IF;
+          END LOOP;
+          -- Wyczysc zaznaczenie po zapisie
+          :P6_ZAZNACZONE_ID := NULL;
+      EXCEPTION
+          WHEN OTHERS THEN
+              v_err := SQLERRM;
+              APEX_ERROR.ADD_ERROR(
+                  p_message          => 'Błąd podczas usuwania kontroli z audytu: ' || v_err,
+                  p_display_location => APEX_ERROR.c_inline_in_notification
+              );
+      END;
+
+  execution: 
+    sequence: 20
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: USUN_Z_AUDYTU # 4129436988600012
+
 - # ====== Process: Dodaj_Kontrole =============================
-  id: 236816361729877841
+  id: 36526854949821715
   identification: 
     name: Dodaj_Kontrole
     type: Execute Code
@@ -927,12 +1040,11 @@ processes:
               );
               RETURN;
           END IF;
-      
           -- Rozdziel liste ID przecinkami i iteruj
           v_tab := APEX_UTIL.STRING_TO_TABLE(:P6_ZAZNACZONE_ID, ',');
-      
           FOR i IN 1 .. v_tab.COUNT LOOP
               IF TRIM(v_tab(i)) IS NOT NULL THEN
+                  -- Etap 1: Dodaj kontrole do audytu
                   BEGIN
                       PKG_AUDYT.DODAJ_KONTROLE(
                           p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),
@@ -942,21 +1054,34 @@ processes:
                   EXCEPTION
                       WHEN OTHERS THEN
                           v_err := SQLERRM;
-                          -- Pomijamy -20012 (kontrola juz w audycie) – reszta przerywa
+                          -- Pomijamy ORA-20012 (kontrola juz w audycie) – kontynuuj do ankiety
                           IF INSTR(v_err, 'ORA-20012') = 0 THEN
                               APEX_ERROR.ADD_ERROR(
-                                  p_message          => 'Błąd: ' || v_err,
+                                  p_message          => 'Błąd dodawania kontroli: ' || v_err,
                                   p_display_location => APEX_ERROR.c_inline_in_notification
                               );
                               RETURN;
                           END IF;
                   END;
+                  -- Etap 2: Wygeneruj ankiete (idempotentna – sprawdza flage)
+                  BEGIN
+                      PKG_ANKIETA.GENERUJ_ANKIETE(
+                          p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),
+                          p_id_kontrola => TO_NUMBER(TRIM(v_tab(i)))
+                      );
+                  EXCEPTION
+                      WHEN OTHERS THEN
+                          v_err := SQLERRM;
+                          APEX_ERROR.ADD_ERROR(
+                              p_message          => 'Błąd generowania ankiety: ' || v_err,
+                              p_display_location => APEX_ERROR.c_inline_in_notification
+                          );
+                          RETURN;
+                  END;
               END IF;
           END LOOP;
-      
           -- Wyczysc zaznaczenie po zapisie
           :P6_ZAZNACZONE_ID := NULL;
-      
       EXCEPTION
           WHEN OTHERS THEN
               v_err := SQLERRM;
@@ -975,5 +1100,5 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: DODAJ_DO_AUDYTU # 236816511896877842
+    when-button-pressed: DODAJ_DO_AUDYTU # 36526704782821714
 

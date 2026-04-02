@@ -5,7 +5,7 @@ identification:
   name: Page Views
   alias: PAGE-VIEWS
   title: Page Views
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -51,11 +51,11 @@ help:
     Click on the column headings to sort and filter data, or click on the <strong>Actions</strong> button to customize column display and many additional advanced features. Click the <strong>Reset</strong> button to reset the interactive report back to the default settings.</p>
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Page Views ==================================
-  id: 52884901490028976
+  id: 326228118169728532
   identification: 
     name: Page Views
     type: Interactive Report
@@ -119,7 +119,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52885526498028976
+    id: 326228743177728532
     link: 
       link-column: Exclude Link Column
 
@@ -181,14 +181,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52893245004028958
+      id: 326236461683728514
       identification: 
         name: Primary Report
         alias: 174358
 
     columns: 
     - # ====== Column: PAGE_NAME ===================================
-      id: 52885928727028966
+      id: 326229145406728522
       identification: 
         column-name: PAGE_NAME
         type: Plain Text
@@ -229,7 +229,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: USER_ID =====================================
-      id: 52886272179028965
+      id: 326229488858728521
       identification: 
         column-name: USER_ID
         type: Plain Text
@@ -270,7 +270,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: TIMESTAMP ===================================
-      id: 52886726791028965
+      id: 326229943470728521
       identification: 
         column-name: TIMESTAMP
         type: Plain Text
@@ -315,7 +315,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ELAPSED =====================================
-      id: 52887086560028965
+      id: 326230303239728521
       identification: 
         column-name: ELAPSED
         type: Plain Text
@@ -359,7 +359,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE ========================================
-      id: 52887545248028964
+      id: 326230761927728520
       identification: 
         column-name: PAGE
         type: Plain Text
@@ -400,7 +400,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE_MODE ===================================
-      id: 52887914224028964
+      id: 326231130903728520
       identification: 
         column-name: PAGE_MODE
         type: Plain Text
@@ -441,7 +441,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: COMPONENT_NAME ==============================
-      id: 52888257530028964
+      id: 326231474209728520
       identification: 
         column-name: COMPONENT_NAME
         type: Plain Text
@@ -482,7 +482,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: NUM_ROWS ====================================
-      id: 52888708569028964
+      id: 326231925248728520
       identification: 
         column-name: NUM_ROWS
         type: Plain Text
@@ -526,7 +526,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: IR_SEARCH ===================================
-      id: 52889069841028963
+      id: 326232286520728519
       identification: 
         column-name: IR_SEARCH
         type: Plain Text
@@ -570,7 +570,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ERROR =======================================
-      id: 52889505148028963
+      id: 326232721827728519
       identification: 
         column-name: ERROR
         type: Plain Text
@@ -654,7 +654,7 @@ regions:
         alignment: center
 
 - # ====== Region: Buttons =====================================
-  id: 52884974328028976
+  id: 326228191007728532
   identification: 
     name: Buttons
     type: Static Content
@@ -696,7 +696,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10034_TIMEFRAME =========================
-  id: 52884821935028976
+  id: 326228038614728532
   identification: 
     name: P10034_TIMEFRAME
     type: Select List
@@ -713,7 +713,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Buttons # 52884974328028976
+    region: Buttons # 326228191007728532
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -734,7 +734,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: TIMEFRAME (4 WEEKS) # 52881532871028982
+    list-of-values: TIMEFRAME (4 WEEKS) # 326224749550728538
     display-extra-values: false
     display-null-value: false
 
@@ -759,14 +759,14 @@ page-items:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52894124451028957
+  id: 326237341130728513
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Page Views # 52884901490028976
+    region: Page Views # 326228118169728532
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -792,7 +792,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Refresh Report ======================
-  id: 52885106430028976
+  id: 326228323109728532
   identification: 
     name: Refresh Report
 
@@ -809,7 +809,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 52895381774028954
+    id: 326238598453728510
     identification: 
       action: Refresh
 
@@ -818,11 +818,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Page Views # 52884901490028976
+      region: Page Views # 326228118169728532
 
     execution: 
       sequence: 10
-      event: Refresh Report # 52885106430028976
+      event: Refresh Report # 326228323109728532
       fire-when-event-result-is: True
       fire-on-initialization: false
 

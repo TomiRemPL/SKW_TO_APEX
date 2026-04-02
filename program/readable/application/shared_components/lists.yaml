@@ -1,6 +1,6 @@
 ---
 - # ====== List: Navigation Menu ===============================
-  id: 52550476058029660
+  id: 325893692737729216
   identification: 
     name: Navigation Menu
 
@@ -12,7 +12,7 @@
 
   entries: 
   - # ====== Entry: DAW_WYSZUKIWANIE =============================
-    id: 273204960193522002
+    id: 138256486177554
     label: 
       label: DAW_WYSZUKIWANIE
 
@@ -39,7 +39,7 @@
       translatable: false
 
   - # ====== Entry: DAW_IMPORT_KONTROLI ==========================
-    id: 244919646130113991
+    id: 28423570549585565
     label: 
       label: DAW_IMPORT_KONTROLI
 
@@ -66,7 +66,7 @@
       translatable: false
 
   - # ====== Entry: DAW_LISTA_AUDYTOW ============================
-    id: 236842308768933782
+    id: 36500907910765774
     label: 
       label: DAW_LISTA_AUDYTOW
 
@@ -93,7 +93,7 @@
       translatable: false
 
   - # ====== Entry: DAW_WYBOR_KONTROLI ===========================
-    id: 236746825997336550
+    id: 36596390682363006
     label: 
       label: DAW_WYBOR_KONTROLI
 
@@ -120,7 +120,7 @@
       translatable: false
 
   - # ====== Entry: DAW_ANKIETA ==================================
-    id: 15690615464905288
+    id: 289033832144604844
     label: 
       label: DAW_ANKIETA
 
@@ -147,7 +147,7 @@
       translatable: false
 
   - # ====== Entry: Home =========================================
-    id: 52848145908029213
+    id: 326191362587728769
     label: 
       label: Home
 
@@ -172,7 +172,7 @@
       translatable: false
 
 - # ====== List: Navigation Bar ================================
-  id: 52834303076029317
+  id: 326177519755728873
   identification: 
     name: Navigation Bar
 
@@ -184,7 +184,7 @@
 
   entries: 
   - # ====== Entry: Admin ========================================
-    id: 41262362573994080
+    id: 314605579253693636
     label: 
       label: Admin
 
@@ -210,10 +210,10 @@
       2.: icon-only
 
     security: 
-      authorization-scheme: Administration Rights # 52839508229029280
+      authorization-scheme: Administration Rights # 326182724908728836
 
   - # ====== Entry: Install App ==================================
-    id: 53018746666028691
+    id: 326361963345728247
     label: 
       label: Install App
 
@@ -237,7 +237,7 @@
       2.: a-pwaInstall
 
   - # ====== Entry: Feedback =====================================
-    id: 53019077905028688
+    id: 326362294584728244
     label: 
       label: Feedback
 
@@ -271,10 +271,10 @@
       pl/sql-expression: apex_util.feedback_enabled
 
     configuration: 
-      build-option: 'Feature: Feedback' # 52836960903029292
+      build-option: 'Feature: Feedback' # 326180177582728848
 
   - # ====== Entry: About ========================================
-    id: 53019415785028688
+    id: 326362632464728244
     label: 
       label: About
 
@@ -292,10 +292,10 @@
       2.: icon-only
 
     configuration: 
-      build-option: 'Feature: About Page' # 52837486549029292
+      build-option: 'Feature: About Page' # 326180703228728848
 
   - # ====== Entry: Page Help ====================================
-    id: 53019860890028687
+    id: 326363077569728243
     label: 
       label: Page Help
 
@@ -304,7 +304,7 @@
 
     layout: 
       sequence: 72
-      parent-entry: About # 53019415785028688
+      parent-entry: About # 326362632464728244
 
     is-current: 
       type: Target Page
@@ -324,16 +324,16 @@
       2.: icon-only
 
     configuration: 
-      build-option: 'Feature: About Page' # 52837486549029292
+      build-option: 'Feature: About Page' # 326180703228728848
 
   - # ====== Entry: --- ==========================================
-    id: 53020271241028687
+    id: 326363487920728243
     label: 
       label: '---'
 
     layout: 
       sequence: 74
-      parent-entry: About # 53019415785028688
+      parent-entry: About # 326362632464728244
 
     is-current: 
       type: Target Page
@@ -348,7 +348,7 @@
       translatable: false
 
   - # ====== Entry: About Page ===================================
-    id: 53020741095028686
+    id: 326363957774728242
     label: 
       label: About Page
 
@@ -357,7 +357,7 @@
 
     layout: 
       sequence: 76
-      parent-entry: About # 53019415785028688
+      parent-entry: About # 326362632464728244
 
     is-current: 
       type: Target Page
@@ -375,10 +375,10 @@
       translatable: false
 
     configuration: 
-      build-option: 'Feature: About Page' # 52837486549029292
+      build-option: 'Feature: About Page' # 326180703228728848
 
   - # ====== Entry: &APP_USER. ===================================
-    id: 53021003526028686
+    id: 326364220205728242
     label: 
       label: '&APP_USER.'
 
@@ -402,13 +402,13 @@
       2.: has-username
 
   - # ====== Entry: --- ==========================================
-    id: 53021510363028686
+    id: 326364727042728242
     label: 
       label: '---'
 
     layout: 
       sequence: 94
-      parent-entry: '&APP_USER.' # 53021003526028686
+      parent-entry: '&APP_USER.' # 326364220205728242
 
     is-current: 
       type: Target Page
@@ -426,7 +426,7 @@
       type: User is Authenticated (not public)
 
   - # ====== Entry: Sign Out =====================================
-    id: 53021915590028686
+    id: 326365132269728242
     label: 
       label: Sign Out
 
@@ -435,7 +435,7 @@
 
     layout: 
       sequence: 96
-      parent-entry: '&APP_USER.' # 53021003526028686
+      parent-entry: '&APP_USER.' # 326364220205728242
 
     is-current: 
       type: Target Page
@@ -453,7 +453,7 @@
       type: User is Authenticated (not public)
 
   - # ====== Entry: Settings =====================================
-    id: 53048170951028569
+    id: 326391387630728125
     label: 
       label: Settings
 
@@ -462,7 +462,7 @@
 
     layout: 
       sequence: 92
-      parent-entry: '&APP_USER.' # 53021003526028686
+      parent-entry: '&APP_USER.' # 326364220205728242
 
     is-current: 
       type: Target Page
@@ -479,10 +479,10 @@
       translatable: false
 
     configuration: 
-      build-option: 'Feature: User Settings' # 53041886939028585
+      build-option: 'Feature: User Settings' # 326385103618728141
 
 - # ====== List: Application Configuration =====================
-  id: 53023476891028671
+  id: 326366693570728227
   identification: 
     name: Application Configuration
 
@@ -493,11 +493,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: Configuration Options' # 52837250212029292
+    build-option: 'Feature: Configuration Options' # 326180466891728848
 
   entries: 
   - # ====== Entry: Configuration Options ========================
-    id: 53023871382028670
+    id: 326367088061728226
     label: 
       label: Configuration Options
 
@@ -524,10 +524,10 @@
       1.: Enable or disable application features
 
     configuration: 
-      build-option: 'Feature: Configuration Options' # 52837250212029292
+      build-option: 'Feature: Configuration Options' # 326180466891728848
 
 - # ====== List: User Interface ================================
-  id: 53024249324028670
+  id: 326367466003728226
   identification: 
     name: User Interface
 
@@ -538,11 +538,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: Theme Style Selection' # 52837603359029292
+    build-option: 'Feature: Theme Style Selection' # 326180820038728848
 
   entries: 
   - # ====== Entry: Theme Style Selection ========================
-    id: 53024558372028670
+    id: 326367775051728226
     label: 
       label: Theme Style Selection
 
@@ -569,10 +569,10 @@
       1.: Set the default application look and feel
 
     configuration: 
-      build-option: 'Feature: Theme Style Selection' # 52837603359029292
+      build-option: 'Feature: Theme Style Selection' # 326180820038728848
 
 - # ====== List: Activity Reports ==============================
-  id: 53024933084028669
+  id: 326368149763728225
   identification: 
     name: Activity Reports
 
@@ -583,11 +583,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: Activity Reporting' # 52836924967029292
+    build-option: 'Feature: Activity Reporting' # 326180141646728848
 
   entries: 
   - # ====== Entry: Dashboard ====================================
-    id: 53025327254028669
+    id: 326368543933728225
     label: 
       label: Dashboard
 
@@ -614,7 +614,7 @@
       1.: View application activity metrics
 
   - # ====== Entry: Top Users ====================================
-    id: 53025686060028669
+    id: 326368902739728225
     label: 
       label: Top Users
 
@@ -641,7 +641,7 @@
       1.: Report of page views aggregated by user
 
   - # ====== Entry: Application Error Log ========================
-    id: 53026057208028669
+    id: 326369273887728225
     label: 
       label: Application Error Log
 
@@ -668,7 +668,7 @@
       1.: Report of errors logged by this application
 
   - # ====== Entry: Page Performance =============================
-    id: 53026482326028668
+    id: 326369699005728224
     label: 
       label: Page Performance
 
@@ -695,7 +695,7 @@
       1.: Report of activity and performance by application page
 
   - # ====== Entry: Page Views ===================================
-    id: 53026912787028668
+    id: 326370129466728224
     label: 
       label: Page Views
 
@@ -722,7 +722,7 @@
       1.: Report of each page view by user including date of access and elapsed time
 
   - # ====== Entry: Automations Log ==============================
-    id: 53027280221028664
+    id: 326370496900728220
     label: 
       label: Automations Log
 
@@ -757,7 +757,7 @@
         and l.application_id = :APP_ID
 
 - # ====== List: Access Control ================================
-  id: 53027618997028664
+  id: 326370835676728220
   identification: 
     name: Access Control
 
@@ -768,11 +768,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: Access Control' # 52836843194029292
+    build-option: 'Feature: Access Control' # 326180059873728848
 
   entries: 
   - # ====== Entry: Users ========================================
-    id: 53028004532028664
+    id: 326371221211728220
     label: 
       label: Users
 
@@ -799,7 +799,7 @@
       1.: Set level of access for authenticated users of this application
 
   - # ====== Entry: Access Control ===============================
-    id: 53028389149028664
+    id: 326371605828728220
     label: 
       label: Access Control
 
@@ -825,7 +825,7 @@
       1.: Change access control settings and disable access control
 
 - # ====== List: Feedback ======================================
-  id: 53028666967028663
+  id: 326371883646728219
   identification: 
     name: Feedback
 
@@ -836,11 +836,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: Feedback' # 52836960903029292
+    build-option: 'Feature: Feedback' # 326180177582728848
 
   entries: 
   - # ====== Entry: User Feedback ================================
-    id: 53029086810028663
+    id: 326372303489728219
     label: 
       label: User Feedback
 
@@ -867,7 +867,7 @@
       1.: Report of all feedback submitted by application users
 
 - # ====== List: User Settings =================================
-  id: 53045487634028578
+  id: 326388704313728134
   identification: 
     name: User Settings
 
@@ -878,11 +878,11 @@
     type: Static Values
 
   configuration: 
-    build-option: 'Feature: User Settings' # 53041886939028585
+    build-option: 'Feature: User Settings' # 326385103618728141
 
   entries: 
   - # ====== Entry: Push Notifications ===========================
-    id: 53045924905028578
+    id: 326389141584728134
     label: 
       label: Push Notifications
 
@@ -909,5 +909,5 @@
       2.: <span class="a-pwaPush--state"></span>
 
     configuration: 
-      build-option: 'Feature: Push Notifications' # 53041619461028585
+      build-option: 'Feature: Push Notifications' # 326384836140728141
 

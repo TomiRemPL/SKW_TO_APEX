@@ -5,7 +5,7 @@ identification:
   name: Feedback
   alias: FEEDBACK1
   title: Feedback
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -32,7 +32,7 @@ css:
     .feedback-negative { color: var(--ut-feedback-negative-text-color, var(--ut-palette-danger)); }
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -50,11 +50,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Feedback' # 52836960903029292
+  build-option: 'Feature: Feedback' # 326180177582728848
 
 regions: 
 - # ====== Region: Form Items Region ===========================
-  id: 52980609263028740
+  id: 326323825942728296
   identification: 
     name: Form Items Region
     type: Static Content
@@ -93,7 +93,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Buttons =====================================
-  id: 52980716630028740
+  id: 326323933309728296
   identification: 
     name: Buttons
     type: Static Content
@@ -132,7 +132,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10054_ID ================================
-  id: 52995063762028727
+  id: 326338280441728283
   identification: 
     name: P10054_ID
     type: Hidden
@@ -142,7 +142,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
 
   advanced: 
@@ -162,7 +162,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_PAGE_ID ===========================
-  id: 52995489942028727
+  id: 326338706621728283
   identification: 
     name: P10054_PAGE_ID
     type: Display Only
@@ -179,7 +179,7 @@ page-items:
 
   layout: 
     sequence: 20
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -211,7 +211,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_FILED =============================
-  id: 52995872736028727
+  id: 326339089415728283
   identification: 
     name: P10054_FILED
     type: Display Only
@@ -228,7 +228,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -260,7 +260,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_RATING_ICON =======================
-  id: 52996299326028726
+  id: 326339516005728282
   identification: 
     name: P10054_RATING_ICON
     type: Display Only
@@ -275,7 +275,7 @@ page-items:
 
   layout: 
     sequence: 40
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -307,7 +307,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_FEEDBACK ==========================
-  id: 52996714564028726
+  id: 326339931243728282
   identification: 
     name: P10054_FEEDBACK
     type: Display Only
@@ -324,7 +324,7 @@ page-items:
 
   layout: 
     sequence: 50
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -356,7 +356,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_RESPONSE ==========================
-  id: 52997145239028726
+  id: 326340361918728282
   identification: 
     name: P10054_RESPONSE
     type: Textarea
@@ -373,7 +373,7 @@ page-items:
 
   layout: 
     sequence: 60
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -414,7 +414,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_FEEDBACK_STATUS ===================
-  id: 52997538594028726
+  id: 326340755273728282
   identification: 
     name: P10054_FEEDBACK_STATUS
     type: Select List
@@ -431,7 +431,7 @@ page-items:
 
   layout: 
     sequence: 70
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -451,7 +451,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: FEEDBACK_STATUS # 52997628364028725
+    list-of-values: FEEDBACK_STATUS # 326340845043728281
     display-extra-values: false
     display-null-value: false
 
@@ -474,7 +474,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10054_USER_AGENT ========================
-  id: 52999822820028724
+  id: 326343039499728280
   identification: 
     name: P10054_USER_AGENT
     type: Display Only
@@ -491,7 +491,7 @@ page-items:
 
   layout: 
     sequence: 100
-    region: Form Items Region # 52980609263028740
+    region: Form Items Region # 326323825942728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -524,14 +524,14 @@ page-items:
 
 buttons: 
 - # ====== Button: SAVE ========================================
-  id: 52980781720028740
+  id: 326323998399728296
   identification: 
     button-name: SAVE
     label: Apply Changes
 
   layout: 
     sequence: 10
-    region: Buttons # 52980716630028740
+    region: Buttons # 326323933309728296
     slot: CREATE
     start-new-layout: false
     start-new-row: true
@@ -553,14 +553,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: DELETE ======================================
-  id: 52980963243028740
+  id: 326324179922728296
   identification: 
     button-name: DELETE
     label: Delete
 
   layout: 
     sequence: 20
-    region: Buttons # 52980716630028740
+    region: Buttons # 326323933309728296
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -592,14 +592,14 @@ buttons:
     item: P10054_ID
 
 - # ====== Button: CANCEL ======================================
-  id: 52993464226028728
+  id: 326336680905728284
   identification: 
     button-name: CANCEL
     label: Cancel
 
   layout: 
     sequence: 10
-    region: Buttons # 52980716630028740
+    region: Buttons # 326323933309728296
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -619,7 +619,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52993614059028728
+  id: 326336830738728284
   identification: 
     name: Cancel Dialog
 
@@ -631,23 +631,23 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CANCEL # 52993464226028728
+    button: CANCEL # 326336680905728284
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52994348735028728
+    id: 326337565414728284
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52993614059028728
+      event: Cancel Dialog # 326336830738728284
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 processes: 
 - # ====== Process: Load Data ==================================
-  id: 53000309079028723
+  id: 326343525758728279
   identification: 
     name: Load Data
     type: Execute Code
@@ -688,7 +688,7 @@ processes:
     run-process: Once Per Page Visit (default)
 
 - # ====== Process: Reply to Feedback ==========================
-  id: 53000628840028723
+  id: 326343845519728279
   identification: 
     name: Reply to Feedback
     type: Invoke API
@@ -712,11 +712,11 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: SAVE # 52980781720028740
+    when-button-pressed: SAVE # 326323998399728296
 
   parameters: 
   - # ====== Parameter: p_feedback_id ============================
-    id: 53001108895028723
+    id: 326344325574728279
     identification: 
       name: p_feedback_id
 
@@ -733,7 +733,7 @@ processes:
       display-sequence: 1
 
   - # ====== Parameter: p_status =================================
-    id: 53001624368028722
+    id: 326344841047728278
     identification: 
       name: p_status
 
@@ -750,7 +750,7 @@ processes:
       display-sequence: 2
 
   - # ====== Parameter: p_public_response ========================
-    id: 53002119781028722
+    id: 326345336460728278
     identification: 
       name: p_public_response
 
@@ -767,7 +767,7 @@ processes:
       display-sequence: 3
 
 - # ====== Process: Delete Feedback ============================
-  id: 53002509799028722
+  id: 326345726478728278
   identification: 
     name: Delete Feedback
     type: Invoke API
@@ -791,11 +791,11 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: DELETE # 52980963243028740
+    when-button-pressed: DELETE # 326324179922728296
 
   parameters: 
   - # ====== Parameter: p_feedback_id ============================
-    id: 53003045141028722
+    id: 326346261820728278
     identification: 
       name: p_feedback_id
 
@@ -812,7 +812,7 @@ processes:
       display-sequence: 1
 
 - # ====== Process: Clear Page(s) Cache ========================
-  id: 53003535105028721
+  id: 326346751784728277
   identification: 
     name: Clear Page(s) Cache
     type: Clear Session State
@@ -830,10 +830,10 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: DELETE # 52980963243028740
+    when-button-pressed: DELETE # 326324179922728296
 
 - # ====== Process: Close Dialog ===============================
-  id: 53003927854028721
+  id: 326347144533728277
   identification: 
     name: Close Dialog
     type: Close Dialog

@@ -5,7 +5,7 @@ identification:
   name: Page Performance
   alias: PAGE-PERFORMANCE
   title: Page Performance
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -51,11 +51,11 @@ help:
     Click on the column headings to sort and filter data, or click on the <strong>Actions</strong> button to customize column display and many additional advanced features. Click the <strong>Reset</strong> button to reset the interactive report back to the default settings.</p>
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Page Performance ============================
-  id: 52895899125028954
+  id: 326239115804728510
   identification: 
     name: Page Performance
     type: Interactive Report
@@ -121,7 +121,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52896479964028954
+    id: 326239696643728510
     link: 
       link-column: Exclude Link Column
 
@@ -183,14 +183,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52907040532028931
+      id: 326250257211728487
       identification: 
         name: Primary Report
         alias: 174496
 
     columns: 
     - # ====== Column: PAGE ========================================
-      id: 52896949334028943
+      id: 326240166013728499
       identification: 
         column-name: PAGE
         type: Plain Text
@@ -231,7 +231,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE_NAME ===================================
-      id: 52897294778028943
+      id: 326240511457728499
       identification: 
         column-name: PAGE_NAME
         type: Plain Text
@@ -272,7 +272,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: MEDIAN_ELAPSED ==============================
-      id: 52897694408028942
+      id: 326240911087728498
       identification: 
         column-name: MEDIAN_ELAPSED
         type: Plain Text
@@ -316,7 +316,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: WEIGHTED_PERFORMANCE ========================
-      id: 52898081054028942
+      id: 326241297733728498
       identification: 
         column-name: WEIGHTED_PERFORMANCE
         type: Plain Text
@@ -360,7 +360,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ERRORS ======================================
-      id: 52898478665028941
+      id: 326241695344728497
       identification: 
         column-name: ERRORS
         type: Plain Text
@@ -404,7 +404,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: DISTINCT_USERS ==============================
-      id: 52898918481028941
+      id: 326242135160728497
       identification: 
         column-name: DISTINCT_USERS
         type: Plain Text
@@ -448,7 +448,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: APPLICATION_SESSIONS ========================
-      id: 52899298592028940
+      id: 326242515271728496
       identification: 
         column-name: APPLICATION_SESSIONS
         type: Plain Text
@@ -492,7 +492,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PAGE_VIEWS ==================================
-      id: 52899728720028940
+      id: 326242945399728496
       identification: 
         column-name: PAGE_VIEWS
         type: Plain Text
@@ -536,7 +536,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: MAX_ELAPSED =================================
-      id: 52900125959028939
+      id: 326243342638728495
       identification: 
         column-name: MAX_ELAPSED
         type: Plain Text
@@ -580,7 +580,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: TOTAL_ROWS ==================================
-      id: 52900459685028939
+      id: 326243676364728495
       identification: 
         column-name: TOTAL_ROWS
         type: Plain Text
@@ -624,7 +624,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: PARTIAL_PAGE_VIEWS ==========================
-      id: 52900888511028938
+      id: 326244105190728494
       identification: 
         column-name: PARTIAL_PAGE_VIEWS
         type: Plain Text
@@ -668,7 +668,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: FULL_PAGE_VIEWS =============================
-      id: 52901334201028938
+      id: 326244550880728494
       identification: 
         column-name: FULL_PAGE_VIEWS
         type: Plain Text
@@ -712,7 +712,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: MIN_ELAPSED =================================
-      id: 52901695862028937
+      id: 326244912541728493
       identification: 
         column-name: MIN_ELAPSED
         type: Plain Text
@@ -756,7 +756,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: AVG_ELAPSED =================================
-      id: 52902138827028937
+      id: 326245355506728493
       identification: 
         column-name: AVG_ELAPSED
         type: Plain Text
@@ -843,7 +843,7 @@ regions:
         alignment: center
 
 - # ====== Region: Buttons =====================================
-  id: 52896039077028954
+  id: 326239255756728510
   identification: 
     name: Buttons
     type: Static Content
@@ -885,7 +885,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10033_TIMEFRAME =========================
-  id: 52895770054028954
+  id: 326238986733728510
   identification: 
     name: P10033_TIMEFRAME
     type: Select List
@@ -902,7 +902,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Buttons # 52896039077028954
+    region: Buttons # 326239255756728510
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -923,7 +923,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: TIMEFRAME (4 WEEKS) # 52881532871028982
+    list-of-values: TIMEFRAME (4 WEEKS) # 326224749550728538
     display-extra-values: false
     display-null-value: false
 
@@ -948,14 +948,14 @@ page-items:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52907922731028929
+  id: 326251139410728485
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Page Performance # 52895899125028954
+    region: Page Performance # 326239115804728510
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -981,7 +981,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Refresh Report ======================
-  id: 52896053176028954
+  id: 326239269855728510
   identification: 
     name: Refresh Report
 
@@ -998,7 +998,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 52909162587028928
+    id: 326252379266728484
     identification: 
       action: Refresh
 
@@ -1007,11 +1007,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Page Performance # 52895899125028954
+      region: Page Performance # 326239115804728510
 
     execution: 
       sequence: 10
-      event: Refresh Report # 52896053176028954
+      event: Refresh Report # 326239269855728510
       fire-when-event-result-is: True
       fire-on-initialization: false
 

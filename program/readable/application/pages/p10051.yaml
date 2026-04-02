@@ -5,7 +5,7 @@ identification:
   name: Feedback Submitted
   alias: FEEDBACK-SUBMITTED
   title: Feedback Submitted
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -42,11 +42,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Feedback' # 52836960903029292
+  build-option: 'Feature: Feedback' # 326180177582728848
 
 regions: 
 - # ====== Region: Feedback Submitted ==========================
-  id: 52979986599028740
+  id: 326323203278728296
   identification: 
     name: Feedback Submitted
     type: Static Content
@@ -89,14 +89,14 @@ regions:
 
 buttons: 
 - # ====== Button: CLOSE =======================================
-  id: 52979950222028740
+  id: 326323166901728296
   identification: 
     button-name: CLOSE
     label: Close
 
   layout: 
     sequence: 20
-    region: Feedback Submitted # 52979986599028740
+    region: Feedback Submitted # 326323203278728296
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -118,7 +118,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52980055225028740
+  id: 326323271904728296
   identification: 
     name: Cancel Dialog
 
@@ -130,17 +130,17 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CLOSE # 52979950222028740
+    button: CLOSE # 326323166901728296
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52991950828028730
+    id: 326335167507728286
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52980055225028740
+      event: Cancel Dialog # 326323271904728296
       fire-when-event-result-is: True
       fire-on-initialization: false
 

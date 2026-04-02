@@ -5,7 +5,7 @@ identification:
   name: Administration
   alias: ADMIN
   title: Administration
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Normal
@@ -21,7 +21,7 @@ navigation:
   warn-on-unsaved-changes: true
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Disabled
   page-access-protection: Arguments Must Have Checksum
@@ -46,13 +46,13 @@ help:
 
 regions: 
 - # ====== Region: Breadcrumb ==================================
-  id: 53022957038028673
+  id: 326366173717728229
   identification: 
     name: Breadcrumb
     type: Breadcrumb
 
   source: 
-    breadcrumb: Breadcrumb # 52549978164029661
+    breadcrumb: Breadcrumb # 325893194843729217
 
   layout: 
     sequence: 10
@@ -89,7 +89,7 @@ regions:
       - '#DEFAULT#'
 
 - # ====== Region: Column 1 ====================================
-  id: 53029379693028663
+  id: 326372596372728219
   identification: 
     name: Column 1
     type: Static Content
@@ -127,17 +127,17 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Configuration ===============================
-  id: 53029784965028662
+  id: 326373001644728218
   identification: 
     name: Configuration
     type: List
 
   source: 
-    list: Application Configuration # 53023476891028671
+    list: Application Configuration # 326366693570728227
 
   layout: 
     sequence: 40
-    parent-region: Column 1 # 53029379693028663
+    parent-region: Column 1 # 326372596372728219
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -168,7 +168,7 @@ regions:
     customizable: Not Customizable By End Users
 
   configuration: 
-    build-option: 'Feature: Configuration Options' # 52837250212029292
+    build-option: 'Feature: Configuration Options' # 326180466891728848
 
   attributes: 
     appearance: 
@@ -178,17 +178,17 @@ regions:
       - u-colors
 
 - # ====== Region: User Interface ==============================
-  id: 53030153779028662
+  id: 326373370458728218
   identification: 
     name: User Interface
     type: List
 
   source: 
-    list: User Interface # 53024249324028670
+    list: User Interface # 326367466003728226
 
   layout: 
     sequence: 50
-    parent-region: Column 1 # 53029379693028663
+    parent-region: Column 1 # 326372596372728219
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -219,7 +219,7 @@ regions:
     customizable: Not Customizable By End Users
 
   configuration: 
-    build-option: 'Feature: Theme Style Selection' # 52837603359029292
+    build-option: 'Feature: Theme Style Selection' # 326180820038728848
 
   attributes: 
     appearance: 
@@ -229,17 +229,17 @@ regions:
       - u-colors
 
 - # ====== Region: Activity Reports ============================
-  id: 53030595228028662
+  id: 326373811907728218
   identification: 
     name: Activity Reports
     type: List
 
   source: 
-    list: Activity Reports # 53024933084028669
+    list: Activity Reports # 326368149763728225
 
   layout: 
     sequence: 60
-    parent-region: Column 1 # 53029379693028663
+    parent-region: Column 1 # 326372596372728219
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -270,7 +270,7 @@ regions:
     customizable: Not Customizable By End Users
 
   configuration: 
-    build-option: 'Feature: Activity Reporting' # 52836924967029292
+    build-option: 'Feature: Activity Reporting' # 326180141646728848
 
   attributes: 
     appearance: 
@@ -280,7 +280,7 @@ regions:
       - u-colors
 
 - # ====== Region: Column 2 ====================================
-  id: 53030961617028661
+  id: 326374178296728217
   identification: 
     name: Column 2
     type: Static Content
@@ -318,14 +318,14 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Access Control ==============================
-  id: 53031445191028661
+  id: 326374661870728217
   identification: 
     name: Access Control
     type: Static Content
 
   layout: 
     sequence: 70
-    parent-region: Column 2 # 53030961617028661
+    parent-region: Column 2 # 326374178296728217
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -353,7 +353,7 @@ regions:
     customizable: Not Customizable By End Users
 
   configuration: 
-    build-option: 'Feature: Access Control' # 52836843194029292
+    build-option: 'Feature: Access Control' # 326180059873728848
 
   attributes: 
     settings: 
@@ -361,7 +361,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: ACL Information =============================
-  id: 53032163374028660
+  id: 326375380053728216
   identification: 
     name: ACL Information
     type: Dynamic Content
@@ -385,7 +385,7 @@ regions:
 
   layout: 
     sequence: 10
-    parent-region: Access Control # 53031445191028661
+    parent-region: Access Control # 326374661870728217
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -425,7 +425,7 @@ regions:
       lazy-loading: false
 
 - # ====== Region: User Counts Report ==========================
-  id: 53032637583028660
+  id: 326375854262728216
   identification: 
     name: User Counts Report
     type: Classic Report
@@ -445,7 +445,7 @@ regions:
 
   layout: 
     sequence: 20
-    parent-region: Access Control # 53031445191028661
+    parent-region: Access Control # 326374661870728217
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -518,7 +518,7 @@ regions:
 
   columns: 
   - # ====== Column: ROLE_NAME ===================================
-    id: 53033281130028651
+    id: 326376497809728207
     identification: 
       column-name: ROLE_NAME
       type: Plain Text
@@ -550,7 +550,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: USER_COUNT ==================================
-    id: 53033734544028651
+    id: 326376951223728207
     identification: 
       column-name: USER_COUNT
       type: Plain Text
@@ -585,7 +585,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: ROLE_ID =====================================
-    id: 53034143002028651
+    id: 326377359681728207
     identification: 
       column-name: ROLE_ID
       type: Plain Text
@@ -617,17 +617,17 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: Access Control Actions ======================
-  id: 53037209938028619
+  id: 326380426617728175
   identification: 
     name: Access Control Actions
     type: List
 
   source: 
-    list: Access Control # 53027618997028664
+    list: Access Control # 326370835676728220
 
   layout: 
     sequence: 30
-    parent-region: Access Control # 53031445191028661
+    parent-region: Access Control # 326374661870728217
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -663,14 +663,14 @@ regions:
       - u-colors
 
 - # ====== Region: Feedback ====================================
-  id: 53037615399028619
+  id: 326380832078728175
   identification: 
     name: Feedback
     type: Static Content
 
   layout: 
     sequence: 80
-    parent-region: Column 2 # 53030961617028661
+    parent-region: Column 2 # 326374178296728217
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -698,7 +698,7 @@ regions:
     customizable: Not Customizable By End Users
 
   configuration: 
-    build-option: 'Feature: Feedback' # 52836960903029292
+    build-option: 'Feature: Feedback' # 326180177582728848
 
   attributes: 
     settings: 
@@ -706,7 +706,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Report ======================================
-  id: 53038035389028619
+  id: 326381252068728175
   identification: 
     name: Report
     type: Classic Report
@@ -727,7 +727,7 @@ regions:
 
   layout: 
     sequence: 10
-    parent-region: Feedback # 53037615399028619
+    parent-region: Feedback # 326380832078728175
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -800,7 +800,7 @@ regions:
 
   columns: 
   - # ====== Column: FEEDBACK_STATUS =============================
-    id: 53038681679028613
+    id: 326381898358728169
     identification: 
       column-name: FEEDBACK_STATUS
       type: Plain Text
@@ -832,7 +832,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: FEEDBACK_COUNT ==============================
-    id: 53039148446028612
+    id: 326382365125728168
     identification: 
       column-name: FEEDBACK_COUNT
       type: Plain Text
@@ -867,17 +867,17 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: Feedback ====================================
-  id: 53040973080028587
+  id: 326384189759728143
   identification: 
     name: Feedback
     type: List
 
   source: 
-    list: Feedback # 53028666967028663
+    list: Feedback # 326371883646728219
 
   layout: 
     sequence: 20
-    parent-region: Feedback # 53037615399028619
+    parent-region: Feedback # 326380832078728175
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -914,14 +914,14 @@ regions:
 
 buttons: 
 - # ====== Button: ADD_USER ====================================
-  id: 53031776987028661
+  id: 326374993666728217
   identification: 
     button-name: ADD_USER
     label: Add User(s)
 
   layout: 
     sequence: 10
-    region: Access Control # 53031445191028661
+    region: Access Control # 326374661870728217
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -949,7 +949,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Refresh Report ======================
-  id: 53036342743028620
+  id: 326379559422728176
   identification: 
     name: Refresh Report
 
@@ -961,11 +961,11 @@ dynamic-actions:
   when: 
     event: Dialog Closed
     selection-type: Button
-    button: ADD_USER # 53031776987028661
+    button: ADD_USER # 326374993666728217
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 53036830767028620
+    id: 326380047446728176
     identification: 
       action: Refresh
 
@@ -974,11 +974,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: User Counts Report # 53032637583028660
+      region: User Counts Report # 326375854262728216
 
     execution: 
       sequence: 10
-      event: Refresh Report # 53036342743028620
+      event: Refresh Report # 326379559422728176
       fire-when-event-result-is: True
       fire-on-initialization: false
 

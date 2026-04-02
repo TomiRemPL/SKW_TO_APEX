@@ -5,7 +5,7 @@ identification:
   name: Activity Dashboard
   alias: ACTIVITY-DASHBOARD
   title: Activity Dashboard
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -26,7 +26,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -44,11 +44,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Activity Reporting' # 52836924967029292
+  build-option: 'Feature: Activity Reporting' # 326180141646728848
 
 regions: 
 - # ====== Region: Hourly Page Events ==========================
-  id: 52864381237029094
+  id: 326207597916728650
   identification: 
     name: Hourly Page Events
     type: Chart
@@ -90,7 +90,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52864514050029094
+    id: 326207730729728650
     chart: 
       type: Bar
 
@@ -127,7 +127,7 @@ regions:
 
     series: 
     - # ====== Series: Series 1 ====================================
-      id: 52866605765029092
+      id: 326209822444728648
       identification: 
         name: Series 1
 
@@ -179,7 +179,7 @@ regions:
 
     axes: 
     - # ====== Axis: y =============================================
-      id: 52867232838029092
+      id: 326210449517728648
       identification: 
         name: y
         show-axis: true
@@ -203,7 +203,7 @@ regions:
         show: true
 
     - # ====== Axis: x =============================================
-      id: 52867821562029091
+      id: 326211038241728647
       identification: 
         name: x
         show-axis: true
@@ -226,7 +226,7 @@ regions:
         position: Outside
 
 - # ====== Region: Most Active Pages ===========================
-  id: 52864564549029094
+  id: 326207781228728650
   identification: 
     name: Most Active Pages
     type: Chart
@@ -268,7 +268,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52864681666029094
+    id: 326207898345728650
     chart: 
       type: Bar
 
@@ -304,7 +304,7 @@ regions:
 
     series: 
     - # ====== Series: Series 1 ====================================
-      id: 52871559716029088
+      id: 326214776395728644
       identification: 
         name: Series 1
 
@@ -347,7 +347,7 @@ regions:
 
     axes: 
     - # ====== Axis: x =============================================
-      id: 52872250140029088
+      id: 326215466819728644
       identification: 
         name: x
         show-axis: true
@@ -368,7 +368,7 @@ regions:
         position: Outside
 
     - # ====== Axis: y =============================================
-      id: 52872768043029087
+      id: 326215984722728643
       identification: 
         name: y
         show-axis: true
@@ -392,7 +392,7 @@ regions:
         show: true
 
 - # ====== Region: Top Users ===================================
-  id: 52864845845029094
+  id: 326208062524728650
   identification: 
     name: Top Users
     type: Chart
@@ -434,7 +434,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52864935562029094
+    id: 326208152241728650
     chart: 
       type: Bar
 
@@ -470,7 +470,7 @@ regions:
 
     series: 
     - # ====== Series: Series 1 ====================================
-      id: 52869086640029090
+      id: 326212303319728646
       identification: 
         name: Series 1
 
@@ -509,7 +509,7 @@ regions:
 
     axes: 
     - # ====== Axis: x =============================================
-      id: 52869716712029089
+      id: 326212933391728645
       identification: 
         name: x
         show-axis: true
@@ -530,7 +530,7 @@ regions:
         position: Outside
 
     - # ====== Axis: y =============================================
-      id: 52870350458029089
+      id: 326213567137728645
       identification: 
         name: y
         show-axis: true
@@ -554,7 +554,7 @@ regions:
         show: true
 
 - # ====== Region: Recent Errors ===============================
-  id: 52865025124029094
+  id: 326208241803728650
   identification: 
     name: Recent Errors
     type: Classic Report
@@ -653,7 +653,7 @@ regions:
 
   columns: 
   - # ====== Column: LABEL =======================================
-    id: 52873861680029082
+    id: 326217078359728638
     identification: 
       column-name: LABEL
       type: Plain Text
@@ -685,7 +685,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: VALUE =======================================
-    id: 52874260776029081
+    id: 326217477455728637
     identification: 
       column-name: VALUE
       type: Plain Text
@@ -720,7 +720,7 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: Latest Activity =============================
-  id: 52865089576029094
+  id: 326208306255728650
   identification: 
     name: Latest Activity
     type: Classic Report
@@ -820,7 +820,7 @@ regions:
 
   columns: 
   - # ====== Column: USERNAME ====================================
-    id: 52877030281029012
+    id: 326220246960728568
     identification: 
       column-name: USERNAME
       type: Plain Text
@@ -852,7 +852,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: LAST_ACTIVITY ===============================
-    id: 52877415818029012
+    id: 326220632497728568
     identification: 
       column-name: LAST_ACTIVITY
       type: Plain Text
@@ -887,7 +887,7 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: Filters =====================================
-  id: 52865205661029094
+  id: 326208422340728650
   identification: 
     name: Filters
     type: Static Content
@@ -929,7 +929,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10030_TIMEFRAME =========================
-  id: 52865332542029093
+  id: 326208549221728649
   identification: 
     name: P10030_TIMEFRAME
     type: Select List
@@ -946,7 +946,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Filters # 52865205661029094
+    region: Filters # 326208422340728650
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -967,7 +967,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: TIMEFRAME (4 WEEKS) # 52881532871028982
+    list-of-values: TIMEFRAME (4 WEEKS) # 326224749550728538
     display-extra-values: false
     display-null-value: false
 
@@ -992,14 +992,14 @@ page-items:
 
 buttons: 
 - # ====== Button: VIEW_ACTIVITY_BY_USER =======================
-  id: 52879717392028983
+  id: 326222934071728539
   identification: 
     button-name: VIEW_ACTIVITY_BY_USER
     label: View Details
 
   layout: 
     sequence: 10
-    region: Hourly Page Events # 52864381237029094
+    region: Hourly Page Events # 326207597916728650
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -1025,14 +1025,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: VIEW_ACTIVITY_DETAILS =======================
-  id: 52880124869028983
+  id: 326223341548728539
   identification: 
     button-name: VIEW_ACTIVITY_DETAILS
     label: View Details
 
   layout: 
     sequence: 10
-    region: Most Active Pages # 52864564549029094
+    region: Most Active Pages # 326207781228728650
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -1058,14 +1058,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: VIEW_ACTIVITY_BY_USER =======================
-  id: 52880465771028983
+  id: 326223682450728539
   identification: 
     button-name: VIEW_ACTIVITY_BY_USER
     label: View Details
 
   layout: 
     sequence: 10
-    region: Top Users # 52864845845029094
+    region: Top Users # 326208062524728650
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -1091,14 +1091,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: VIEW_RECENT_ERRORS ==========================
-  id: 52880865156028983
+  id: 326224081835728539
   identification: 
     button-name: VIEW_RECENT_ERRORS
     label: View Details
 
   layout: 
     sequence: 10
-    region: Recent Errors # 52865025124029094
+    region: Recent Errors # 326208241803728650
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -1125,7 +1125,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Change Filters ======================
-  id: 52865440046029093
+  id: 326208656725728649
   identification: 
     name: Change Filters
 
@@ -1142,7 +1142,7 @@ dynamic-actions:
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 52882522917028981
+    id: 326225739596728537
     identification: 
       action: Refresh
 
@@ -1151,16 +1151,16 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Hourly Page Events # 52864381237029094
+      region: Hourly Page Events # 326207597916728650
 
     execution: 
       sequence: 10
-      event: Change Filters # 52865440046029093
+      event: Change Filters # 326208656725728649
       fire-when-event-result-is: True
       fire-on-initialization: false
 
   - # ====== Action: Refresh =====================================
-    id: 52883005438028981
+    id: 326226222117728537
     identification: 
       action: Refresh
 
@@ -1169,16 +1169,16 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Top Users # 52864845845029094
+      region: Top Users # 326208062524728650
 
     execution: 
       sequence: 20
-      event: Change Filters # 52865440046029093
+      event: Change Filters # 326208656725728649
       fire-when-event-result-is: True
       fire-on-initialization: false
 
   - # ====== Action: Refresh =====================================
-    id: 52883481602028980
+    id: 326226698281728536
     identification: 
       action: Refresh
 
@@ -1187,16 +1187,16 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Most Active Pages # 52864564549029094
+      region: Most Active Pages # 326207781228728650
 
     execution: 
       sequence: 30
-      event: Change Filters # 52865440046029093
+      event: Change Filters # 326208656725728649
       fire-when-event-result-is: True
       fire-on-initialization: false
 
   - # ====== Action: Refresh =====================================
-    id: 52883977545028978
+    id: 326227194224728534
     identification: 
       action: Refresh
 
@@ -1205,16 +1205,16 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Recent Errors # 52865025124029094
+      region: Recent Errors # 326208241803728650
 
     execution: 
       sequence: 40
-      event: Change Filters # 52865440046029093
+      event: Change Filters # 326208656725728649
       fire-when-event-result-is: True
       fire-on-initialization: false
 
   - # ====== Action: Refresh =====================================
-    id: 52884511517028977
+    id: 326227728196728533
     identification: 
       action: Refresh
 
@@ -1223,11 +1223,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Latest Activity # 52865089576029094
+      region: Latest Activity # 326208306255728650
 
     execution: 
       sequence: 50
-      event: Change Filters # 52865440046029093
+      event: Change Filters # 326208656725728649
       fire-when-event-result-is: True
       fire-on-initialization: false
 

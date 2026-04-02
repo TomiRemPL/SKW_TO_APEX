@@ -5,7 +5,7 @@ identification:
   name: Configure Access Control
   alias: CONFIGURE-ACCESS-CONTROL
   title: Configure Access Control
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -25,7 +25,7 @@ navigation:
   warn-on-unsaved-changes: true
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: No Arguments Supported
@@ -59,11 +59,11 @@ help:
     </em></p>
 
 configuration: 
-  build-option: 'Feature: Access Control' # 52836843194029292
+  build-option: 'Feature: Access Control' # 326180059873728848
 
 regions: 
 - # ====== Region: Access Control Configuration ================
-  id: 52945134667028829
+  id: 326288351346728385
   identification: 
     name: Access Control Configuration
     type: Static Content
@@ -101,7 +101,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Buttons =====================================
-  id: 52945181732028829
+  id: 326288398411728385
   identification: 
     name: Buttons
     type: Static Content
@@ -140,7 +140,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10040_ALLOW_OTHER_USERS =================
-  id: 52948394809028827
+  id: 326291611488728383
   identification: 
     name: P10040_ALLOW_OTHER_USERS
     type: Switch
@@ -154,7 +154,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Access Control Configuration # 52945134667028829
+    region: Access Control Configuration # 326288351346728385
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -199,14 +199,14 @@ page-items:
 
 buttons: 
 - # ====== Button: APPLY_CHANGES ===============================
-  id: 52946373987028828
+  id: 326289590666728384
   identification: 
     button-name: APPLY_CHANGES
     label: Apply Changes
 
   layout: 
     sequence: 20
-    region: Buttons # 52945181732028829
+    region: Buttons # 326288398411728385
     slot: CREATE
     start-new-layout: false
     start-new-row: true
@@ -227,14 +227,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: CANCEL ======================================
-  id: 52946736749028828
+  id: 326289953428728384
   identification: 
     button-name: CANCEL
     label: Cancel
 
   layout: 
     sequence: 10
-    region: Buttons # 52945181732028829
+    region: Buttons # 326288398411728385
     slot: PREVIOUS
     start-new-layout: false
     start-new-row: true
@@ -254,7 +254,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52946835864028828
+  id: 326290052543728384
   identification: 
     name: Cancel Dialog
 
@@ -266,23 +266,23 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CANCEL # 52946736749028828
+    button: CANCEL # 326289953428728384
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52947536434028828
+    id: 326290753113728384
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52946835864028828
+      event: Cancel Dialog # 326290052543728384
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 processes: 
 - # ====== Process: Set Access Control =========================
-  id: 52948793199028826
+  id: 326292009878728382
   identification: 
     name: Set Access Control
     type: Execute Code
@@ -317,7 +317,7 @@ processes:
 
 branches: 
 - # ====== Branch: Branch to Admin Page ========================
-  id: 52948053355028827
+  id: 326291270034728383
   identification: 
     name: Branch to Admin Page
 

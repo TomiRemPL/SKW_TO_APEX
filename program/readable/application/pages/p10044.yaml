@@ -5,7 +5,7 @@ identification:
   name: Add Multiple Users - Step 2
   alias: ADD-MULTIPLE-USERS-STEP-2
   title: Add Multiple Users
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -35,7 +35,7 @@ css:
     }
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Disabled
   page-access-protection: Arguments Must Have Checksum
@@ -53,11 +53,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Access Control' # 52836843194029292
+  build-option: 'Feature: Access Control' # 326180059873728848
 
 regions: 
 - # ====== Region: Buttons =====================================
-  id: 52963526135028799
+  id: 326306742814728355
   identification: 
     name: Buttons
     type: Static Content
@@ -95,7 +95,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Wizard Container ============================
-  id: 52963627925028798
+  id: 326306844604728354
   identification: 
     name: Wizard Container
     type: Static Content
@@ -134,7 +134,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Exceptions ==================================
-  id: 52963825420028798
+  id: 326307042099728354
   identification: 
     name: Exceptions
     type: Classic Report
@@ -153,7 +153,7 @@ regions:
 
   layout: 
     sequence: 60
-    parent-region: Wizard Container # 52963627925028798
+    parent-region: Wizard Container # 326306844604728354
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -234,7 +234,7 @@ regions:
 
   columns: 
   - # ====== Column: USERNAME ====================================
-    id: 52970775038028767
+    id: 326313991717728323
     identification: 
       column-name: USERNAME
       type: Plain Text
@@ -266,7 +266,7 @@ regions:
       escape-special-characters: true
 
   - # ====== Column: REASON ======================================
-    id: 52971232853028767
+    id: 326314449532728323
     identification: 
       column-name: REASON
       type: Plain Text
@@ -298,7 +298,7 @@ regions:
       escape-special-characters: true
 
 - # ====== Region: &P10044_VALID_COUNT. Users to Add ===========
-  id: 52963906546028798
+  id: 326307123225728354
   identification: 
     name: '&P10044_VALID_COUNT. Users to Add'
     type: List View [Legacy]
@@ -317,7 +317,7 @@ regions:
 
   layout: 
     sequence: 50
-    parent-region: Wizard Container # 52963627925028798
+    parent-region: Wizard Container # 326306844604728354
     slot: BODY
     start-new-layout: false
     start-new-row: true
@@ -365,7 +365,7 @@ regions:
       number-of-rows: 10000
 
 - # ====== Region: Hidden Items ================================
-  id: 52963971619028798
+  id: 326307188298728354
   identification: 
     name: Hidden Items
     type: Static Content
@@ -403,7 +403,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Valid Users Exist - Page Info ===============
-  id: 52974316580028744
+  id: 326317533259728300
   identification: 
     name: Valid Users Exist - Page Info
     type: Dynamic Content
@@ -462,7 +462,7 @@ regions:
       lazy-loading: false
 
 - # ====== Region: No Valid Users Exist - Page Info ============
-  id: 52975017326028742
+  id: 326318234005728298
   identification: 
     name: No Valid Users Exist - Page Info
     type: Static Content
@@ -512,7 +512,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10044_ROLE ==============================
-  id: 52977356583028741
+  id: 326320573262728297
   identification: 
     name: P10044_ROLE
     type: Hidden
@@ -522,7 +522,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Hidden Items # 52963971619028798
+    region: Hidden Items # 326307188298728354
     slot: BODY
 
   advanced: 
@@ -548,7 +548,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10044_VALID_COUNT =======================
-  id: 52977785053028741
+  id: 326321001732728297
   identification: 
     name: P10044_VALID_COUNT
     type: Hidden
@@ -558,7 +558,7 @@ page-items:
 
   layout: 
     sequence: 20
-    region: Hidden Items # 52963971619028798
+    region: Hidden Items # 326307188298728354
     slot: BODY
 
   advanced: 
@@ -582,7 +582,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10044_INVALID_COUNT =====================
-  id: 52978221127028740
+  id: 326321437806728296
   identification: 
     name: P10044_INVALID_COUNT
     type: Hidden
@@ -592,7 +592,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Hidden Items # 52963971619028798
+    region: Hidden Items # 326307188298728354
     slot: BODY
 
   advanced: 
@@ -617,14 +617,14 @@ page-items:
 
 buttons: 
 - # ====== Button: SUBMIT ======================================
-  id: 52964069378028798
+  id: 326307286057728354
   identification: 
     button-name: SUBMIT
     label: Add Users
 
   layout: 
     sequence: 20
-    region: Buttons # 52963526135028799
+    region: Buttons # 326306742814728355
     slot: NEXT
     start-new-layout: false
     start-new-row: true
@@ -652,14 +652,14 @@ buttons:
        where collection_name = 'ACL_BULK_USER_VALID'
 
 - # ====== Button: PREVIOUS ====================================
-  id: 52975693085028742
+  id: 326318909764728298
   identification: 
     button-name: PREVIOUS
     label: Previous
 
   layout: 
     sequence: 10
-    region: Buttons # 52963526135028799
+    region: Buttons # 326306742814728355
     slot: PREVIOUS
     start-new-layout: false
     start-new-row: true
@@ -681,14 +681,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: CANCEL ======================================
-  id: 52976141735028741
+  id: 326319358414728297
   identification: 
     button-name: CANCEL
     label: Cancel
 
   layout: 
     sequence: 10
-    region: Buttons # 52963526135028799
+    region: Buttons # 326306742814728355
     slot: PREVIOUS
     start-new-layout: false
     start-new-row: true
@@ -708,7 +708,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52976239983028741
+  id: 326319456662728297
   identification: 
     name: Cancel Dialog
 
@@ -720,23 +720,23 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CANCEL # 52976141735028741
+    button: CANCEL # 326319358414728297
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52976883401028741
+    id: 326320100080728297
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52976239983028741
+      event: Cancel Dialog # 326319456662728297
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 processes: 
 - # ====== Process: Add Users to Access Control List ===========
-  id: 52978630750028740
+  id: 326321847429728296
   identification: 
     name: Add Users to Access Control List
     type: Execute Code
@@ -776,10 +776,10 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: SUBMIT # 52964069378028798
+    when-button-pressed: SUBMIT # 326307286057728354
 
 - # ====== Process: Close Dialog ===============================
-  id: 52978963154028740
+  id: 326322179833728296
   identification: 
     name: Close Dialog
     type: Close Dialog

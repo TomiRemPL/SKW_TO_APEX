@@ -5,7 +5,7 @@ identification:
   name: Feedback
   alias: FEEDBACK
   title: Feedback
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -50,11 +50,11 @@ server-cache:
   caching: Disabled
 
 configuration: 
-  build-option: 'Feature: Feedback' # 52836960903029292
+  build-option: 'Feature: Feedback' # 326180177582728848
 
 regions: 
 - # ====== Region: Form on Feedback ============================
-  id: 52979435638028740
+  id: 326322652317728296
   identification: 
     name: Form on Feedback
     type: Static Content
@@ -93,7 +93,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Buttons =====================================
-  id: 52979535733028740
+  id: 326322752412728296
   identification: 
     name: Buttons
     type: Static Content
@@ -132,7 +132,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10050_APPLICATION_ID ====================
-  id: 52983935746028735
+  id: 326327152425728291
   identification: 
     name: P10050_APPLICATION_ID
     type: Hidden
@@ -142,7 +142,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Form on Feedback # 52979435638028740
+    region: Form on Feedback # 326322652317728296
     slot: BODY
 
   advanced: 
@@ -162,7 +162,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10050_PAGE_ID ===========================
-  id: 52984284043028735
+  id: 326327500722728291
   identification: 
     name: P10050_PAGE_ID
     type: Hidden
@@ -172,7 +172,7 @@ page-items:
 
   layout: 
     sequence: 20
-    region: Form on Feedback # 52979435638028740
+    region: Form on Feedback # 326322652317728296
     slot: BODY
 
   advanced: 
@@ -192,7 +192,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10050_USER_AGENT ========================
-  id: 52984696809028735
+  id: 326327913488728291
   identification: 
     name: P10050_USER_AGENT
     type: Hidden
@@ -202,7 +202,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Form on Feedback # 52979435638028740
+    region: Form on Feedback # 326322652317728296
     slot: BODY
 
   advanced: 
@@ -225,7 +225,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10050_RATING ============================
-  id: 52985143674028734
+  id: 326328360353728290
   identification: 
     name: P10050_RATING
     type: Radio Group
@@ -240,7 +240,7 @@ page-items:
 
   layout: 
     sequence: 35
-    region: Form on Feedback # 52979435638028740
+    region: Form on Feedback # 326322652317728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -261,7 +261,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: FEEDBACK_RATING # 52985243077028734
+    list-of-values: FEEDBACK_RATING # 326328459756728290
     display-extra-values: false
     display-null-value: false
 
@@ -282,7 +282,7 @@ page-items:
     restricted-characters: All characters can be saved.
 
 - # ====== Page Item: P10050_FEEDBACK ==========================
-  id: 52986954279028733
+  id: 326330170958728289
   identification: 
     name: P10050_FEEDBACK
     type: Textarea
@@ -299,7 +299,7 @@ page-items:
 
   layout: 
     sequence: 40
-    region: Form on Feedback # 52979435638028740
+    region: Form on Feedback # 326322652317728296
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -341,14 +341,14 @@ page-items:
 
 buttons: 
 - # ====== Button: SUBMIT ======================================
-  id: 52979629526028740
+  id: 326322846205728296
   identification: 
     button-name: SUBMIT
     label: Submit Feedback
 
   layout: 
     sequence: 10
-    region: Buttons # 52979535733028740
+    region: Buttons # 326322752412728296
     slot: CREATE
     start-new-layout: false
     start-new-row: true
@@ -370,14 +370,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: CANCEL ======================================
-  id: 52982598595028736
+  id: 326325815274728292
   identification: 
     button-name: CANCEL
     label: Cancel
 
   layout: 
     sequence: 10
-    region: Buttons # 52979535733028740
+    region: Buttons # 326322752412728296
     slot: EDIT
     start-new-layout: false
     start-new-row: true
@@ -397,7 +397,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52982689601028736
+  id: 326325906280728292
   identification: 
     name: Cancel Dialog
 
@@ -409,23 +409,23 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CANCEL # 52982598595028736
+    button: CANCEL # 326325815274728292
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52983435037028736
+    id: 326326651716728292
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52982689601028736
+      event: Cancel Dialog # 326325906280728292
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 validations: 
 - # ====== Validation: At least One Feedback Required ==========
-  id: 52989868128028731
+  id: 326333084807728287
   identification: 
     name: At least One Feedback Required
 
@@ -449,7 +449,7 @@ validations:
 
 processes: 
 - # ====== Process: Submit Feedback ============================
-  id: 52987406618028733
+  id: 326330623297728289
   identification: 
     name: Submit Feedback
     type: Invoke API
@@ -473,11 +473,11 @@ processes:
     display-location: Inline in Notification
 
   server-side-condition: 
-    when-button-pressed: SUBMIT # 52979629526028740
+    when-button-pressed: SUBMIT # 326322846205728296
 
   parameters: 
   - # ====== Parameter: p_comment ================================
-    id: 52987934252028732
+    id: 326331150931728288
     identification: 
       name: p_comment
 
@@ -494,7 +494,7 @@ processes:
       display-sequence: 1
 
   - # ====== Parameter: p_application_id =========================
-    id: 52988393771028732
+    id: 326331610450728288
     identification: 
       name: p_application_id
 
@@ -511,7 +511,7 @@ processes:
       display-sequence: 2
 
   - # ====== Parameter: p_page_id ================================
-    id: 52988868749028732
+    id: 326332085428728288
     identification: 
       name: p_page_id
 
@@ -528,7 +528,7 @@ processes:
       display-sequence: 3
 
   - # ====== Parameter: p_rating =================================
-    id: 52989406505028732
+    id: 326332623184728288
     identification: 
       name: p_rating
 
@@ -546,7 +546,7 @@ processes:
 
 branches: 
 - # ====== Branch: Go To Page 10051 ============================
-  id: 52990288049028731
+  id: 326333504728728287
   identification: 
     name: Go To Page 10051
 

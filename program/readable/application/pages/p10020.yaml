@@ -5,7 +5,7 @@ identification:
   name: Application Appearance
   alias: APPLICATION-APPEARANCE
   title: Application Appearance
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -25,7 +25,7 @@ navigation:
   warn-on-unsaved-changes: true
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -48,11 +48,11 @@ help:
     <p>If <strong>Allow End Users to choose Theme Style</strong> is checked, then each end user can select from the available theme styles by clicking the <em>Customize</em> link in the bottom left corner of the Home page.</p>
 
 configuration: 
-  build-option: 'Feature: Theme Style Selection' # 52837603359029292
+  build-option: 'Feature: Theme Style Selection' # 326180820038728848
 
 regions: 
 - # ====== Region: Buttons =====================================
-  id: 52858619846029119
+  id: 326201836525728675
   identification: 
     name: Buttons
     type: Static Content
@@ -90,7 +90,7 @@ regions:
       expand-shortcuts: false
 
 - # ====== Region: Configure Appearance ========================
-  id: 52858710644029119
+  id: 326201927323728675
   identification: 
     name: Configure Appearance
     type: Static Content
@@ -129,7 +129,7 @@ regions:
 
 page-items: 
 - # ====== Page Item: P10020_DESKTOP_THEME_STYLE_ID ============
-  id: 52861814582029116
+  id: 326205031261728672
   identification: 
     name: P10020_DESKTOP_THEME_STYLE_ID
     type: Select List
@@ -146,7 +146,7 @@ page-items:
 
   layout: 
     sequence: 10
-    region: Configure Appearance # 52858710644029119
+    region: Configure Appearance # 326201927323728675
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -167,7 +167,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: DESKTOP THEME STYLES # 52861895457029116
+    list-of-values: DESKTOP THEME STYLES # 326205112136728672
     display-extra-values: false
     display-null-value: false
 
@@ -211,7 +211,7 @@ page-items:
     inline-help-text: The default Theme Style applies to all users.
 
 - # ====== Page Item: P10020_END_USER_STYLE ====================
-  id: 52862511229029100
+  id: 326205727908728656
   identification: 
     name: P10020_END_USER_STYLE
     type: Checkbox Group
@@ -229,7 +229,7 @@ page-items:
 
   layout: 
     sequence: 30
-    region: Configure Appearance # 52858710644029119
+    region: Configure Appearance # 326201927323728675
     slot: BODY
     alignment: Left
     start-new-layout: false
@@ -249,7 +249,7 @@ page-items:
 
   list-of-values: 
     type: Shared Component
-    list-of-values: USER_THEME_PREFERENCE # 52862651396029100
+    list-of-values: USER_THEME_PREFERENCE # 326205868075728656
     display-extra-values: false
 
   advanced: 
@@ -277,14 +277,14 @@ page-items:
 
 buttons: 
 - # ====== Button: CANCEL ======================================
-  id: 52859749784029118
+  id: 326202966463728674
   identification: 
     button-name: CANCEL
     label: Cancel
 
   layout: 
     sequence: 10
-    region: Buttons # 52858619846029119
+    region: Buttons # 326201836525728675
     slot: PREVIOUS
     start-new-layout: false
     start-new-row: true
@@ -303,14 +303,14 @@ buttons:
     execute-validations: false
 
 - # ====== Button: SAVE ========================================
-  id: 52861141600029117
+  id: 326204358279728673
   identification: 
     button-name: SAVE
     label: Apply Changes
 
   layout: 
     sequence: 20
-    region: Buttons # 52858619846029119
+    region: Buttons # 326201836525728675
     slot: NEXT
     start-new-layout: false
     start-new-row: true
@@ -332,7 +332,7 @@ buttons:
 
 dynamic-actions: 
 - # ====== Dynamic Action: Cancel Dialog =======================
-  id: 52859849664029118
+  id: 326203066343728674
   identification: 
     name: Cancel Dialog
 
@@ -344,23 +344,23 @@ dynamic-actions:
   when: 
     event: Click
     selection-type: Button
-    button: CANCEL # 52859749784029118
+    button: CANCEL # 326202966463728674
 
   actions: 
   - # ====== Action: Cancel Dialog ===============================
-    id: 52860515335029118
+    id: 326203732014728674
     identification: 
       action: Cancel Dialog
 
     execution: 
       sequence: 10
-      event: Cancel Dialog # 52859849664029118
+      event: Cancel Dialog # 326203066343728674
       fire-when-event-result-is: True
       fire-on-initialization: false
 
 processes: 
 - # ====== Process: Save Theme Style ===========================
-  id: 52863688460029095
+  id: 326206905139728651
   identification: 
     name: Save Theme Style
     type: Execute Code
@@ -395,7 +395,7 @@ processes:
     display-location: Inline in Notification
 
 - # ====== Process: Save End User Style Preference =============
-  id: 52864130625029094
+  id: 326207347304728650
   identification: 
     name: Save End User Style Preference
     type: Execute Code
@@ -438,7 +438,7 @@ processes:
 
 branches: 
 - # ====== Branch: Branch to Admin Page ========================
-  id: 52861459818029116
+  id: 326204676497728672
   identification: 
     name: Branch to Admin Page
 

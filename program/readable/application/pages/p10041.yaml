@@ -5,7 +5,7 @@ identification:
   name: Manage User Access
   alias: MANAGE-USER-ACCESS
   title: Manage User Access
-  page-group: Administration # 52840988022029242
+  page-group: Administration # 326184204701728798
 
 appearance: 
   page-mode: Modal Dialog
@@ -27,7 +27,7 @@ navigation:
   warn-on-unsaved-changes: false
 
 security: 
-  authorization-scheme: Administration Rights # 52839508229029280
+  authorization-scheme: Administration Rights # 326182724908728836
   authentication: Page Requires Authentication
   deep-linking: Application Default
   page-access-protection: Arguments Must Have Checksum
@@ -53,11 +53,11 @@ help:
     <p>Click <strong>Add User</strong>, at the top of the report, to add a new user and their access level.</p>
 
 configuration: 
-  build-option: 'Feature: Access Control' # 52836843194029292
+  build-option: 'Feature: Access Control' # 326180059873728848
 
 regions: 
 - # ====== Region: Manage User Access ==========================
-  id: 52949197150028825
+  id: 326292413829728381
   identification: 
     name: Manage User Access
     type: Interactive Report
@@ -104,7 +104,7 @@ regions:
     customizable: Not Customizable By End Users
 
   attributes: 
-    id: 52950046028028825
+    id: 326293262707728381
     link: 
       link-column: Link to Custom Target
       target: 
@@ -174,14 +174,14 @@ regions:
 
     saved-reports: 
     - # ====== Saved Report: Primary Report ========================
-      id: 52952829467028816
+      id: 326296046146728372
       identification: 
         name: Primary Report
         alias: 174954
 
     columns: 
     - # ====== Column: ID ==========================================
-      id: 52950409203028819
+      id: 326293625882728375
       identification: 
         column-name: ID
         type: Hidden
@@ -199,7 +199,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: USERNAME ====================================
-      id: 52950780762028818
+      id: 326293997441728374
       identification: 
         column-name: USERNAME
         type: Plain Text
@@ -240,7 +240,7 @@ regions:
         escape-special-characters: true
 
     - # ====== Column: ACCESS_ROLE =================================
-      id: 52951204924028818
+      id: 326294421603728374
       identification: 
         column-name: ACCESS_ROLE
         type: Plain Text
@@ -325,14 +325,14 @@ regions:
 
 buttons: 
 - # ====== Button: RESET_REPORT ================================
-  id: 52953742127028815
+  id: 326296958806728371
   identification: 
     button-name: RESET_REPORT
     label: Reset
 
   layout: 
     sequence: 20
-    region: Manage User Access # 52949197150028825
+    region: Manage User Access # 326292413829728381
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -358,14 +358,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: ADD_MULTIPLE_USERS ==========================
-  id: 52954098919028815
+  id: 326297315598728371
   identification: 
     button-name: ADD_MULTIPLE_USERS
     label: Add User(s)
 
   layout: 
     sequence: 30
-    region: Manage User Access # 52949197150028825
+    region: Manage User Access # 326292413829728381
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -389,14 +389,14 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
 - # ====== Button: ADD_USER ====================================
-  id: 52954487602028815
+  id: 326297704281728371
   identification: 
     button-name: ADD_USER
     label: Add User
 
   layout: 
     sequence: 40
-    region: Manage User Access # 52949197150028825
+    region: Manage User Access # 326292413829728381
     slot: RIGHT_OF_IR_SEARCH_BAR
     start-new-layout: false
     start-new-row: true
@@ -420,11 +420,11 @@ buttons:
     warn-on-unsaved-changes: Do Not Check
 
   configuration: 
-    build-option: Commented Out # 52549358497029667
+    build-option: Commented Out # 325892575176729223
 
 dynamic-actions: 
 - # ====== Dynamic Action: Refresh Report ======================
-  id: 52949314693028825
+  id: 326292531372728381
   identification: 
     name: Refresh Report
 
@@ -436,11 +436,11 @@ dynamic-actions:
   when: 
     event: Dialog Closed
     selection-type: Region
-    region: Manage User Access # 52949197150028825
+    region: Manage User Access # 326292413829728381
 
   actions: 
   - # ====== Action: Refresh =====================================
-    id: 52955121835028814
+    id: 326298338514728370
     identification: 
       action: Refresh
 
@@ -449,11 +449,11 @@ dynamic-actions:
 
     affected-elements: 
       selection-type: Region
-      region: Manage User Access # 52949197150028825
+      region: Manage User Access # 326292413829728381
 
     execution: 
       sequence: 10
-      event: Refresh Report # 52949314693028825
+      event: Refresh Report # 326292531372728381
       fire-when-event-result-is: True
       fire-on-initialization: false
 
