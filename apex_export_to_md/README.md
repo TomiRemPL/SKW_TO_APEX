@@ -522,6 +522,30 @@ Plik `*_human.md` używa standardowego Markdown z nagłówkami, tabelami i bloka
 ### Strona <ID>: <nazwa>
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+dialog:
+  width: 480
+  chained: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+help:
+  help-text: |
+    <p>Opis strony...</p>
+...
+```
+
+</details>
 
 #### Region: <nazwa> — "<tytuł>"
 - **Typ:** Interactive Grid (edytowalny: Update Row, Delete Row)
@@ -529,6 +553,33 @@ Plik `*_human.md` używa standardowego Markdown z nagłówkami, tabelami i bloka
 ```sql
 SELECT ...
 ```
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Standard
+  template-options:
+  - '#DEFAULT#'
+  - t-Region--noPadding
+  css-classes:
+  - margin-sm
+accessibility:
+  use-landmark: true
+server-cache:
+  caching: Disabled
+configuration:
+  build-option: 'Feature: Configuration Options'
+attributes:
+  layout:
+    number-of-rows-type: Static Value
+    number-of-rows: 15
+  pagination:
+    type: No Pagination (Show All Rows)
+...
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -539,10 +590,45 @@ SELECT ...
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | ...   | ... | ...      | ...     | ... |
+  <details><summary>atrybuty P4_STATUS</summary>
+  ```yaml
+  settings:
+    use-defaults: true
+  layout:
+    sequence: 30
+    slot: BODY
+    alignment: Left
+    label-column-span: 3
+  validation:
+    value-required: true
+  session-state:
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+  security:
+    session-state-protection: Unrestricted
+  ...
+  ```
+  </details>
 
 #### Przyciski
 
 - **ZAPISZ** — Zapisz [Submit Page] **(primary)**
+  <details><summary>atrybuty</summary>
+  ```yaml
+  layout:
+    sequence: 20
+    region: Buttons
+    slot: CREATE
+  appearance:
+    button-template: Text
+    template-options:
+    - '#DEFAULT#'
+  behavior:
+    execute-validations: true
+    show-processing: false
+  ...
+  ```
+  </details>
 
 #### Procesy
 
@@ -552,16 +638,49 @@ SELECT ...
 PKG_AUDYT.ZAKONCZ_AUDYT(p_audyt_id => :P4_ID_PK_B_AUDYT);
 ```
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 10
+error-handling:
+  ...
+```
+
+</details>
+
 ---
 
 ## Shared Components
-
-### Listy wartości (LOV)
-### Schematy autoryzacji
-### Listy nawigacyjne
-### Zmienne globalne
-### Role ACL
+...
 ```
+
+### Pełne atrybuty obiektów APEX (`raw_attributes`)
+
+Każdy obiekt APEX w pliku wyjściowym zawiera sekcję **Pełne atrybuty** w rozwijanym bloku `<details>`. Sekcja ta zawiera kompletną strukturę YAML obiektu z pliku eksportu APEX, po oczyszczeniu z wewnętrznych ID.
+
+**Co jest zawarte w `raw_attributes`:**
+
+- `appearance.*` — template, template-options, css-classes, render-components
+- `layout.*` — sequence, slot, column-span, start-new-row, label-column-span
+- `settings.*` — parametry specyficzne dla typu obiektu
+- `validation.*` — value-required itp.
+- `advanced.*` — warn-on-unsaved-changes, region-display-selector
+- `session-state.*` — data-type, storage
+- `security.*` — session-state-protection, escape-special-characters
+- `help.*` — help-text, inline-help-text
+- `configuration.*` — build-option
+- `server-cache.*` — caching
+- `accessibility.*` — use-landmark, landmark-type
+- `customization.*` — customizable
+- `dialog.*` — width, chained, resizable (dla stron modalnych)
+- `navigation.*` — cursor-focus, warn-on-unsaved-changes
+- `attributes.*` — atrybuty specyficzne dla typu regionu (chart, pagination, layout itp.)
+
+**Co NIE jest zawarte** (bo wyekstrahowane jawnie do pól modelu):
+- `identification.name`, `identification.type`, `identification.title` — → pola `name`, `type`, `title`
+- `source.table-name`, `source.sql-query` — → pola `source_table`, `source_sql`
+- `id` — wewnętrzny ID APEX (zawsze usuwany)
 
 ### Przykład rzeczywisty (fragment z SKW_TO_APEX)
 
@@ -602,15 +721,25 @@ Plik `*_llm.md` używa skondensowanego formatu liniowego, zoptymalizowanego pod 
 |---------|-----------|
 | `APP:` | Nagłówek aplikacji |
 | `===PAGE:` | Nowa strona (separator `===`) |
+| `PAGE_ATTRS:` | Pełne atrybuty strony (spłaszczone) |
 | `RGN:` | Region |
+| `RGN_ATTRS:` | Pełne atrybuty regionu (spłaszczone) |
 | `COL:` | Kolumna regionu |
+| `COL_ATTRS:` | Pełne atrybuty kolumny (spłaszczone) |
 | `ITEM:` | Element formularza |
+| `ITEM_ATTRS:` | Pełne atrybuty elementu (spłaszczone) |
 | `BTN:` | Przycisk |
+| `BTN_ATTRS:` | Pełne atrybuty przycisku (spłaszczone) |
 | `PROC:` | Proces serwerowy |
+| `PROC_ATTRS:` | Pełne atrybuty procesu (spłaszczone) |
 | `DA:` | Akcja dynamiczna |
+| `DA_ATTRS:` | Pełne atrybuty akcji dynamicznej (spłaszczone) |
 | `DA_STEP:` | Krok akcji dynamicznej |
+| `DA_STEP_ATTRS:` | Pełne atrybuty kroku DA (spłaszczone) |
 | `BRANCH:` | Rozgałęzienie nawigacyjne |
+| `BRANCH_ATTRS:` | Pełne atrybuty brancha (spłaszczone) |
 | `VAL:` | Walidacja |
+| `VAL_ATTRS:` | Pełne atrybuty walidacji (spłaszczone) |
 | `CSS:inline` | Inline CSS |
 | `JS:inline` | Inline JavaScript |
 | `===LOV:` | Lista wartości |
@@ -627,6 +756,7 @@ Plik `*_llm.md` używa skondensowanego formatu liniowego, zoptymalizowanego pod 
 - Atrybuty mają formę `klucz:wartość`
 - Bloki kodu są osadzone standardowo w ` ```sql ``` `, ` ```plsql ``` ` itp.
 - `ENTRIES:` dla LOV-ów ze statycznymi wartościami używa formatu `display:return|display:return`
+- Linie `*_ATTRS:` zawierają pełne atrybuty obiektu w formacie spłaszczonym: `klucz=wartosc;klucz.zagniezdzony=wartosc` — np. `PAGE_ATTRS:appearance.page-mode=Normal;appearance.page-template=Theme Default;dialog.width=480`
 
 ### Przykład rzeczywisty (fragment z SKW_TO_APEX)
 
@@ -740,11 +870,13 @@ Narzędzie generuje self-contained stronę HTML z interaktywnym widokiem schemat
    - Panel szczegółów (prawy): kolumny, constrainty, indeksy, komentarze, podprogramy
    - Klikanie w drzewo otwiera szczegóły obiektu
 
-3. **APEX↔DB** — mapa powiązań:
+3. **APEX↔DB** — mapa powiązań i pełne atrybuty:
    - Lewa kolumna: strony APEX i shared components (LOV-y)
    - Prawa kolumna: obiekty bazy danych (tabele, widoki, pakiety)
    - **Dwukierunkowe podświetlanie**: kliknięcie strony APEX podświetla powiązane obiekty DB i odwrotnie
    - Źródła powiązań: `region` (SQL/tabela), `process` (kod PL/SQL), `validation`, `lov`
+   - **Panel szczegółów strony** z rozwijanymi sekcjami (Regiony, Elementy, Przyciski, Procesy, DA, Walidacje, Branching)
+   - **Pełne atrybuty każdego obiektu** w rozwijanych panelach `<details>` z formatowaniem YAML (funkcja JS `renderRawAttrs` + `formatAttrsYaml`)
 
 ### Heurystyki linkera APEX↔DB
 
@@ -839,14 +971,14 @@ input_dir/
 | `cli.py` | `apex_export_to_md/cli.py` | Parsowanie argumentów CLI, orkiestracja 3 pipeline'ów |
 | `config.py` | `apex_export_to_md/config.py` | Dataclass `AppConfig`, stałe heurystyk |
 | **Pipeline APEX** | | |
-| `models/apex_models.py` | `models/` | Dataclassy: `ApexApp`, `ApexPage`, `Region`, `Column`, `Process` itp. |
-| `parser/page_parser.py` | `parser/` | Parsowanie `pages/p*.yaml` → `ApexPage` |
+| `models/apex_models.py` | `models/` | Dataclassy: `ApexApp`, `ApexPage`, `Region`, `Column`, `Process` itp. — każda z polem `raw_attributes: dict` |
+| `parser/page_parser.py` | `parser/` | Parsowanie `pages/p*.yaml` → `ApexPage` z pełnymi `raw_attributes` |
 | `parser/shared_parser.py` | `parser/` | Parsowanie `shared_components/` → LOV, Auth, Nav itp. |
-| `parser/yaml_helpers.py` | `parser/` | Pomocnicze funkcje YAML: `safe_get`, `strip_apex_id`, `collect_build_options` |
+| `parser/yaml_helpers.py` | `parser/` | Pomocnicze funkcje YAML: `safe_get`, `strip_apex_id`, `collect_build_options`, `clean_raw_attributes()`, `_deep_clean()` |
 | `filters/page_filter.py` | `filters/` | Klasa `PageFilter` — logika wszystkich trybów filtrowania |
-| `renderers/base_renderer.py` | `renderers/` | ABC `BaseRenderer` — interfejs + pomocnicze metody kodu |
-| `renderers/human_renderer.py` | `renderers/` | Markdown z nagłówkami, tabelami i blokami kodu |
-| `renderers/llm_renderer.py` | `renderers/` | Format liniowy `PREFIX:wartość\|...` |
+| `renderers/base_renderer.py` | `renderers/` | ABC `BaseRenderer` — interfejs + helpery `_format_raw_yaml()`, `_format_raw_attributes()` |
+| `renderers/human_renderer.py` | `renderers/` | Markdown z nagłówkami, tabelami, blokami kodu i `<details>` z pełnymi atrybutami |
+| `renderers/llm_renderer.py` | `renderers/` | Format liniowy `PREFIX:wartość\|...` + linie `*_ATTRS:` z pełnymi atrybutami |
 | **Pipeline DDL** | | |
 | `models/db_models.py` | `models/` | Dataclassy schematu DB: `DbSchema`, `DbTable`, `DbColumn`, `DbConstraint`, `DbView`, `DbPackage`, `DbSequence` itp. |
 | `parser/ddl_parser.py` | `parser/` | Parser DDL/PL/SQL: `parse_ddl_files()`, regex state machine, block splitter, package merge |
@@ -854,7 +986,7 @@ input_dir/
 | `renderers/db_llm_renderer.py` | `renderers/` | Skondensowany format liniowy DB (`TBL:`, `COL:`, `PKG:` itp.) |
 | **Pipeline HTML** | | |
 | `linker/apex_db_linker.py` | `linker/` | `ApexDbLinker` — heurystyki SQL, word boundary matching |
-| `renderers/html_renderer.py` | `renderers/` | Self-contained HTML z vis.js, 3 zakładki, branding |
+| `renderers/html_renderer.py` | `renderers/` | Self-contained HTML z vis.js, 3 zakładki, branding, panele `raw_attributes` (JS: `renderRawAttrs` + `formatAttrsYaml`) |
 | `renderers/vendor/vis-network.min.js` | `vendor/` | Bundled vis.js 9.1.6 (offline) |
 
 ---
@@ -989,9 +1121,9 @@ Logika `_parse_filter_spec` automatycznie obsłuży format `group:Administration
 
 Nowe typy obiektów APEX (np. Computation, Plugin) dodaje się w trzech krokach:
 
-1. Dodaj dataclass w `models/apex_models.py`
-2. Dodaj logikę parsowania w `parser/page_parser.py` lub `parser/shared_parser.py`
-3. Dodaj renderowanie w `renderers/human_renderer.py` i `renderers/llm_renderer.py`
+1. Dodaj dataclass w `models/apex_models.py` — pamiętaj o polu `raw_attributes: dict = field(default_factory=dict)`
+2. Dodaj logikę parsowania w `parser/page_parser.py` lub `parser/shared_parser.py` — wywołaj `clean_raw_attributes(data, skip_keys)` z odpowiednimi kluczami do pominięcia
+3. Dodaj renderowanie w `renderers/human_renderer.py` (z `<details>` + YAML), `renderers/llm_renderer.py` (z linią `*_ATTRS:`) i `renderers/html_renderer.py` (z `renderRawAttrs()` w JS)
 
 ---
 
@@ -1072,7 +1204,7 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 
 7. **Wewnętrzne ID APEX** — domyślnie są usuwane przez `strip_apex_id`. Opcja `--include-internal-ids` zachowuje je, ale nie jest jeszcze w pełni zaimplementowana we wszystkich parserach.
 
-8. **Duże aplikacje** — przy aplikacjach z setkami stron i pełnym kodem (`--include-code full`) plik `*_human.md` może mieć kilka MB. Dla LLM zalecane jest `--include-code summary` lub `none`.
+8. **Duże aplikacje** — przy aplikacjach z setkami stron i pełnym kodem (`--include-code full`) plik `*_human.md` może mieć kilka MB. Dla LLM zalecane jest `--include-code summary` lub `none`. Pełne atrybuty (`raw_attributes`) zwiększają rozmiar plików — format LLM może być większy niż Human z powodu dodatkowych linii `*_ATTRS:`.
 
 ---
 

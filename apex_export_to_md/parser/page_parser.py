@@ -16,7 +16,7 @@ from apex_export_to_md.models import (
 )
 from apex_export_to_md.parser.yaml_helpers import (
     safe_get, safe_get_str, safe_get_int, safe_get_bool, safe_get_list,
-    collect_build_options,
+    collect_build_options, clean_raw_attributes,
 )
 
 logger = logging.getLogger(__name__)
@@ -64,6 +64,9 @@ def parse_page(data: dict) -> ApexPage:
     # Parsowanie page-group — może być w identification lub na poziomie top-level
     page_group = safe_get_str(ident, "page-group", strip_id=True)
 
+    page_skip = {"id", "regions", "page-items", "buttons", "processes",
+                 "dynamic-actions", "branches", "validations", "css", "javascript"}
+
     return ApexPage(
         id=safe_get_int(data, "id"),
         name=safe_get_str(ident, "name", "") or "",
@@ -85,6 +88,7 @@ def parse_page(data: dict) -> ApexPage:
             safe_get(data, "javascript.execute-when-page-loads")
             or safe_get(data, "javascript.inline")
         ),
+        raw_attributes=clean_raw_attributes(data, page_skip),
     )
 
 
@@ -94,6 +98,8 @@ def parse_page(data: dict) -> ApexPage:
 def _parse_regions(regions_data: list[dict]) -> list[Region]:
     """Parsuj listę regionów."""
     regions: list[Region] = []
+    region_skip = {"id", "identification", "source", "layout", "attributes",
+                   "columns"}
     for r in regions_data or []:
         ident = r.get("identification", {})
         source = r.get("source", {})
@@ -110,6 +116,7 @@ def _parse_regions(regions_data: list[dict]) -> list[Region]:
             columns=_parse_columns(r.get("columns", [])),
             editable=safe_get_bool(edit, "enabled") if isinstance(edit, dict) else False,
             allowed_operations=safe_get_list(edit, "allowed-operations") if isinstance(edit, dict) else [],
+            raw_attributes=clean_raw_attributes(r, region_skip),
         )
         regions.append(region)
     return regions
@@ -125,13 +132,13 @@ def _clean_parent_region(value: str | None) -> str | None:
 def _parse_columns(columns_data: list[dict]) -> list[Column]:
     """Parsuj listę kolumn regionu."""
     columns: list[Column] = []
+    col_skip = {"id", "identification", "source", "link", "heading"}
     for c in columns_data or []:
         ident = c.get("identification", {})
         source = c.get("source", {})
         link = c.get("link", {})
         link_target_raw = safe_get(link, "target.page")
 
-        # Wyciągnij numer strony z formatu "6 # DAW_WYBOR_KONTROLI"
         link_target = None
         if link_target_raw:
             link_str = str(link_target_raw).split("#")[0].strip()
@@ -149,6 +156,7 @@ def _parse_columns(columns_data: list[dict]) -> list[Column]:
             link_target=link_target,
             lov=safe_get_str(c, "list-of-values.list-of-values", strip_id=True),
             primary_key=safe_get_bool(source, "primary-key"),
+            raw_attributes=clean_raw_attributes(c, col_skip),
         )
         columns.append(column)
     return columns
@@ -157,11 +165,11 @@ def _parse_columns(columns_data: list[dict]) -> list[Column]:
 def _parse_items(items_data: list[dict]) -> list[PageItem]:
     """Parsuj elementy formularza strony."""
     items: list[PageItem] = []
+    item_skip = {"id", "identification", "label"}
     for item_data in items_data or []:
         ident = item_data.get("identification", {})
         source = item_data.get("source", {})
 
-        # source_column tylko gdy typ źródła = Database Column
         source_type = safe_get_str(source, "type", "")
         source_column = None
         if source_type and "database" in source_type.lower():
@@ -174,6 +182,7 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
             source_column=source_column,
             lov=safe_get_str(item_data, "list-of-values.list-of-values", strip_id=True),
             default_value=safe_get_str(item_data, "default.static-value"),
+            raw_attributes=clean_raw_attributes(item_data, item_skip),
         )
         items.append(item)
     return items
@@ -182,11 +191,11 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
 def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
     """Parsuj przyciski strony."""
     buttons: list[Button] = []
+    btn_skip = {"id", "identification", "behavior"}
     for b in buttons_data or []:
         ident = b.get("identification", {})
         behavior = b.get("behavior", {})
 
-        # Wyciągnij target page z behavior.target (jeśli redirect)
         target_page = None
         target = behavior.get("target")
         if isinstance(target, dict):
@@ -203,6 +212,7 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
             action=safe_get_str(behavior, "action") if isinstance(behavior, dict) else None,
             target_page=target_page,
             is_hot=safe_get_bool(b, "appearance.hot"),
+            raw_attributes=clean_raw_attributes(b, btn_skip),
         )
         buttons.append(button)
     return buttons
@@ -211,18 +221,17 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
 def _parse_processes(processes_data: list[dict]) -> list[Process]:
     """Parsuj procesy strony."""
     processes: list[Process] = []
+    proc_skip = {"id", "identification", "source", "server-side-condition"}
     for p in processes_data or []:
         ident = p.get("identification", {})
         source = p.get("source", {})
         proc_type = safe_get_str(ident, "type", "") or ""
 
-        # Kod — zależnie od typu procesu
         code = (
             safe_get(source, "pl/sql-code")
             or safe_get(source, "javascript-code")
         )
 
-        # Procesy typu Invoke API — złóż opis z settings
         if not code and "invoke" in proc_type.lower():
             settings = p.get("settings", {})
             pkg = safe_get_str(settings, "package")
@@ -230,13 +239,11 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
             if pkg or proc:
                 code = f"INVOKE: {pkg or '?'}.{proc or '?'}"
 
-        # Condition — cały blok server-side-condition jako string
         ssc = p.get("server-side-condition", {})
         condition = None
         btn_pressed = None
         if isinstance(ssc, dict):
             btn_pressed = safe_get_str(ssc, "when-button-pressed", strip_id=True)
-            # Zbuduj opis warunku z pozostałych kluczy
             cond_parts = []
             for key in ("type", "value", "expression"):
                 val = ssc.get(key)
@@ -253,6 +260,7 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
             code=code,
             condition=condition,
             when_button_pressed=btn_pressed,
+            raw_attributes=clean_raw_attributes(p, proc_skip),
         )
         processes.append(process)
     return processes
@@ -261,11 +269,11 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
 def _parse_dynamic_actions(da_data: list[dict]) -> list[DynamicAction]:
     """Parsuj akcje dynamiczne z listą kroków."""
     dynamic_actions: list[DynamicAction] = []
+    da_skip = {"id", "identification", "when", "actions"}
     for da in da_data or []:
         ident = da.get("identification", {})
         when = da.get("when", {})
 
-        # Trigger selector — próbuj kolejno: item, jquery-selector, region, button
         trigger = (
             safe_get(when, "item")
             or safe_get(when, "jquery-selector")
@@ -281,6 +289,7 @@ def _parse_dynamic_actions(da_data: list[dict]) -> list[DynamicAction]:
             event_scope=safe_get_str(da, "execution.event-scope"),
             static_container=safe_get(da, "execution.static-container-(jquery-selector)"),
             actions=_parse_da_steps(da.get("actions", [])),
+            raw_attributes=clean_raw_attributes(da, da_skip),
         )
         dynamic_actions.append(action)
     return dynamic_actions
@@ -289,18 +298,17 @@ def _parse_dynamic_actions(da_data: list[dict]) -> list[DynamicAction]:
 def _parse_da_steps(steps_data: list[dict]) -> list[DynamicActionStep]:
     """Parsuj kroki akcji dynamicznej."""
     steps: list[DynamicActionStep] = []
+    step_skip = {"id", "identification", "settings", "affected-elements"}
     for s in steps_data or []:
         ident = s.get("identification", {})
         settings = s.get("settings", {})
         affected = s.get("affected-elements", {})
 
-        # Kod z settings
         code = (
             safe_get(settings, "pl/sql-code")
             or safe_get(settings, "javascript-code")
         )
 
-        # Affected elements — typ selekcji + selektor
         ae_type = safe_get_str(affected, "selection-type") if isinstance(affected, dict) else None
         ae_selector = (
             safe_get(affected, "jquery-selector")
@@ -319,6 +327,7 @@ def _parse_da_steps(steps_data: list[dict]) -> list[DynamicActionStep]:
             code=code,
             affected_elements=affected_str,
             fire_on_initialization=safe_get_bool(s, "execution.fire-on-initialization"),
+            raw_attributes=clean_raw_attributes(s, step_skip),
         )
         steps.append(step)
     return steps
@@ -327,12 +336,12 @@ def _parse_da_steps(steps_data: list[dict]) -> list[DynamicActionStep]:
 def _parse_branches(branches_data: list[dict]) -> list[Branch]:
     """Parsuj rozgałęzienia nawigacyjne."""
     branches: list[Branch] = []
+    branch_skip = {"id", "identification", "behavior", "server-side-condition"}
     for b in branches_data or []:
         ident = b.get("identification", {})
         behavior = b.get("behavior", {})
         target = behavior.get("target", {}) if isinstance(behavior, dict) else {}
 
-        # Numer strony docelowej
         target_page = None
         page_raw = safe_get(target, "page") if isinstance(target, dict) else None
         if page_raw:
@@ -341,7 +350,6 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
             except ValueError:
                 pass
 
-        # Condition — filtruj kluczowe pola (analogicznie do procesów)
         ssc = b.get("server-side-condition", {})
         condition = None
         if isinstance(ssc, dict) and ssc:
@@ -360,6 +368,7 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
             target_url=safe_get(target, "url") if isinstance(target, dict) else None,
             point=safe_get_str(b, "execution.point", "") or "",
             condition=condition,
+            raw_attributes=clean_raw_attributes(b, branch_skip),
         )
         branches.append(branch)
     return branches
@@ -368,11 +377,11 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
 def _parse_validations(validations_data: list[dict]) -> list[Validation]:
     """Parsuj walidacje strony."""
     validations: list[Validation] = []
+    val_skip = {"id", "identification", "validation", "server-side-condition"}
     for v in validations_data or []:
         ident = v.get("identification", {})
         val_block = v.get("validation", {})
 
-        # Condition
         ssc = v.get("server-side-condition", {})
         condition = None
         if isinstance(ssc, dict) and ssc:
@@ -385,6 +394,7 @@ def _parse_validations(validations_data: list[dict]) -> list[Validation]:
             type=safe_get_str(val_block, "type", "") or "",
             code=safe_get(val_block, "pl/sql-function-body"),
             condition=condition,
+            raw_attributes=clean_raw_attributes(v, val_skip),
         )
         validations.append(validation)
     return validations

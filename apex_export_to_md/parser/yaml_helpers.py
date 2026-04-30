@@ -120,3 +120,38 @@ def _collect_bo_recursive(obj: Any, results: list[str]) -> None:
     elif isinstance(obj, list):
         for item in obj:
             _collect_bo_recursive(item, results)
+
+
+def clean_raw_attributes(data: dict, extra_skip_keys: set[str] | None = None) -> dict:
+    """Przygotuj surowe atrybuty YAML do przechowania w modelu.
+
+    Usuwa ID APEX z wartości tekstowych, usuwa klucz 'id' oraz
+    wybrane klucze techniczne. Filtruje None i puste wartości.
+    """
+    if not isinstance(data, dict):
+        return {}
+    skip = {"id"}
+    if extra_skip_keys:
+        skip |= extra_skip_keys
+    return _deep_clean(data, skip)
+
+
+def _deep_clean(obj: Any, skip_keys: set[str]) -> Any:
+    """Rekurencyjnie oczyszcza strukturę z ID APEX i technicznych kluczy."""
+    if isinstance(obj, dict):
+        result = {}
+        for key, value in obj.items():
+            if key in skip_keys:
+                continue
+            cleaned = _deep_clean(value, skip_keys)
+            if cleaned is not None and cleaned != "" and cleaned != [] and cleaned != {}:
+                result[key] = cleaned
+        return result if result else {}
+    elif isinstance(obj, list):
+        cleaned = [_deep_clean(item, skip_keys) for item in obj]
+        cleaned = [item for item in cleaned if item is not None and item != ""]
+        return cleaned if cleaned else []
+    elif isinstance(obj, str):
+        cleaned = strip_apex_id(obj)
+        return cleaned if cleaned else None
+    return obj

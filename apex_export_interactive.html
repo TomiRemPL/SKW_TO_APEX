@@ -1938,6 +1938,44 @@ const DATA = {
       "name": "Home",
       "title": "SKW_2_APEX",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "Home",
+          "alias": "HOME",
+          "title": "SKW_2_APEX"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [
         {
           "name": "My Info",
@@ -1948,6 +1986,18 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "None",
+              "render-components": "Above Content"
+            },
+            "advanced": {
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -1959,6 +2009,18 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "None",
+              "render-components": "Above Content"
+            },
+            "advanced": {
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -1970,6 +2032,29 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Hero",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "image": {
+              "file-url": "#APP_FILES#icons/app-icon-512.png"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         }
       ],
@@ -1987,6 +2072,44 @@ const DATA = {
       "name": "DAW_ANKIETA",
       "title": "DAW_ANKIETA",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "DAW_ANKIETA",
+          "alias": "DAW-ANKIETA",
+          "title": "DAW_ANKIETA"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [
         {
           "name": "Przerywnik",
@@ -1997,6 +2120,26 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Blank with Attributes",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -2010,6 +2153,30 @@ const DATA = {
           "allowed_operations": [
             "Update Row"
           ],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "css-classes": [
+                "odswiez-mnie"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": [
             {
               "name": "B_OCENA_PRZELAMANA_UZASADNIENIE",
@@ -2019,7 +2186,51 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": false,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 100,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 4000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_OCENA_CZY_NADPISANA",
@@ -2029,7 +2240,42 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "use-defaults": false,
+                  "on-value": 1,
+                  "on-label": "TAK",
+                  "off-value": 0,
+                  "off-label": "NIE"
+                },
+                "layout": {
+                  "sequence": 90,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_OCENA_NADPISANA",
@@ -2039,7 +2285,39 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 80,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_OCENA_LICZONA",
@@ -2049,7 +2327,39 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 70,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "ID_PK_B_OCENA",
@@ -2059,7 +2369,27 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": true
+              "primary_key": true,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 60
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_SL_C_PYTANIE_DZIEDZINA_ID",
@@ -2069,7 +2399,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 50
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_KONTROLA",
@@ -2079,7 +2432,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 40
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_AUDYT",
@@ -2089,7 +2465,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 30
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "APEX$ROW_ACTION",
@@ -2099,7 +2498,15 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 20
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "APEX$ROW_SELECTOR",
@@ -2109,7 +2516,20 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "enable-multi-select": true,
+                  "show-select-all": true,
+                  "hide-control": false
+                },
+                "layout": {
+                  "sequence": 10
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             }
           ]
         },
@@ -2122,6 +2542,26 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Blank with Attributes",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -2136,6 +2576,30 @@ const DATA = {
             "Update Row",
             "Delete Row"
           ],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "css-classes": [
+                "odswiez-mnie"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": [
             {
               "name": "ID_PK_B_ANKIETA",
@@ -2145,7 +2609,27 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": true
+              "primary_key": true,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 40
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_AUDYT",
@@ -2155,7 +2639,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 50
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_KONTROLA",
@@ -2165,7 +2672,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 60
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_SL_C_PYTANIE",
@@ -2175,7 +2705,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 70
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_SL_C_PYTANIE_WAGA",
@@ -2185,7 +2738,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 80
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_SL_C_PYTANIE_DZIEDZINA",
@@ -2195,7 +2771,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 90
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "SHORT_DESCRIPTION_FR_",
@@ -2205,7 +2804,30 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 100
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "REFERENCE_ID",
@@ -2215,7 +2837,30 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 110
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_ANKIETA_ODPOWIEDZ",
@@ -2225,7 +2870,49 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "B_SL_C_ODPOWIEDZ",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 120,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "list-of-values": {
+                  "type": "Shared Component",
+                  "list-of-values": "B_SL_C_ODPOWIEDZ",
+                  "display-extra-values": true,
+                  "display-null-value": true
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Use List of Values",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_ANKIETA_OCENA_WAZONA_LICZ",
@@ -2235,7 +2922,35 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 130,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": false
+                }
+              }
             },
             {
               "name": "B_ANKIETA_KOMENTARZ",
@@ -2245,7 +2960,56 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": true,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 140,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "appearance": {
+                  "css-classes": [
+                    "tekst-zawijany"
+                  ]
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 4000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_ANKIETA_LINK_DOKUMENTACJA",
@@ -2255,7 +3019,51 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": true,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 150,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 1000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "APEX$ROW_ACTION",
@@ -2265,7 +3073,15 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 20
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "APEX$ROW_SELECTOR",
@@ -2275,7 +3091,20 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "enable-multi-select": true,
+                  "show-select-all": true,
+                  "hide-control": false
+                },
+                "layout": {
+                  "sequence": 10
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU",
@@ -2285,7 +3114,44 @@ const DATA = {
               "data_type": "DATE",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "show-time": false,
+                  "display-as": "Popup",
+                  "minimum-date": "None",
+                  "maximum-date": "None",
+                  "multiple-months": false,
+                  "use-defaults": true
+                },
+                "layout": {
+                  "sequence": 160,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column",
+                  "date-ranges": "All"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "PYTANIE_TEKST",
@@ -2295,7 +3161,49 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "format": "Plain Text",
+                  "based-on": "Item Value"
+                },
+                "layout": {
+                  "sequence": 30,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "appearance": {
+                  "css-classes": [
+                    "tekst-zawijany"
+                  ]
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "PYTANIE_KOLEJNOSC",
@@ -2305,7 +3213,36 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "format": "Plain Text",
+                  "based-on": "Item Value"
+                },
+                "layout": {
+                  "sequence": 170,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             }
           ]
         },
@@ -2320,6 +3257,30 @@ const DATA = {
           "allowed_operations": [
             "Update Row"
           ],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "css-classes": [
+                "odswiez-mnie"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": [
             {
               "name": "ID_FK_B_AUDYT",
@@ -2329,7 +3290,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 30
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_KONTROLA",
@@ -2339,7 +3323,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 40
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_SL_C_PYTANIE_DZIEDZINA_ID",
@@ -2349,7 +3356,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 50
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_PK_B_OCENA",
@@ -2359,7 +3389,27 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": true
+              "primary_key": true,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 60
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_OCENA_LICZONA",
@@ -2369,7 +3419,39 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 70,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_OCENA_NADPISANA",
@@ -2379,7 +3461,39 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 80,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "APEX$ROW_ACTION",
@@ -2389,7 +3503,15 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 20
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "APEX$ROW_SELECTOR",
@@ -2399,7 +3521,20 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "enable-multi-select": true,
+                  "show-select-all": true,
+                  "hide-control": false
+                },
+                "layout": {
+                  "sequence": 10
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "B_OCENA_CZY_NADPISANA",
@@ -2409,7 +3544,42 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "use-defaults": false,
+                  "on-value": 1,
+                  "on-label": "TAK",
+                  "off-value": 0,
+                  "off-label": "NIE"
+                },
+                "layout": {
+                  "sequence": 90,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_OCENA_PRZELAMANA_UZASADNIENIE",
@@ -2419,7 +3589,51 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": false,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 100,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 4000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             }
           ]
         },
@@ -2435,6 +3649,30 @@ const DATA = {
             "Update Row",
             "Delete Row"
           ],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "css-classes": [
+                "odswiez-mnie"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": [
             {
               "name": "APEX$ROW_SELECTOR",
@@ -2444,7 +3682,20 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "enable-multi-select": true,
+                  "show-select-all": true,
+                  "hide-control": false
+                },
+                "layout": {
+                  "sequence": 10
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "APEX$ROW_ACTION",
@@ -2454,7 +3705,15 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 20
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             },
             {
               "name": "PYTANIE_TEKST",
@@ -2464,7 +3723,49 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "format": "Plain Text",
+                  "based-on": "Item Value"
+                },
+                "layout": {
+                  "sequence": 30,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "appearance": {
+                  "css-classes": [
+                    "tekst-zawijany"
+                  ]
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "ID_PK_B_ANKIETA",
@@ -2474,7 +3775,27 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": true
+              "primary_key": true,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 40
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_AUDYT",
@@ -2484,7 +3805,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 50
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_KONTROLA",
@@ -2494,7 +3838,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 60
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_SL_C_PYTANIE",
@@ -2504,7 +3871,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 70
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_SL_C_PYTANIE_WAGA",
@@ -2514,7 +3904,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 80
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "ID_FK_B_SL_C_PYTANIE_DZIEDZINA",
@@ -2524,7 +3937,30 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 90
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "SHORT_DESCRIPTION_FR_",
@@ -2534,7 +3970,30 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 100
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "REFERENCE_ID",
@@ -2544,7 +4003,30 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 110
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_ANKIETA_ODPOWIEDZ",
@@ -2554,7 +4036,49 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "B_SL_C_ODPOWIEDZ",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 120,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "list-of-values": {
+                  "type": "Shared Component",
+                  "list-of-values": "B_SL_C_ODPOWIEDZ",
+                  "display-extra-values": true,
+                  "display-null-value": true
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Use List of Values",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_ANKIETA_OCENA_WAZONA_LICZ",
@@ -2564,7 +4088,38 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "number-alignment": "Start",
+                  "virtual-keyboard": "Decimal"
+                },
+                "layout": {
+                  "sequence": 130,
+                  "column-alignment": "end",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_ANKIETA_KOMENTARZ",
@@ -2574,7 +4129,56 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": true,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 140,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "appearance": {
+                  "css-classes": [
+                    "tekst-zawijany"
+                  ]
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 4000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "B_ANKIETA_LINK_DOKUMENTACJA",
@@ -2584,7 +4188,51 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": true,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 150,
+                  "column-alignment": "center",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 1000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "DATA_OSTATNIEJ_KONTROLI_NA_MOMENT_AUDYTU",
@@ -2594,7 +4242,44 @@ const DATA = {
               "data_type": "DATE",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "show-time": false,
+                  "display-as": "Popup",
+                  "minimum-date": "None",
+                  "maximum-date": "None",
+                  "multiple-months": false,
+                  "use-defaults": true
+                },
+                "layout": {
+                  "sequence": 160,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column",
+                  "date-ranges": "All"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "PYTANIE_KOLEJNOSC",
@@ -2604,7 +4289,36 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "format": "Plain Text",
+                  "based-on": "Item Value"
+                },
+                "layout": {
+                  "sequence": 170,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             }
           ]
         }
@@ -2616,7 +4330,61 @@ const DATA = {
           "label": "Numer Audytu",
           "source_column": "",
           "lov": "B_AUDYT.B_AUDYT_NUMER_AUDYTU",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "page-action-on-selection": "Submit Page",
+              "execute-validations": true
+            },
+            "multiple-values": {
+              "type": false
+            },
+            "layout": {
+              "sequence": 20,
+              "region": "No Parent",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "height": 1
+            },
+            "validation": {
+              "value-required": false
+            },
+            "list-of-values": {
+              "type": "Shared Component",
+              "list-of-values": "B_AUDYT.B_AUDYT_NUMER_AUDYTU",
+              "display-extra-values": true,
+              "display-null-value": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "quick-picks": {
+              "show-quick-picks": false
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         },
         {
           "name": "P2_KONTROLA_ID",
@@ -2624,7 +4392,61 @@ const DATA = {
           "label": "Numer Kontroli",
           "source_column": "",
           "lov": "B_LISTA_KONTROLI_DO_AUDYTU",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "page-action-on-selection": "Submit Page",
+              "execute-validations": true
+            },
+            "multiple-values": {
+              "type": false
+            },
+            "layout": {
+              "sequence": 40,
+              "region": "No Parent",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": false,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "height": 1
+            },
+            "validation": {
+              "value-required": false
+            },
+            "list-of-values": {
+              "type": "Shared Component",
+              "list-of-values": "B_LISTA_KONTROLI_DO_AUDYTU",
+              "display-extra-values": true,
+              "display-null-value": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "quick-picks": {
+              "show-quick-picks": false
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         }
       ],
       "buttons": [
@@ -2633,7 +4455,30 @@ const DATA = {
           "label": "WyliczOcenę",
           "action": "Submit Page",
           "target_page": null,
-          "is_hot": true
+          "is_hot": true,
+          "raw_attributes": {
+            "layout": {
+              "sequence": 10,
+              "region": "No Parent",
+              "slot": "REGION_POSITION_05",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": 6,
+              "new-column": true,
+              "column-span": "Automatic"
+            },
+            "appearance": {
+              "button-template": "Text with Icon",
+              "hot": true,
+              "template-options": [
+                "#DEFAULT#",
+                "t-Button--iconLeft",
+                "t-Button--hoverIconPush",
+                "t-Button--gapBottom"
+              ],
+              "icon": "fa-lg fa-save"
+            }
+          }
         }
       ],
       "processes": [
@@ -2644,7 +4489,23 @@ const DATA = {
           "point": "Processing",
           "code": "",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "settings": {
+              "target-type": "Region Source",
+              "prevent-lost-updates": true,
+              "lock-row": true,
+              "return-primary-key(s)-after-insert": true
+            },
+            "execution": {
+              "sequence": 40,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "WyliczenieOceny - SKUTECZNOSC",
@@ -2653,7 +4514,17 @@ const DATA = {
           "point": "Processing",
           "code": "DECLARE\n    v_dziedzina NUMBER := 2; /*SKUTECZNOSC*/\n\tv_liczba_null \tNUMBER;\n\tv_liczba_na \tNUMBER;\n    v_suma      \tNUMBER;\n    v_id_audytu \tNUMBER := :B_APP_ID_AUDYT; \n    v_wynik         NUMBER := -1;\nBEGIN\n    --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość\n\tSELECT count(1) \n\tINTO v_liczba_null\n\tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NULL;\n\t-- IF v_liczba_null>0 THEN \n\t--   v_wynik := NULL;\n\t-- END IF;\n\t-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'\n    SELECT COUNT(1)\n    INTO v_liczba_na\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ='N/A';\n    -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'\n    -- IF v_liczba_na >= 6 THEN\n    --     v_wynik := -1;\n    -- END IF;\n    -- -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych\n    SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F\n    INTO v_suma\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;\n    -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0\n    v_suma := NVL(v_suma, 0);\n    -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy\n    if v_liczba_null > 0 then v_wynik := null;\n    ELSIF v_liczba_na = 6 then v_wynik := -1;\n    ELSIF v_suma < 0.25 THEN   v_wynik := 4;\n    ELSIF v_suma < 0.5 THEN    v_wynik := 3;\n    ELSIF v_suma <= 0.75 THEN  v_wynik := 2;\n    ELSE  v_wynik := 1;\n    END IF;\n    \n    /*Zapisanie wyliczonej oceny do bazy danych*/\n    UPDATE B_OCENA a   \n     SET a.B_OCENA_LICZONA = v_wynik     \n    WHERE 1=1\n    AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n    AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n    AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/ \n\n    /*Jeśli pole B_OCENA_CZY_NADPISANA ma wartość 1 - TAK, to nie przepisujemy wyniku, w\n     w przeciwnym przypadku przepisujemy*/\n    --if :B_OCENA_CZY_NADPISANA = 'NIE' then\n        UPDATE B_OCENA a   \n         SET a.B_OCENA_NADPISANA = v_wynik     \n        WHERE 1=1\n        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n        AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina /*ADEKWATNOŚĆ*/ \n        AND nvl(A.B_OCENA_CZY_NADPISANA,-1) = 0;\n    --END IF;\nEND;\t\n",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 70,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "P2_SKUTECZNOSC - DMI",
@@ -2662,7 +4533,23 @@ const DATA = {
           "point": "Processing",
           "code": "",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "settings": {
+              "target-type": "Region Source",
+              "prevent-lost-updates": true,
+              "lock-row": true,
+              "return-primary-key(s)-after-insert": true
+            },
+            "execution": {
+              "sequence": 50,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "P2_SKUTECZNOSC - Save Interactive Grid Data",
@@ -2671,7 +4558,23 @@ const DATA = {
           "point": "Processing",
           "code": "",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "settings": {
+              "target-type": "Region Source",
+              "prevent-lost-updates": true,
+              "lock-row": true,
+              "return-primary-key(s)-after-insert": true
+            },
+            "execution": {
+              "sequence": 10,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "P2_ADEKWATNOSC_OCENA - Save Interactive Grid Data",
@@ -2680,7 +4583,23 @@ const DATA = {
           "point": "Processing",
           "code": "",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "settings": {
+              "target-type": "Region Source",
+              "prevent-lost-updates": true,
+              "lock-row": true,
+              "return-primary-key(s)-after-insert": true
+            },
+            "execution": {
+              "sequence": 30,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "WyliczenieOceny - ADEKWATNOSC",
@@ -2689,7 +4608,17 @@ const DATA = {
           "point": "Processing",
           "code": "DECLARE\n    v_dziedzina NUMBER := 1; /*adekwatność*/\n\tv_liczba_null \tNUMBER;\n\tv_liczba_na \tNUMBER;\n    v_suma      \tNUMBER;\n    v_id_audytu \tNUMBER := :B_APP_ID_AUDYT; \n    v_wynik         NUMBER := -1;\nBEGIN\n    --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość\n\tSELECT count(1) \n\tINTO v_liczba_null\n\tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NULL;\n\t-- IF v_liczba_null>0 THEN \n\t--   v_wynik := NULL;\n\t-- END IF;\n\t-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'\n    SELECT COUNT(1)\n    INTO v_liczba_na\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ='N/A';\n    -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'\n    -- IF v_liczba_na >= 6 THEN\n    --     v_wynik := -1;\n    -- END IF;\n    -- -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych\n    SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F\n    INTO v_suma\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;\n    -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0\n    v_suma := NVL(v_suma, 0);\n    -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy\n    if v_liczba_null > 0 then v_wynik := null;\n    ELSIF v_liczba_na = 6 then v_wynik := -1;\n    ELSIF v_suma < 0.25 THEN   v_wynik := 4;\n    ELSIF v_suma < 0.5 THEN    v_wynik := 3;\n    ELSIF v_suma <= 0.75 THEN  v_wynik := 2;\n    ELSE  v_wynik := 1;\n    END IF;\n    \n    /*Zapisanie wyliczonej oceny do bazy danych*/\n    UPDATE B_OCENA a   \n     SET a.B_OCENA_LICZONA = v_wynik     \n    WHERE 1=1\n    AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n    AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n    AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/ \n\n    /*Jeśli pole B_OCENA_CZY_NADPISANA ma wartość 1 - TAK, to nie przepisujemy wyniku, w\n     w przeciwnym przypadku przepisujemy*/\n    --if :B_OCENA_CZY_NADPISANA = 'NIE' then\n        UPDATE B_OCENA a   \n         SET a.B_OCENA_NADPISANA = v_wynik     \n        WHERE 1=1\n        AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n        AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n        AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina /*ADEKWATNOŚĆ*/ \n        AND nvl(A.B_OCENA_CZY_NADPISANA,-1) = 0;\n    --END IF;\nEND;\t\n",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 60,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         }
       ],
       "dynamic_actions": [
@@ -2698,12 +4627,29 @@ const DATA = {
           "event": "Change",
           "selection_type": "Column(s)",
           "trigger_selector": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 40,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Set Value",
               "code": "",
               "affected_elements": "",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "Oblicz ocenę ważoną AD",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true,
+                  "stop-execution-on-error": true,
+                  "wait-for-result": true
+                }
+              }
             }
           ]
         },
@@ -2712,18 +4658,43 @@ const DATA = {
           "event": "Change",
           "selection_type": "Item(s)",
           "trigger_selector": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 10,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Execute Server-side Code",
               "code": "begin\n  :B_APP_ID_AUDYT := :P2_AUDYT_ID;\nend;\n",
               "affected_elements": "",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "Ustawienie B_APP_ID_AUDYT",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true,
+                  "stop-execution-on-error": true,
+                  "wait-for-result": true
+                }
+              }
             },
             {
               "type": "Refresh",
               "code": "",
               "affected_elements": "jQuery Selector: .odswiez-mnie",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 20,
+                  "event": "Ustawienie B_APP_ID_AUDYT",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true
+                }
+              }
             }
           ]
         },
@@ -2732,18 +4703,43 @@ const DATA = {
           "event": "Change",
           "selection_type": "Item(s)",
           "trigger_selector": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 20,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Execute Server-side Code",
               "code": "Begin\n  :B_APP_ID_KONTROLI := :P2_KONTROLA_ID;\nEnd;\n",
               "affected_elements": "",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "Ustawienie B_APP_ID_KONTROLI",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true,
+                  "stop-execution-on-error": true,
+                  "wait-for-result": true
+                }
+              }
             },
             {
               "type": "Refresh",
               "code": "",
               "affected_elements": "jQuery Selector: .odswiez-mnie",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 20,
+                  "event": "Ustawienie B_APP_ID_KONTROLI",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true
+                }
+              }
             }
           ]
         },
@@ -2752,18 +4748,48 @@ const DATA = {
           "event": "Change",
           "selection_type": "Column(s)",
           "trigger_selector": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 30,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Set Value",
               "code": "",
               "affected_elements": "",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "Oblicz ocenę ważoną SK",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true,
+                  "stop-execution-on-error": true,
+                  "wait-for-result": true
+                }
+              }
             },
             {
               "type": "Execute Server-side Code",
               "code": "DECLARE\n    v_dziedzina NUMBER := 1; /*adekwatność*/\n\tv_liczba_null \tNUMBER;\n\tv_liczba_na \tNUMBER;\n    v_suma      \tNUMBER;\n    v_id_audytu \tNUMBER := :B_APP_ID_AUDYT; -- Zakładam, że ID audytu jest w tej zmiennej\n    v_wynik         NUMBER := -1;\nBEGIN\n    --0. sprawdzenie, czy wszystkie pola mają ustawioną jakąś wartość\n\tSELECT count(1) \n\tINTO v_liczba_null\n\tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NULL;\n\tIF v_liczba_null>0 THEN \n\t  v_wynik := NULL;\n\tEND IF;\n\t-- 1. CZEŚĆ: Sprawdzenie, czy wszystkie 6 rekordów ma status 'N/A'\n    SELECT COUNT(1)\n    INTO v_liczba_na\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ='N/A';\n    -- Jeśli licznik zwróci 6 (lub więcej), zwracamy 'N/A'\n    IF v_liczba_na >= 6 THEN\n        v_wynik := -1;\n    END IF;\n    -- 3. CZEŚĆ: Sumowanie kolumny z bazy danych\n    SELECT SUM(a.B_ANKIETA_OCENA_WAZONA_LICZ) -- Twoja kolumna F\n    INTO v_suma\n \tFROM B_ANKIETA a\n\tWHERE \n\t  A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = v_dziedzina\n      AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n      AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n      AND a.B_ANKIETA_ODPOWIEDZ IS NOT NULL;\n    -- Zabezpieczenie: Jeśli suma jest NULL (brak rekordów), traktuj jak 0\n    v_suma := NVL(v_suma, 0);\n    -- 4. CZEŚĆ: Ocena końcowa na podstawie sumy\n    IF v_suma < 0.25 THEN\n        v_wynik := 4;\n    ELSIF v_suma < 0.5 THEN\n        v_wynik := 3;\n    ELSIF v_suma <= 0.75 THEN\n        v_wynik := 2;\n    ELSE\n        v_wynik := 1;\n    END IF;\n    \n    UPDATE B_OCENA a   -- <--- ZMIEŃ NA NAZWĘ TABELI GDZIE TRZYMASZ WYNIK CAŁEGO AUDYTU\n    SET a.B_OCENA_LICZONA = v_wynik     -- <--- ZMIEŃ NA NAZWĘ KOLUMNY Z WYNIKIEM\n    WHERE 1=1\n    AND (:B_APP_ID_AUDYT IS NULL OR A.ID_FK_B_AUDYT = :P2_AUDYT_ID)\n    AND (:B_APP_ID_KONTROLI IS NULL OR A.ID_FK_B_KONTROLA = :P2_KONTROLA_ID)\n    AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = v_dziedzina; /*ADEKWATNOŚĆ*/   \nEND;\n",
               "affected_elements": "",
-              "fire_on_initialization": false
+              "fire_on_initialization": false,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 30,
+                  "event": "Oblicz ocenę ważoną SK",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": false,
+                  "stop-execution-on-error": true,
+                  "wait-for-result": true
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              }
             }
           ]
         }
@@ -2778,6 +4804,44 @@ const DATA = {
       "name": "DAW_WYSZUKIWANIE",
       "title": "DAW_WYSZUKIWANIE",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "DAW_WYSZUKIWANIE",
+          "alias": "DAW-WYSZUKIWANIE",
+          "title": "DAW_WYSZUKIWANIE"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Standard",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [
         {
           "name": "Search Results",
@@ -2788,6 +4852,35 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "order-by": {
+              "type": "None"
+            },
+            "appearance": {
+              "template": "Standard",
+              "template-options": [
+                "#DEFAULT#",
+                "t-Region--noPadding",
+                "t-Region--hideHeader js-addHiddenHeadingRoleDesc",
+                "t-Region--scrollBody"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "server-cache": {
+              "caching": "Disabled"
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": [
             {
               "name": "ID_PK_B_KONTROLA",
@@ -2797,7 +4890,18 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 0
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "REFERENCE_ID",
@@ -2807,7 +4911,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 2,
+                  "column-alignment": "center"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DATA_OSTATNIEJ_KONTROLI",
@@ -2817,7 +4947,18 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 3
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DATA_PIERWSZEJ_KONTROLI",
@@ -2827,7 +4968,18 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 4
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "LICZBA_WYKONANYCH_KONTROLI",
@@ -2837,7 +4989,18 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 5
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "STATUS",
@@ -2847,7 +5010,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 6,
+                  "column-alignment": "center"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "CONTROL_LEVEL",
@@ -2857,7 +5046,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 7,
+                  "column-alignment": "center"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DESCRIPTION_FR_",
@@ -2867,7 +5082,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 8,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DESCRIPTION_EN_",
@@ -2877,7 +5118,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 9,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "SHORT_DESCRIPTION_FR_",
@@ -2887,7 +5154,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 10,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "SHORT_DESCRIPTION_EN_",
@@ -2897,7 +5190,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 11,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DEFINITION_FR_",
@@ -2907,7 +5226,22 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 12
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending"
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DEFINITION_EN_",
@@ -2917,7 +5251,22 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 13
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending"
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "OBJECTIVE_FR_",
@@ -2927,7 +5276,22 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 14
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending"
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "OBJECTIVE_EN_",
@@ -2937,7 +5301,22 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 15
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending"
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "DOMAIN_PROCESS",
@@ -2947,7 +5326,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 16,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "RISKS",
@@ -2957,7 +5362,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 17,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "CONTROL_GROUP",
@@ -2967,7 +5398,33 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 18,
+                  "column-alignment": "start"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "sorting": {
+                  "default-sequence": 1,
+                  "direction": "Ascending",
+                  "sortable": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "advanced": {
+                  "compute-sum": false
+                },
+                "ui-defaults-reference": {
+                  "table-owner": "Parsing Schema"
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             }
           ]
         },
@@ -2980,6 +5437,393 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Standard",
+              "template-options": [
+                "#DEFAULT#",
+                "t-Region--hideHeader js-addHiddenHeadingRoleDesc",
+                "t-Region--scrollBody"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            },
+            "facets": [
+              {
+                "label": {
+                  "label": "Search"
+                },
+                "settings": {
+                  "search-type": "Row Search",
+                  "input-field": "Top of Faceted Search Region"
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Control Level",
+                  "show-label-for-current-facet": true
+                },
+                "appearance": {
+                  "icon": "fa-level-up",
+                  "display": "Inline"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": true,
+                  "maximum-displayed-entries": 7,
+                  "display-filter-initially": false
+                },
+                "actions-menu": {
+                  "filter": true,
+                  "chart": false
+                },
+                "advanced": {
+                  "collapsible": false
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Status",
+                  "show-label-for-current-facet": true
+                },
+                "appearance": {
+                  "display": "Inline"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "maximum-displayed-entries": 7,
+                  "display-filter-initially": false
+                },
+                "actions-menu": {
+                  "filter": true,
+                  "chart": false
+                },
+                "advanced": {
+                  "collapsible": false
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              },
+              {
+                "label": {
+                  "label": "Domain Process",
+                  "show-label-for-current-facet": true
+                },
+                "appearance": {
+                  "display": "Inline"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "display-filter-initially": false
+                },
+                "actions-menu": {
+                  "filter": true,
+                  "chart": false
+                },
+                "advanced": {
+                  "collapsible": false
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Risks",
+                  "show-label-for-current-facet": true
+                },
+                "appearance": {
+                  "display": "Inline"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "display-filter-initially": false
+                },
+                "actions-menu": {
+                  "filter": true,
+                  "chart": false
+                },
+                "advanced": {
+                  "collapsible": false
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "CONTROL GROUP",
+                  "show-label-for-current-facet": true
+                },
+                "appearance": {
+                  "display": "Inline"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "display-filter-initially": false
+                },
+                "actions-menu": {
+                  "filter": true,
+                  "chart": false
+                },
+                "advanced": {
+                  "collapsible": false
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              }
+            ],
+            "filters": [
+              {
+                "label": {
+                  "label": "Search"
+                },
+                "settings": {
+                  "search-type": "Row Search",
+                  "collapsed-search-field": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Control Level"
+                },
+                "appearance": {
+                  "icon": "fa-level-up"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": true,
+                  "client-side-filtering": false
+                },
+                "suggestions": {
+                  "type": "Dynamic",
+                  "show-label": true
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Status"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "client-side-filtering": false
+                },
+                "suggestions": {
+                  "type": "Dynamic",
+                  "show-label": true
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                },
+                "configuration": {
+                  "build-option": "Commented Out"
+                }
+              },
+              {
+                "label": {
+                  "label": "Domain Process"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "client-side-filtering": false
+                },
+                "suggestions": {
+                  "type": "Dynamic",
+                  "show-label": true
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "Risks"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "client-side-filtering": false
+                },
+                "suggestions": {
+                  "type": "Dynamic",
+                  "show-label": true
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              },
+              {
+                "label": {
+                  "label": "CONTROL GROUP"
+                },
+                "list-of-values": {
+                  "type": "Distinct Values",
+                  "sort-direction": "Ascending",
+                  "include-null-option": true
+                },
+                "list-entries": {
+                  "compute-counts": true,
+                  "show-counts": true,
+                  "zero-count-entries": "Hide",
+                  "sort-by-top-counts": false,
+                  "show-selected-first": false,
+                  "client-side-filtering": false
+                },
+                "suggestions": {
+                  "type": "Dynamic",
+                  "show-label": true
+                },
+                "multiple-values": {
+                  "type": false
+                },
+                "security": {
+                  "store-value-encrypted-in-session-state": true,
+                  "escape-special-characters": true
+                }
+              }
+            ]
+          },
           "columns": []
         }
       ],
@@ -2997,6 +5841,44 @@ const DATA = {
       "name": "DAW_LISTA_AUDYTOW",
       "title": "DAW_LISTA_AUDYTOW",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "DAW_LISTA_AUDYTOW",
+          "alias": "DAW-LISTA-AUDYTOW",
+          "title": "DAW_LISTA_AUDYTOW"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [
         {
           "name": "Breadcrumb",
@@ -3007,6 +5889,27 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Title Bar",
+              "template-options": [
+                "#DEFAULT#",
+                "t-BreadcrumbRegion--useBreadcrumbTitle"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -3018,6 +5921,29 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Collapsible",
+              "template-options": [
+                "#DEFAULT#",
+                "is-expanded",
+                "t-Region--scrollBody"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "static-id": "filtry-kontroli",
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -3033,6 +5959,55 @@ const DATA = {
             "Update Row",
             "Delete Row"
           ],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            },
+            "printing": {
+              "page": {
+                "size": "A4",
+                "orientation": "Landscape",
+                "units": "Millimeters",
+                "width": 297,
+                "height": 210,
+                "border-width": 0.5
+              },
+              "page-header": {
+                "font": "Helvetica",
+                "font-weight": "Normal",
+                "font-size": 12,
+                "alignment": "center"
+              },
+              "column-headings": {
+                "font": "Helvetica",
+                "font-weight": "Bold",
+                "font-size": 10,
+                "background-color": "#EEEEEE"
+              },
+              "page-footer": {
+                "font": "Helvetica",
+                "font-weight": "Normal",
+                "font-size": 12,
+                "alignment": "center"
+              }
+            }
+          },
           "columns": [
             {
               "name": "ID_PK_B_AUDYT",
@@ -3042,7 +6017,27 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": true
+              "primary_key": true,
+              "raw_attributes": {
+                "settings": {
+                  "value-protected": true
+                },
+                "layout": {
+                  "sequence": 30
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": false
+                },
+                "enable-users-to": {
+                  "sort": false
+                }
+              }
             },
             {
               "name": "B_AUDYT_NUMER_AUDYTU",
@@ -3052,7 +6047,43 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "6",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 40,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                },
+                "security": {
+                  "escape-special-characters": true
+                }
+              }
             },
             {
               "name": "STATUS_AUDYTU",
@@ -3062,7 +6093,48 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "trim-spaces": "Leading and Trailing",
+                  "text-case": "NO CHANGE"
+                },
+                "layout": {
+                  "sequence": 50,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": true,
+                  "maximum-length": 20
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "SZEF_MISJI_LOGIN",
@@ -3072,7 +6144,48 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "trim-spaces": "Leading and Trailing",
+                  "text-case": "NO CHANGE"
+                },
+                "layout": {
+                  "sequence": 60,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 100
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "AUDYTORZY_LOGINY",
@@ -3082,7 +6195,51 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "resizable": true,
+                  "auto-height": false,
+                  "character-counter": false,
+                  "trim-spaces": "Leading and Trailing"
+                },
+                "layout": {
+                  "sequence": 70,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 4000
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "None"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": false,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "DATA_UTWORZENIA",
@@ -3092,7 +6249,44 @@ const DATA = {
               "data_type": "DATE",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "show-time": false,
+                  "display-as": "Popup",
+                  "minimum-date": "None",
+                  "maximum-date": "None",
+                  "multiple-months": false,
+                  "use-defaults": true
+                },
+                "layout": {
+                  "sequence": 80,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column",
+                  "date-ranges": "All"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "DATA_ZAMROZENIA",
@@ -3102,7 +6296,44 @@ const DATA = {
               "data_type": "DATE",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "show-time": false,
+                  "display-as": "Popup",
+                  "minimum-date": "None",
+                  "maximum-date": "None",
+                  "multiple-months": false,
+                  "use-defaults": true
+                },
+                "layout": {
+                  "sequence": 90,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column",
+                  "date-ranges": "All"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "DATA_ZAKONCZENIA",
@@ -3112,7 +6343,44 @@ const DATA = {
               "data_type": "DATE",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "show-time": false,
+                  "display-as": "Popup",
+                  "minimum-date": "None",
+                  "maximum-date": "None",
+                  "multiple-months": false,
+                  "use-defaults": true
+                },
+                "layout": {
+                  "sequence": 100,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column",
+                  "date-ranges": "All"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "ZAMROZIL_LOGIN",
@@ -3122,7 +6390,48 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "trim-spaces": "Leading and Trailing",
+                  "text-case": "NO CHANGE"
+                },
+                "layout": {
+                  "sequence": 110,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 100
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "ZAKONCZYL_LOGIN",
@@ -3132,7 +6441,48 @@ const DATA = {
               "data_type": "VARCHAR2",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "trim-spaces": "Leading and Trailing",
+                  "text-case": "NO CHANGE"
+                },
+                "layout": {
+                  "sequence": 120,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "validation": {
+                  "value-required": false,
+                  "maximum-length": 100
+                },
+                "default": {
+                  "duplicate-copies-existing-value": true
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "performance-impacting-operators": [
+                    "Contains",
+                    "Starts With",
+                    "Case Insensitive",
+                    "Regular Expression"
+                  ],
+                  "text-case": "Mixed",
+                  "lov-type": "Distinct Column",
+                  "exact-match": true
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "LiczbSprawdzanychKontroli",
@@ -3142,7 +6492,36 @@ const DATA = {
               "data_type": "NUMBER",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "format": "Plain Text",
+                  "based-on": "Item Value"
+                },
+                "layout": {
+                  "sequence": 130,
+                  "column-alignment": "start",
+                  "stretch": "Use Report Setting"
+                },
+                "accessibility": {
+                  "value-identifies-row": false
+                },
+                "session-state": {
+                  "data-type": "VARCHAR2"
+                },
+                "column-filter": {
+                  "enabled": true,
+                  "lov-type": "Distinct Column"
+                },
+                "export-/-printing": {
+                  "include-in-export-/-print": true
+                },
+                "enable-users-to": {
+                  "sort": true,
+                  "control-break/aggregate": true,
+                  "hide": true
+                }
+              }
             },
             {
               "name": "APEX$ROW_SELECTOR",
@@ -3152,7 +6531,17 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "settings": {
+                  "enable-multi-select": true,
+                  "show-select-all": true,
+                  "hide-control": false
+                },
+                "layout": {
+                  "sequence": 10
+                }
+              }
             },
             {
               "name": "APEX$ROW_ACTION",
@@ -3162,7 +6551,12 @@ const DATA = {
               "data_type": "",
               "link_target": "",
               "lov": "",
-              "primary_key": false
+              "primary_key": false,
+              "raw_attributes": {
+                "layout": {
+                  "sequence": 20
+                }
+              }
             }
           ]
         }
@@ -3174,7 +6568,55 @@ const DATA = {
           "label": "Filtr Reference Id",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "subtype": "Text",
+              "trim-spaces": "Leading and Trailing",
+              "text-case": "NO CHANGE",
+              "submit-when-enter-pressed": false,
+              "disabled": false
+            },
+            "layout": {
+              "sequence": 10,
+              "region": "filtry-kontroli",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "width": 20
+            },
+            "validation": {
+              "value-required": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "quick-picks": {
+              "show-quick-picks": false
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         }
       ],
       "buttons": [],
@@ -3186,7 +6628,23 @@ const DATA = {
           "point": "Processing",
           "code": "",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "settings": {
+              "target-type": "Region Source",
+              "prevent-lost-updates": true,
+              "lock-row": true,
+              "return-primary-key(s)-after-insert": true
+            },
+            "execution": {
+              "sequence": 10,
+              "point": "Processing",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         }
       ],
       "dynamic_actions": [],
@@ -3200,6 +6658,44 @@ const DATA = {
       "name": "DAW_IMPORT_KONTROLI",
       "title": "DAW_IMPORT_KONTROLI",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "DAW_IMPORT_KONTROLI",
+          "alias": "DAW-IMPORT-KONTROLI",
+          "title": "DAW_IMPORT_KONTROLI"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [],
       "items": [
         {
@@ -3208,7 +6704,32 @@ const DATA = {
           "label": "",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "value-protected": true
+            },
+            "layout": {
+              "sequence": 30,
+              "region": "No Parent",
+              "slot": "BODY"
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "data-type": "VARCHAR2",
+              "storage": "Per Session (Persistent)"
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         },
         {
           "name": "P_PLIK",
@@ -3216,7 +6737,55 @@ const DATA = {
           "label": "Plik do wczytania - Excel",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "display": {
+              "display-as": "Inline File Browse",
+              "capture-using": "NONE"
+            },
+            "storage:": {
+              "type": "Table APEX_APPLICATION_TEMP_FILES",
+              "purge-file-at": "End of Session",
+              "allow-multiple-files": false,
+              "file-types": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+              "maximum-file-size": 15000
+            },
+            "layout": {
+              "sequence": 10,
+              "region": "No Parent",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": false,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": 5,
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "width": 30
+            },
+            "validation": {
+              "value-required": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         }
       ],
       "buttons": [
@@ -3225,7 +6794,31 @@ const DATA = {
           "label": "WczytajPlik",
           "action": "Submit Page",
           "target_page": null,
-          "is_hot": false
+          "is_hot": false,
+          "raw_attributes": {
+            "layout": {
+              "sequence": 20,
+              "region": "No Parent",
+              "slot": "BODY",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "alignment": "Left center"
+            },
+            "appearance": {
+              "button-template": "Text with Icon",
+              "hot": false,
+              "template-options": [
+                "#DEFAULT#",
+                "t-Button--iconLeft"
+              ]
+            },
+            "configuration": {
+              "build-option": "Commented Out"
+            }
+          }
         }
       ],
       "processes": [
@@ -3236,7 +6829,17 @@ const DATA = {
           "point": "Before Header",
           "code": "DECLARE\n    v_id_log    NUMBER;\n    v_id_sesji  NUMBER;\nBEGIN\n    -- Wygeneruj unikalny ID sesji importu\n    SELECT NVL(MAX(ID_SESJI_IMPORTU), 0) + 1\n    INTO   v_id_sesji\n    FROM   B_KONTROLA_IMPORT;\n\n    -- Wczytaj dane z pliku Excel do tabeli stagingowej.\n    -- APEX_DATA_PARSER.PARSE czyta plik bezposrednio z APEX_APPLICATION_TEMP_FILES\n    -- (gdzie APEX odkłada plik po wgraniu przez FILE BROWSE).\n    -- p_skip_rows => 1 pomija pierwszy wiersz z naglowkami kolumn.\n    -- p_file_type => APEX_DATA_PARSER.C_FILE_TYPE_XLSX wymusza format Excel.\n    INSERT INTO B_KONTROLA_IMPORT (\n        ID_SESJI_IMPORTU,\n        REFERENCE_ID,           STATUS,\n        CONTROL_LEVEL,          DESCRIPTION_FR_,\n        DESCRIPTION_EN_,        SHORT_DESCRIPTION_FR_,\n        SHORT_DESCRIPTION_EN_,  DEFINITION_FR_,\n        DEFINITION_EN_,         OBJECTIVE_FR_,\n        OBJECTIVE_EN_,          DOMAIN_PROCESS,\n        RISKS,                  CONTROL_GROUP\n    )\n    SELECT\n        v_id_sesji,\n        p.col001,   -- REFERENCE_ID\n        p.col002,   -- STATUS\n        p.col003,   -- CONTROL_LEVEL\n        p.col004,   -- DESCRIPTION_FR_\n        p.col005,   -- DESCRIPTION_EN_\n        p.col006,   -- SHORT_DESCRIPTION_FR_\n        p.col007,   -- SHORT_DESCRIPTION_EN_\n        p.col008,   -- DEFINITION_FR_\n        p.col009,   -- DEFINITION_EN_\n        p.col010,   -- OBJECTIVE_FR_\n        p.col011,   -- OBJECTIVE_EN_\n        p.col012,   -- DOMAIN_PROCESS\n        p.col013,   -- RISKS\n        p.col014    -- CONTROL_GROUP\n    FROM\n        APEX_APPLICATION_TEMP_FILES f,\n        TABLE(\n            APEX_DATA_PARSER.PARSE(\n                p_content       => f.blob_content,\n                p_file_name     => f.filename,\n                p_file_type     => APEX_DATA_PARSER.C_FILE_TYPE_XLSX,\n                p_skip_rows     => 1\n            )\n        ) p\n    WHERE f.name = :P_PLIK;\n\n    -- Uruchom wlasciwy import z pakietu\n    PKG_IMPORT_KONTROLI.WYKONAJ_IMPORT(\n        p_id_sesji_importu => v_id_sesji,\n        p_nazwa_pliku      => :P_PLIK,\n        p_uzytkownik       => :APP_USER,\n        p_id_log           => v_id_log\n    );\n\n    -- Przekaz ID logu do strony APEX (do wyswietlenia statystyk)\n    :P_ID_LOG_WYNIKU := v_id_log;\n\nEXCEPTION\n    WHEN OTHERS THEN\n        APEX_ERROR.ADD_ERROR(\n            p_message          => 'Blad wczytywania pliku: ' || SQLERRM,\n            p_display_location => APEX_ERROR.c_inline_in_notification\n        );\nEND;\n",
           "condition": "",
-          "when_button_pressed": ""
+          "when_button_pressed": "",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 10,
+              "point": "Before Header",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "configuration": {
+              "build-option": "Commented Out"
+            }
+          }
         }
       ],
       "dynamic_actions": [],
@@ -3250,6 +6853,44 @@ const DATA = {
       "name": "DAW_WYBOR_KONTROLI",
       "title": "DAW_WYBOR_KONTROLI",
       "page_mode": "Normal",
+      "raw_attributes": {
+        "identification": {
+          "name": "DAW_WYBOR_KONTROLI",
+          "alias": "DAW-WYBOR-KONTROLI",
+          "title": "DAW_WYBOR_KONTROLI"
+        },
+        "appearance": {
+          "page-mode": "Normal",
+          "page-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": true
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        }
+      },
       "regions": [
         {
           "name": "Kontrole",
@@ -3260,6 +6901,31 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Interactive Report",
+              "template-options": [
+                "#DEFAULT#",
+                "t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "static-id": "ir-kontrole",
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "server-cache": {
+              "caching": "Disabled"
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         },
         {
@@ -3271,6 +6937,27 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Title Bar",
+              "template-options": [
+                "#DEFAULT#",
+                "t-BreadcrumbRegion--useBreadcrumbTitle"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         }
       ],
@@ -3281,7 +6968,55 @@ const DATA = {
           "label": "New",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "subtype": "Text",
+              "trim-spaces": "Leading and Trailing",
+              "text-case": "NO CHANGE",
+              "submit-when-enter-pressed": false,
+              "disabled": false
+            },
+            "layout": {
+              "sequence": 30,
+              "region": "No Parent",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "width": 30
+            },
+            "validation": {
+              "value-required": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "quick-picks": {
+              "show-quick-picks": false
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         },
         {
           "name": "P6_ZAZNACZONE_ID",
@@ -3289,7 +7024,55 @@ const DATA = {
           "label": "New",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "subtype": "Text",
+              "trim-spaces": "Leading and Trailing",
+              "text-case": "NO CHANGE",
+              "submit-when-enter-pressed": false,
+              "disabled": false
+            },
+            "layout": {
+              "sequence": 40,
+              "region": "No Parent",
+              "slot": "BODY",
+              "alignment": "Left",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "label-column-span": "Page Template Default"
+            },
+            "appearance": {
+              "template": "Optional - Floating",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "width": 30
+            },
+            "validation": {
+              "value-required": false
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "storage": "Per Session (Persistent)"
+            },
+            "quick-picks": {
+              "show-quick-picks": false
+            },
+            "security": {
+              "session-state-protection": "Unrestricted",
+              "store-value-encrypted-in-session-state": false,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         }
       ],
       "buttons": [
@@ -3298,14 +7081,57 @@ const DATA = {
           "label": "USUN_Z_AUDYTU",
           "action": "Submit Page",
           "target_page": null,
-          "is_hot": true
+          "is_hot": true,
+          "raw_attributes": {
+            "layout": {
+              "sequence": 20,
+              "region": "No Parent",
+              "slot": "BODY",
+              "start-new-layout": false,
+              "start-new-row": false,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "alignment": "Left center"
+            },
+            "appearance": {
+              "button-template": "Text",
+              "hot": true,
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "css-classes": [
+                "t-Button--danger"
+              ]
+            }
+          }
         },
         {
           "name": "DODAJ_DO_AUDYTU",
           "label": "DODAJ_DO_AUDYTU",
           "action": "Submit Page",
           "target_page": null,
-          "is_hot": true
+          "is_hot": true,
+          "raw_attributes": {
+            "layout": {
+              "sequence": 10,
+              "region": "No Parent",
+              "slot": "BODY",
+              "start-new-layout": false,
+              "start-new-row": true,
+              "column": "Automatic",
+              "new-column": true,
+              "column-span": "Automatic",
+              "alignment": "Left center"
+            },
+            "appearance": {
+              "button-template": "Text",
+              "hot": true,
+              "template-options": [
+                "#DEFAULT#"
+              ]
+            }
+          }
         }
       ],
       "processes": [
@@ -3316,7 +7142,17 @@ const DATA = {
           "point": "After Submit",
           "code": "/*  -- KOD PL/SQL PROCESU \"Usun_Kontrole\" --*/\nDECLARE\n    v_tab  APEX_APPLICATION_GLOBAL.VC_ARR2;\n    v_err  VARCHAR2(4000);\nBEGIN\n    -- Sprawdz czy cos zaznaczono\n    IF :P6_ZAZNACZONE_ID IS NULL OR TRIM(:P6_ZAZNACZONE_ID) = '' THEN\n        APEX_ERROR.ADD_ERROR(\n            p_message          => 'Zaznacz przynajmniej jedną kontrolę do usunięcia.',\n            p_display_location => APEX_ERROR.c_inline_in_notification\n        );\n        RETURN;\n    END IF;\n    -- Rozdziel liste ID przecinkami i iteruj\n    v_tab := APEX_UTIL.STRING_TO_TABLE(:P6_ZAZNACZONE_ID, ',');\n    FOR i IN 1 .. v_tab.COUNT LOOP\n        IF TRIM(v_tab(i)) IS NOT NULL THEN\n            BEGIN\n                -- Etap 1: Usun ankiete i oceny (BEZ COMMIT)\n                PKG_ANKIETA.USUN_ANKIETE(\n                    p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),\n                    p_id_kontrola => TO_NUMBER(TRIM(v_tab(i)))\n                );\n                -- Etap 2: Usun kontrole z audytu (COMMIT wewnatrz)\n                -- Jesli status audytu != Otwarty, rzuci wyjatek\n                -- i cala operacja (lacznie z USUN_ANKIETE) zostanie wycofana\n                PKG_AUDYT.USUN_KONTROLE(\n                    p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),\n                    p_id_kontrola => TO_NUMBER(TRIM(v_tab(i))),\n                    p_uzytkownik  => :APP_USER\n                );\n            EXCEPTION\n                WHEN OTHERS THEN\n                    v_err := SQLERRM;\n                    -- Pomijamy ORA-20022 (kontrola nie jest w audycie)\n                    IF INSTR(v_err, 'ORA-20022') = 0 THEN\n                        APEX_ERROR.ADD_ERROR(\n                            p_message          => 'Błąd usuwania: ' || v_err,\n                            p_display_location => APEX_ERROR.c_inline_in_notification\n                        );\n                        RETURN;\n                    END IF;\n            END;\n        END IF;\n    END LOOP;\n    -- Wyczysc zaznaczenie po zapisie\n    :P6_ZAZNACZONE_ID := NULL;\nEXCEPTION\n    WHEN OTHERS THEN\n        v_err := SQLERRM;\n        APEX_ERROR.ADD_ERROR(\n            p_message          => 'Błąd podczas usuwania kontroli z audytu: ' || v_err,\n            p_display_location => APEX_ERROR.c_inline_in_notification\n        );\nEND;\n",
           "condition": "",
-          "when_button_pressed": "USUN_Z_AUDYTU"
+          "when_button_pressed": "USUN_Z_AUDYTU",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 20,
+              "point": "After Submit",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         },
         {
           "name": "Dodaj_Kontrole",
@@ -3325,7 +7161,17 @@ const DATA = {
           "point": "After Submit",
           "code": "DECLARE\n    v_tab  APEX_APPLICATION_GLOBAL.VC_ARR2;\n    v_err  VARCHAR2(4000);\nBEGIN\n    -- Sprawdz czy cos zaznaczono\n    IF :P6_ZAZNACZONE_ID IS NULL OR TRIM(:P6_ZAZNACZONE_ID) = '' THEN\n        APEX_ERROR.ADD_ERROR(\n            p_message          => 'Zaznacz przynajmniej jedną kontrolę.',\n            p_display_location => APEX_ERROR.c_inline_in_notification\n        );\n        RETURN;\n    END IF;\n    -- Rozdziel liste ID przecinkami i iteruj\n    v_tab := APEX_UTIL.STRING_TO_TABLE(:P6_ZAZNACZONE_ID, ',');\n    FOR i IN 1 .. v_tab.COUNT LOOP\n        IF TRIM(v_tab(i)) IS NOT NULL THEN\n            -- Etap 1: Dodaj kontrole do audytu\n            BEGIN\n                PKG_AUDYT.DODAJ_KONTROLE(\n                    p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),\n                    p_id_kontrola => TO_NUMBER(TRIM(v_tab(i))),\n                    p_uzytkownik  => :APP_USER\n                );\n            EXCEPTION\n                WHEN OTHERS THEN\n                    v_err := SQLERRM;\n                    -- Pomijamy ORA-20012 (kontrola juz w audycie) – kontynuuj do ankiety\n                    IF INSTR(v_err, 'ORA-20012') = 0 THEN\n                        APEX_ERROR.ADD_ERROR(\n                            p_message          => 'Błąd dodawania kontroli: ' || v_err,\n                            p_display_location => APEX_ERROR.c_inline_in_notification\n                        );\n                        RETURN;\n                    END IF;\n            END;\n            -- Etap 2: Wygeneruj ankiete (idempotentna – sprawdza flage)\n            BEGIN\n                PKG_ANKIETA.GENERUJ_ANKIETE(\n                    p_id_audytu   => TO_NUMBER(:P6_ID_AUDYTU),\n                    p_id_kontrola => TO_NUMBER(TRIM(v_tab(i)))\n                );\n            EXCEPTION\n                WHEN OTHERS THEN\n                    v_err := SQLERRM;\n                    APEX_ERROR.ADD_ERROR(\n                        p_message          => 'Błąd generowania ankiety: ' || v_err,\n                        p_display_location => APEX_ERROR.c_inline_in_notification\n                    );\n                    RETURN;\n            END;\n        END IF;\n    END LOOP;\n    -- Wyczysc zaznaczenie po zapisie\n    :P6_ZAZNACZONE_ID := NULL;\nEXCEPTION\n    WHEN OTHERS THEN\n        v_err := SQLERRM;\n        APEX_ERROR.ADD_ERROR(\n            p_message          => 'Błąd podczas dodawania kontroli: ' || v_err,\n            p_display_location => APEX_ERROR.c_inline_in_notification\n        );\nEND;\n",
           "condition": "",
-          "when_button_pressed": "DODAJ_DO_AUDYTU"
+          "when_button_pressed": "DODAJ_DO_AUDYTU",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 10,
+              "point": "After Submit",
+              "run-process": "Once Per Page Visit (default)"
+            },
+            "error": {
+              "display-location": "Inline in Notification"
+            }
+          }
         }
       ],
       "dynamic_actions": [
@@ -3334,12 +7180,28 @@ const DATA = {
           "event": "Change",
           "selection_type": "jQuery Selector",
           "trigger_selector": "input.cb-kontrola",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 10,
+              "event-scope": "Dynamic",
+              "static-container-(jquery-selector)": "#ir-kontrole",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Execute JavaScript Code",
               "code": "",
               "affected_elements": "",
-              "fire_on_initialization": false
+              "fire_on_initialization": false,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "DA_Checkbox_Zmiana",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": false
+                }
+              }
             }
           ]
         },
@@ -3348,12 +7210,27 @@ const DATA = {
           "event": "After Refresh",
           "selection_type": "Region",
           "trigger_selector": "Kontrole",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 20,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Execute JavaScript Code",
               "code": "",
               "affected_elements": "",
-              "fire_on_initialization": true
+              "fire_on_initialization": true,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "DA_Po_Odswiezeniu",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": true
+                }
+              }
             }
           ]
         },
@@ -3362,12 +7239,27 @@ const DATA = {
           "event": "Change",
           "selection_type": "jQuery Selector",
           "trigger_selector": "#cb-all",
+          "raw_attributes": {
+            "execution": {
+              "sequence": 30,
+              "event-scope": "Static",
+              "type": "Immediate"
+            }
+          },
           "actions": [
             {
               "type": "Execute JavaScript Code",
               "code": "",
               "affected_elements": "",
-              "fire_on_initialization": false
+              "fire_on_initialization": false,
+              "raw_attributes": {
+                "execution": {
+                  "sequence": 10,
+                  "event": "DA_Zaznacz_Wszystkie",
+                  "fire-when-event-result-is": true,
+                  "fire-on-initialization": false
+                }
+              }
             }
           ]
         }
@@ -3382,6 +7274,51 @@ const DATA = {
       "name": "Help",
       "title": "Help",
       "page_mode": "Modal Dialog",
+      "raw_attributes": {
+        "identification": {
+          "name": "Help",
+          "alias": "PAGE_HELP",
+          "title": "Help"
+        },
+        "appearance": {
+          "page-mode": "Modal Dialog",
+          "dialog-template": "Theme Default",
+          "template-options": [
+            "#DEFAULT#"
+          ]
+        },
+        "dialog": {
+          "chained": false,
+          "resizable": false
+        },
+        "navigation-menu": {
+          "override-user-interface-level": false
+        },
+        "navigation": {
+          "cursor-focus": "Do not focus cursor",
+          "warn-on-unsaved-changes": false
+        },
+        "security": {
+          "authentication": "Page Requires Authentication",
+          "deep-linking": "Application Default",
+          "page-access-protection": "Arguments Must Have Checksum",
+          "form-auto-complete": false,
+          "browser-cache": "Application Default"
+        },
+        "session-management": {
+          "rejoin-sessions": "Application Default"
+        },
+        "advanced": {
+          "enable-duplicate-page-submissions": "Yes - Enable page to be re-posted",
+          "reload-on-submit": "Only for Success"
+        },
+        "server-cache": {
+          "caching": "Disabled"
+        },
+        "configuration": {
+          "build-option": "Feature: About Page"
+        }
+      },
       "regions": [
         {
           "name": "Search Dialog",
@@ -3392,6 +7329,29 @@ const DATA = {
           "parent_region": "",
           "editable": false,
           "allowed_operations": [],
+          "raw_attributes": {
+            "appearance": {
+              "template": "Blank with Attributes",
+              "template-options": [
+                "#DEFAULT#"
+              ],
+              "render-components": "Above Content"
+            },
+            "accessibility": {
+              "use-landmark": true,
+              "landmark-type": "Template Default"
+            },
+            "advanced": {
+              "region-display-selector": false,
+              "exclude-title-from-translation": false
+            },
+            "server-cache": {
+              "caching": "Disabled"
+            },
+            "customization": {
+              "customizable": "Not Customizable By End Users"
+            }
+          },
           "columns": []
         }
       ],
@@ -3402,7 +7362,32 @@ const DATA = {
           "label": "",
           "source_column": "",
           "lov": "",
-          "default_value": ""
+          "default_value": "",
+          "raw_attributes": {
+            "settings": {
+              "value-protected": true
+            },
+            "layout": {
+              "sequence": 10,
+              "region": "Search Dialog",
+              "slot": "BODY"
+            },
+            "advanced": {
+              "warn-on-unsaved-changes": "Page Default"
+            },
+            "source": {
+              "used": "Only when current value in session state is null"
+            },
+            "session-state": {
+              "data-type": "VARCHAR2",
+              "storage": "Per Session (Persistent)"
+            },
+            "security": {
+              "session-state-protection": "Checksum Required - Session Level",
+              "store-value-encrypted-in-session-state": true,
+              "restricted-characters": "All characters can be saved."
+            }
+          }
         }
       ],
       "buttons": [],
@@ -3896,7 +7881,12 @@ function showPageDetail(pageId) {
   html += "Tryb: " + page.page_mode;
   html += "</div>";
 
-  // Powiązania DB
+  if (page.raw_attributes && Object.keys(page.raw_attributes).length) {
+    html += section("Pe\u0142ne atrybuty strony", null,
+      "<pre class=\"language-yaml\" style=\"max-height:400px;font-size:11px\"><code class=\"language-yaml\">" +
+      escapeHtml(formatAttrsYaml(page.raw_attributes, "")) + "</code></pre>");
+  }
+
   const linked = DATA.links.filter(l => l.page_id === pageId);
   if (linked.length) {
     const dbObjs = new Set();
@@ -3989,19 +7979,57 @@ function renderRegions(regions) {
       });
       html += "</table>";
     }
+    html += renderRawAttrs(r.raw_attributes, "Pe\u0142ne atrybuty regionu");
     html += "</div>";
   });
   return html;
 }
 
+function renderRawAttrs(attrs, label) {
+  if (!attrs || !Object.keys(attrs).length) return "";
+  const yamlStr = formatAttrsYaml(attrs, "");
+  return "<details style=\"margin-top:6px\"><summary style=\"cursor:pointer;color:#1a365d;font-size:12px;font-weight:600\">" +
+    escapeHtml(label) + " (" + Object.keys(attrs).length + " grup)</summary>" +
+    "<pre class=\"language-yaml\" style=\"max-height:300px;font-size:11px\"><code class=\"language-yaml\">" +
+    escapeHtml(yamlStr) + "</code></pre></details>";
+}
+
+function formatAttrsYaml(d, indent) {
+  let lines = [];
+  for (const [key, value] of Object.entries(d)) {
+    const prefix = indent + "  ";
+    if (value === null || value === undefined) continue;
+    if (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length > 0) {
+      lines.push(prefix + key + ":");
+      lines.push(formatAttrsYaml(value, prefix));
+    } else if (Array.isArray(value)) {
+      if (value.length === 0) continue;
+      if (value.every(v => typeof v === "string")) {
+        lines.push(prefix + key + ": [" + value.join(", ") + "]");
+      } else {
+        lines.push(prefix + key + ": [" + value.length + " element\u00f3w]");
+      }
+    } else if (typeof value === "boolean") {
+      lines.push(prefix + key + ": " + (value ? "true" : "false"));
+    } else {
+      lines.push(prefix + key + ": " + value);
+    }
+  }
+  return lines.join("\n");
+}
+
 function renderItems(items) {
-  let html = "<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\u015blnie</th></tr>";
+  let html = "<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\u015blnie</th><th>Atrybuty</th></tr>";
   items.forEach(it => {
+    const attrBtn = (it.raw_attributes && Object.keys(it.raw_attributes).length)
+      ? "<details><summary>poka\u017c</summary><pre class=\"language-yaml\" style=\"font-size:10px;max-height:200px\"><code class=\"language-yaml\">" + escapeHtml(formatAttrsYaml(it.raw_attributes, "")) + "</code></pre></details>"
+      : "\u2014";
     html += "<tr><td>" + it.name + "</td><td>" + it.type + "</td>" +
       "<td>" + (it.label || "\u2014") + "</td>" +
       "<td>" + (it.source_column || "\u2014") + "</td>" +
       "<td>" + (it.lov || "\u2014") + "</td>" +
-      "<td>" + (it.default_value || "\u2014") + "</td></tr>";
+      "<td>" + (it.default_value || "\u2014") + "</td>" +
+      "<td>" + attrBtn + "</td></tr>";
   });
   return html + "</table>";
 }
@@ -4016,7 +8044,9 @@ function renderButtons(buttons) {
     html += "Label: <strong>" + (b.label || b.name) + "</strong>";
     if (b.action) html += " | Akcja: " + b.action;
     if (b.target_page) html += " | \u2192 Strona " + b.target_page;
-    html += "</div></div>";
+    html += "</div>";
+    html += renderRawAttrs(b.raw_attributes, "Atrybuty przycisku");
+    html += "</div>";
   });
   return html;
 }
@@ -4037,6 +8067,7 @@ function renderProcesses(processes) {
       const lang = detectLang(pr.code, pr.language);
       html += codeBlock(pr.code, lang);
     }
+    html += renderRawAttrs(pr.raw_attributes, "Atrybuty procesu");
     html += "</div>";
   });
   return html;
@@ -4062,9 +8093,11 @@ function renderDynamicActions(das) {
           const lang = detectLang(step.code, step.type);
           html += codeBlock(step.code, lang);
         }
+        html += renderRawAttrs(step.raw_attributes, "Atrybuty kroku");
         html += "</div>";
       });
     }
+    html += renderRawAttrs(da.raw_attributes, "Atrybuty DA");
     html += "</div>";
   });
   return html;
@@ -4082,6 +8115,7 @@ function renderValidations(validations) {
     if (v.code) {
       html += codeBlock(v.code, detectLang(v.code, "plsql"));
     }
+    html += renderRawAttrs(v.raw_attributes, "Atrybuty walidacji");
     html += "</div>";
   });
   return html;
@@ -4097,7 +8131,9 @@ function renderBranches(branches) {
     if (br.target_url) html += "\u2192 URL: " + escapeHtml(br.target_url);
     html += " <span class=\"badge badge-point\">" + br.point + "</span>";
     if (br.condition) html += " | warunek: " + escapeHtml(br.condition);
-    html += "</div></div>";
+    html += "</div>";
+    html += renderRawAttrs(br.raw_attributes, "Atrybuty brancha");
+    html += "</div>";
   });
   return html;
 }

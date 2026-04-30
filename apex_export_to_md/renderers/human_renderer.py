@@ -50,6 +50,18 @@ class HumanRenderer(BaseRenderer):
             auth = page.security.get("authentication", "")
             if auth:
                 lines.append(f"- **Uwierzytelnianie:** {auth}")
+            for key, val in page.security.items():
+                if key != "authentication" and val:
+                    lines.append(f"- **{key}:** {val}")
+        if page.raw_attributes:
+            lines.append("")
+            lines.append("<details><summary>Pełne atrybuty strony</summary>")
+            lines.append("")
+            lines.append("```yaml")
+            lines.append(self._format_raw_yaml(page.raw_attributes))
+            lines.append("```")
+            lines.append("")
+            lines.append("</details>")
         lines.append("")
 
         # Regiony
@@ -68,6 +80,13 @@ class HumanRenderer(BaseRenderer):
                     f"| {item.label or '—'} | {item.source_column or '—'} "
                     f"| {item.lov or '—'} |"
                 )
+                if item.raw_attributes:
+                    lines.append(f"  <details><summary>atrybuty {item.name}</summary>")
+                    lines.append(f"  ")
+                    lines.append(f"  ```yaml")
+                    lines.append(self._format_raw_yaml(item.raw_attributes))
+                    lines.append(f"  ```")
+                    lines.append(f"  </details>")
             lines.append("")
 
         # Przyciski
@@ -78,6 +97,12 @@ class HumanRenderer(BaseRenderer):
                 hot = " **(primary)**" if btn.is_hot else ""
                 target = f" → strona {btn.target_page}" if btn.target_page else ""
                 lines.append(f"- **{btn.name}** — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}")
+                if btn.raw_attributes:
+                    lines.append(f"  <details><summary>atrybuty</summary>")
+                    lines.append(f"  ```yaml")
+                    lines.append(self._format_raw_yaml(btn.raw_attributes))
+                    lines.append(f"  ```")
+                    lines.append(f"  </details>")
             lines.append("")
 
         # Procesy
@@ -99,6 +124,15 @@ class HumanRenderer(BaseRenderer):
                     first_line = proc.code.strip().split("\n")[0]
                     lines.append(f"> `{first_line}...`")
                     lines.append("")
+                if proc.raw_attributes:
+                    lines.append("<details><summary>Pełne atrybuty procesu</summary>")
+                    lines.append("")
+                    lines.append("```yaml")
+                    lines.append(self._format_raw_yaml(proc.raw_attributes))
+                    lines.append("```")
+                    lines.append("")
+                    lines.append("</details>")
+                    lines.append("")
 
         # Akcje dynamiczne
         if page.dynamic_actions:
@@ -115,11 +149,51 @@ class HumanRenderer(BaseRenderer):
                         lines.append(f"    ```")
                         lines.append(f"    {step.code}")
                         lines.append(f"    ```")
+                    if step.raw_attributes:
+                        lines.append(f"    <details><summary>atrybuty kroku</summary>")
+                        lines.append(f"    ```yaml")
+                        lines.append(self._format_raw_yaml(step.raw_attributes))
+                        lines.append(f"    ```")
+                        lines.append(f"    </details>")
+                if da.raw_attributes:
+                    lines.append(f"  <details><summary>atrybuty DA</summary>")
+                    lines.append(f"  ```yaml")
+                    lines.append(self._format_raw_yaml(da.raw_attributes))
+                    lines.append(f"  ```")
+                    lines.append(f"  </details>")
             lines.append("")
 
         # Rozgałęzienia
         if page.branches:
             lines.append("#### Rozgałęzienia")
+            lines.append("")
+            for branch in page.branches:
+                target = f"strona {branch.target_page}" if branch.target_page else branch.target_url or "?"
+                cond = f" (warunek: {branch.condition})" if branch.condition else ""
+                lines.append(f"- {branch.name or '?'} → {target}{cond}")
+                if branch.raw_attributes:
+                    lines.append(f"  <details><summary>atrybuty</summary>")
+                    lines.append(f"  ```yaml")
+                    lines.append(self._format_raw_yaml(branch.raw_attributes))
+                    lines.append(f"  ```")
+                    lines.append(f"  </details>")
+            lines.append("")
+
+        if page.validations:
+            lines.append("#### Walidacje")
+            lines.append("")
+            for val in page.validations:
+                lines.append(f"- **{val.name}** — typ: {val.type}")
+                if val.code and self._should_include_code():
+                    lines.append(f"  ```plsql")
+                    lines.append(f"  {val.code}")
+                    lines.append(f"  ```")
+                if val.raw_attributes:
+                    lines.append(f"  <details><summary>atrybuty</summary>")
+                    lines.append(f"  ```yaml")
+                    lines.append(self._format_raw_yaml(val.raw_attributes))
+                    lines.append(f"  ```")
+                    lines.append(f"  </details>")
             lines.append("")
             for branch in page.branches:
                 target = f"strona {branch.target_page}" if branch.target_page else branch.target_url or "?"
@@ -166,7 +240,6 @@ class HumanRenderer(BaseRenderer):
         title_part = f' — "{region.title}"' if region.title else ""
         lines.append(f"#### Region: {region.name}{title_part}")
 
-        # Typ i źródło
         type_info = region.type
         if region.editable:
             ops = ", ".join(region.allowed_operations) if region.allowed_operations else "?"
@@ -181,6 +254,18 @@ class HumanRenderer(BaseRenderer):
                 lines.append(f"```sql")
                 lines.append(region.source_sql)
                 lines.append(f"```")
+        if region.parent_region:
+            lines.append(f"- **Region nadrzędny:** {region.parent_region}")
+
+        if region.raw_attributes:
+            lines.append("")
+            lines.append("<details><summary>Pełne atrybuty regionu</summary>")
+            lines.append("")
+            lines.append("```yaml")
+            lines.append(self._format_raw_yaml(region.raw_attributes))
+            lines.append("```")
+            lines.append("")
+            lines.append("</details>")
         lines.append("")
 
         # Kolumny jako tabela

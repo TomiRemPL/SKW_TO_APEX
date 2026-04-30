@@ -3,6 +3,9 @@
 Każda klasa odpowiada jednemu typowi obiektu w eksporcie APEX.
 Pola odpowiadają wartościom wyekstrahowanym z plików YAML
 (mapowanie YAML → model opisane w specyfikacji).
+
+Każdy obiekt zawiera pole `raw_attributes: dict` z pełnymi danymi YAML
+(po usunięciu ID APEX i kluczy technicznych).
 """
 from __future__ import annotations
 from dataclasses import dataclass, field
@@ -12,13 +15,14 @@ from dataclasses import dataclass, field
 class Column:
     """Kolumna w regionie (Interactive Grid/Report)."""
     name: str
-    type: str                           # Link, Text, Hidden, Select...
+    type: str
     heading: str | None = None
     source_column: str | None = None
     data_type: str | None = None
-    link_target: str | None = None      # numer strony docelowej
+    link_target: str | None = None
     lov: str | None = None
     primary_key: bool = False
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -26,13 +30,14 @@ class Region:
     """Region na stronie APEX (np. Interactive Grid, Form, Static Content)."""
     name: str
     type: str
-    title: str | None = None            # tytuł widoczny dla użytkownika
+    title: str | None = None
     source_table: str | None = None
     source_sql: str | None = None
     parent_region: str | None = None
     columns: list[Column] = field(default_factory=list)
     editable: bool = False
     allowed_operations: list[str] = field(default_factory=list)
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -44,39 +49,43 @@ class PageItem:
     source_column: str | None = None
     lov: str | None = None
     default_value: str | None = None
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
 class Process:
     """Proces serwerowy (PL/SQL, Invoke API itp.)."""
     name: str
-    type: str                           # Execute Code, Invoke API...
-    language: str | None = None         # PL/SQL, JavaScript
-    point: str = ""                     # After Submit, Processing...
+    type: str
+    language: str | None = None
+    point: str = ""
     code: str | None = None
     condition: str | None = None
     when_button_pressed: str | None = None
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
 class DynamicActionStep:
     """Pojedynczy krok akcji dynamicznej."""
-    type: str                           # Execute PL/SQL Code, Set Value...
+    type: str
     code: str | None = None
     affected_elements: str | None = None
     fire_on_initialization: bool = False
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
 class DynamicAction:
     """Akcja dynamiczna (zdarzenie klienckie z reakcją)."""
     name: str
-    event: str                          # Change, Click, Page Load...
-    selection_type: str | None = None   # jQuery Selector, Region, Item...
+    event: str
+    selection_type: str | None = None
     trigger_selector: str | None = None
-    event_scope: str | None = None      # Dynamic, Static
+    event_scope: str | None = None
     static_container: str | None = None
     actions: list[DynamicActionStep] = field(default_factory=list)
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -84,29 +93,32 @@ class Button:
     """Przycisk na stronie."""
     name: str
     label: str | None = None
-    action: str | None = None           # Submit Page, Redirect...
+    action: str | None = None
     target_page: int | None = None
-    is_hot: bool = False                # przycisk główny (primary)
+    is_hot: bool = False
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
 class Branch:
     """Rozgałęzienie nawigacyjne (przekierowanie po przetworzeniu)."""
     name: str | None = None
-    type: str = ""                      # Page or URL (Redirect)
+    type: str = ""
     target_page: int | None = None
     target_url: str | None = None
-    point: str = ""                     # After Processing
+    point: str = ""
     condition: str | None = None
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
 class Validation:
     """Walidacja na stronie."""
     name: str
-    type: str                           # PL/SQL Function Body, Item is NOT NULL...
+    type: str
     code: str | None = None
     condition: str | None = None
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -129,6 +141,7 @@ class ApexPage:
     validations: list[Validation] = field(default_factory=list)
     css_inline: str | None = None
     js_inline: str | None = None
+    raw_attributes: dict = field(default_factory=dict)
 
 
 @dataclass

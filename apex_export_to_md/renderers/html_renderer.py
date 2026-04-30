@@ -130,6 +130,7 @@ class HtmlRenderer:
                 "name": p.name,
                 "title": p.title or p.name,
                 "page_mode": p.page_mode,
+                "raw_attributes": p.raw_attributes,
                 "regions": [
                     {
                         "name": r.name,
@@ -140,6 +141,7 @@ class HtmlRenderer:
                         "parent_region": r.parent_region or "",
                         "editable": r.editable,
                         "allowed_operations": r.allowed_operations,
+                        "raw_attributes": r.raw_attributes,
                         "columns": [
                             {
                                 "name": col.name,
@@ -150,6 +152,7 @@ class HtmlRenderer:
                                 "link_target": col.link_target or "",
                                 "lov": col.lov or "",
                                 "primary_key": col.primary_key,
+                                "raw_attributes": col.raw_attributes,
                             }
                             for col in r.columns
                         ],
@@ -164,6 +167,7 @@ class HtmlRenderer:
                         "source_column": it.source_column or "",
                         "lov": it.lov or "",
                         "default_value": it.default_value or "",
+                        "raw_attributes": it.raw_attributes,
                     }
                     for it in p.items
                 ],
@@ -174,6 +178,7 @@ class HtmlRenderer:
                         "action": b.action or "",
                         "target_page": b.target_page,
                         "is_hot": b.is_hot,
+                        "raw_attributes": b.raw_attributes,
                     }
                     for b in p.buttons
                 ],
@@ -186,6 +191,7 @@ class HtmlRenderer:
                         "code": pr.code or "",
                         "condition": pr.condition or "",
                         "when_button_pressed": pr.when_button_pressed or "",
+                        "raw_attributes": pr.raw_attributes,
                     }
                     for pr in p.processes
                 ],
@@ -195,12 +201,14 @@ class HtmlRenderer:
                         "event": da.event,
                         "selection_type": da.selection_type or "",
                         "trigger_selector": da.trigger_selector or "",
+                        "raw_attributes": da.raw_attributes,
                         "actions": [
                             {
                                 "type": step.type,
                                 "code": step.code or "",
                                 "affected_elements": step.affected_elements or "",
                                 "fire_on_initialization": step.fire_on_initialization,
+                                "raw_attributes": step.raw_attributes,
                             }
                             for step in da.actions
                         ],
@@ -213,6 +221,7 @@ class HtmlRenderer:
                         "type": v.type,
                         "code": v.code or "",
                         "condition": v.condition or "",
+                        "raw_attributes": v.raw_attributes,
                     }
                     for v in p.validations
                 ],
@@ -224,6 +233,7 @@ class HtmlRenderer:
                         "target_url": br.target_url or "",
                         "point": br.point,
                         "condition": br.condition or "",
+                        "raw_attributes": br.raw_attributes,
                     }
                     for br in p.branches
                 ],
@@ -755,7 +765,12 @@ function showPageDetail(pageId) {
   html += "Tryb: " + page.page_mode;
   html += "</div>";
 
-  // Powiązania DB
+  if (page.raw_attributes && Object.keys(page.raw_attributes).length) {
+    html += section("Pe\\u0142ne atrybuty strony", null,
+      "<pre class=\\"language-yaml\\" style=\\"max-height:400px;font-size:11px\\"><code class=\\"language-yaml\\">" +
+      escapeHtml(formatAttrsYaml(page.raw_attributes, "")) + "</code></pre>");
+  }
+
   const linked = DATA.links.filter(l => l.page_id === pageId);
   if (linked.length) {
     const dbObjs = new Set();
@@ -848,19 +863,57 @@ function renderRegions(regions) {
       });
       html += "</table>";
     }
+    html += renderRawAttrs(r.raw_attributes, "Pe\\u0142ne atrybuty regionu");
     html += "</div>";
   });
   return html;
 }
 
+function renderRawAttrs(attrs, label) {
+  if (!attrs || !Object.keys(attrs).length) return "";
+  const yamlStr = formatAttrsYaml(attrs, "");
+  return "<details style=\\"margin-top:6px\\"><summary style=\\"cursor:pointer;color:#1a365d;font-size:12px;font-weight:600\\">" +
+    escapeHtml(label) + " (" + Object.keys(attrs).length + " grup)</summary>" +
+    "<pre class=\\"language-yaml\\" style=\\"max-height:300px;font-size:11px\\"><code class=\\"language-yaml\\">" +
+    escapeHtml(yamlStr) + "</code></pre></details>";
+}
+
+function formatAttrsYaml(d, indent) {
+  let lines = [];
+  for (const [key, value] of Object.entries(d)) {
+    const prefix = indent + "  ";
+    if (value === null || value === undefined) continue;
+    if (typeof value === "object" && !Array.isArray(value) && Object.keys(value).length > 0) {
+      lines.push(prefix + key + ":");
+      lines.push(formatAttrsYaml(value, prefix));
+    } else if (Array.isArray(value)) {
+      if (value.length === 0) continue;
+      if (value.every(v => typeof v === "string")) {
+        lines.push(prefix + key + ": [" + value.join(", ") + "]");
+      } else {
+        lines.push(prefix + key + ": [" + value.length + " element\\u00f3w]");
+      }
+    } else if (typeof value === "boolean") {
+      lines.push(prefix + key + ": " + (value ? "true" : "false"));
+    } else {
+      lines.push(prefix + key + ": " + value);
+    }
+  }
+  return lines.join("\\n");
+}
+
 function renderItems(items) {
-  let html = "<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\\u015blnie</th></tr>";
+  let html = "<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\\u015blnie</th><th>Atrybuty</th></tr>";
   items.forEach(it => {
+    const attrBtn = (it.raw_attributes && Object.keys(it.raw_attributes).length)
+      ? "<details><summary>poka\\u017c</summary><pre class=\\"language-yaml\\" style=\\"font-size:10px;max-height:200px\\"><code class=\\"language-yaml\\">" + escapeHtml(formatAttrsYaml(it.raw_attributes, "")) + "</code></pre></details>"
+      : "\\u2014";
     html += "<tr><td>" + it.name + "</td><td>" + it.type + "</td>" +
       "<td>" + (it.label || "\\u2014") + "</td>" +
       "<td>" + (it.source_column || "\\u2014") + "</td>" +
       "<td>" + (it.lov || "\\u2014") + "</td>" +
-      "<td>" + (it.default_value || "\\u2014") + "</td></tr>";
+      "<td>" + (it.default_value || "\\u2014") + "</td>" +
+      "<td>" + attrBtn + "</td></tr>";
   });
   return html + "</table>";
 }
@@ -875,7 +928,9 @@ function renderButtons(buttons) {
     html += "Label: <strong>" + (b.label || b.name) + "</strong>";
     if (b.action) html += " | Akcja: " + b.action;
     if (b.target_page) html += " | \\u2192 Strona " + b.target_page;
-    html += "</div></div>";
+    html += "</div>";
+    html += renderRawAttrs(b.raw_attributes, "Atrybuty przycisku");
+    html += "</div>";
   });
   return html;
 }
@@ -896,6 +951,7 @@ function renderProcesses(processes) {
       const lang = detectLang(pr.code, pr.language);
       html += codeBlock(pr.code, lang);
     }
+    html += renderRawAttrs(pr.raw_attributes, "Atrybuty procesu");
     html += "</div>";
   });
   return html;
@@ -921,9 +977,11 @@ function renderDynamicActions(das) {
           const lang = detectLang(step.code, step.type);
           html += codeBlock(step.code, lang);
         }
+        html += renderRawAttrs(step.raw_attributes, "Atrybuty kroku");
         html += "</div>";
       });
     }
+    html += renderRawAttrs(da.raw_attributes, "Atrybuty DA");
     html += "</div>";
   });
   return html;
@@ -941,6 +999,7 @@ function renderValidations(validations) {
     if (v.code) {
       html += codeBlock(v.code, detectLang(v.code, "plsql"));
     }
+    html += renderRawAttrs(v.raw_attributes, "Atrybuty walidacji");
     html += "</div>";
   });
   return html;
@@ -956,7 +1015,9 @@ function renderBranches(branches) {
     if (br.target_url) html += "\\u2192 URL: " + escapeHtml(br.target_url);
     html += " <span class=\\"badge badge-point\\">" + br.point + "</span>";
     if (br.condition) html += " | warunek: " + escapeHtml(br.condition);
-    html += "</div></div>";
+    html += "</div>";
+    html += renderRawAttrs(br.raw_attributes, "Atrybuty brancha");
+    html += "</div>";
   });
   return html;
 }

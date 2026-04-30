@@ -37,14 +37,17 @@ class LLMRenderer(BaseRenderer):
         """Renderuj stronę w formacie liniowym."""
         lines: list[str] = []
 
-        # Nagłówek strony
         auth = "auth:required" if page.security.get("authentication") else ""
         parts = [f"===PAGE:{page.id}", page.name, page.page_mode]
         if auth:
             parts.append(auth)
         lines.append("|".join(parts))
 
-        # CSS/JS
+        if page.raw_attributes:
+            attr_str = self._flatten_to_string(page.raw_attributes)
+            if attr_str:
+                lines.append(f"PAGE_ATTRS:{attr_str}")
+
         if page.css_inline:
             lines.append("CSS:inline")
             lines.append(page.css_inline)
@@ -54,11 +57,9 @@ class LLMRenderer(BaseRenderer):
             lines.append(page.js_inline)
             lines.append("---")
 
-        # Regiony
         for region in page.regions:
             lines.extend(self._render_region(region))
 
-        # Elementy formularza
         for item in page.items:
             parts = [f"ITEM:{item.name}", item.type]
             if item.label:
@@ -68,8 +69,11 @@ class LLMRenderer(BaseRenderer):
             if item.lov:
                 parts.append(f"lov:{item.lov}")
             lines.append("|".join(parts))
+            if item.raw_attributes:
+                attr_str = self._flatten_to_string(item.raw_attributes)
+                if attr_str:
+                    lines.append(f"ITEM_ATTRS:{attr_str}")
 
-        # Przyciski
         for btn in page.buttons:
             parts = [f"BTN:{btn.name}"]
             if btn.label:
@@ -81,8 +85,11 @@ class LLMRenderer(BaseRenderer):
             if btn.target_page:
                 parts.append(f"target:page{btn.target_page}")
             lines.append("|".join(parts))
+            if btn.raw_attributes:
+                attr_str = self._flatten_to_string(btn.raw_attributes)
+                if attr_str:
+                    lines.append(f"BTN_ATTRS:{attr_str}")
 
-        # Procesy
         for proc in page.processes:
             parts = [f"PROC:{proc.name}", proc.type]
             if proc.language:
@@ -94,8 +101,11 @@ class LLMRenderer(BaseRenderer):
             if proc.code:
                 lang = (proc.language or "sql").lower().replace("/", "")
                 lines.extend(self._render_code_or_summary(proc.code, lang))
+            if proc.raw_attributes:
+                attr_str = self._flatten_to_string(proc.raw_attributes)
+                if attr_str:
+                    lines.append(f"PROC_ATTRS:{attr_str}")
 
-        # Akcje dynamiczne
         for da in page.dynamic_actions:
             parts = [f"DA:{da.name}", f"event:{da.event}"]
             if da.selection_type:
@@ -112,21 +122,35 @@ class LLMRenderer(BaseRenderer):
                 lines.append("|".join(step_parts))
                 if step.code:
                     lines.extend(self._render_code_or_summary(step.code, "plsql"))
+                if step.raw_attributes:
+                    attr_str = self._flatten_to_string(step.raw_attributes)
+                    if attr_str:
+                        lines.append(f"DA_STEP_ATTRS:{attr_str}")
+            if da.raw_attributes:
+                attr_str = self._flatten_to_string(da.raw_attributes)
+                if attr_str:
+                    lines.append(f"DA_ATTRS:{attr_str}")
 
-        # Rozgałęzienia
         for branch in page.branches:
             target = f"page:{branch.target_page}" if branch.target_page else branch.target_url or "?"
             parts = [f"BRANCH:{branch.type}->{target}"]
             if branch.condition:
                 parts.append(f"cond:{branch.condition}")
             lines.append("|".join(parts))
+            if branch.raw_attributes:
+                attr_str = self._flatten_to_string(branch.raw_attributes)
+                if attr_str:
+                    lines.append(f"BRANCH_ATTRS:{attr_str}")
 
-        # Walidacje
         for val in page.validations:
             parts = [f"VAL:{val.name}", f"type:{val.type}"]
             lines.append("|".join(parts))
             if val.code:
                 lines.extend(self._render_code_or_summary(val.code, "plsql"))
+            if val.raw_attributes:
+                attr_str = self._flatten_to_string(val.raw_attributes)
+                if attr_str:
+                    lines.append(f"VAL_ATTRS:{attr_str}")
 
         return lines
 
@@ -146,15 +170,20 @@ class LLMRenderer(BaseRenderer):
             if region.allowed_operations:
                 ops = ",".join(o.split(" ")[0] for o in region.allowed_operations)
                 parts.append(f"ops:{ops}")
+        if region.parent_region:
+            parts.append(f"parent:{region.parent_region}")
         lines.append("|".join(parts))
 
-        # SQL źródłowy
         if region.source_sql and self._should_include_code():
             lines.append("```sql")
             lines.append(region.source_sql)
             lines.append("```")
 
-        # Kolumny
+        if region.raw_attributes:
+            attr_str = self._flatten_to_string(region.raw_attributes)
+            if attr_str:
+                lines.append(f"RGN_ATTRS:{attr_str}")
+
         for col in region.columns:
             col_parts = [f"COL:{col.name}", col.type]
             if col.heading:
@@ -166,8 +195,28 @@ class LLMRenderer(BaseRenderer):
             if col.lov:
                 col_parts.append(f"lov:{col.lov}")
             lines.append("|".join(col_parts))
+            if col.raw_attributes:
+                attr_str = self._flatten_to_string(col.raw_attributes)
+                if attr_str:
+                    lines.append(f"COL_ATTRS:{attr_str}")
 
         return lines
+
+    def _flatten_to_string(self, d: dict, prefix: str = "") -> str:
+        """Spłaszcz słownik do formatu 'k1=v1;k2.nested=v2'."""
+        parts = []
+        for key, value in d.items():
+            full_key = f"{prefix}{key}" if prefix else key
+            if isinstance(value, dict):
+                nested = self._flatten_to_string(value, full_key + ".")
+                if nested:
+                    parts.append(nested)
+            elif isinstance(value, list):
+                if all(isinstance(item, str) for item in value):
+                    parts.append(f"{full_key}={','.join(str(v) for v in value)}")
+            elif value is not None and value is not False and value != "":
+                parts.append(f"{full_key}={value}")
+        return ";".join(parts)
 
     def _render_shared(self, app: ApexApp) -> list[str]:
         """Renderuj shared components."""

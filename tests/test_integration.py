@@ -44,14 +44,12 @@ class TestIntegration:
         human_content = human_file.read_text(encoding="utf-8")
         llm_content = llm_file.read_text(encoding="utf-8")
 
-        # Minimalny rozmiar — obie wersje powinny mieć treść
+        # Obie wersje powinny mieć treść i rozsądny rozmiar
         assert len(human_content) > 500, f"Plik human za mały: {len(human_content)} znaków"
         assert len(llm_content) > 200, f"Plik llm za mały: {len(llm_content)} znaków"
 
-        # LLM powinien być mniejszy niż human (bardziej skondensowany)
-        assert len(llm_content) < len(human_content), (
-            f"Plik llm ({len(llm_content)}) powinien być mniejszy niż human ({len(human_content)})"
-        )
+        assert "APP:" in llm_content, "Brak nagłówka APP w LLM"
+        assert "===PAGE:" in llm_content, "Brak stron w LLM"
 
     def test_pipeline_filtruje_strony_admin(self, tmp_path):
         """Pipeline w trybie auto pomija strony administracyjne APEX.

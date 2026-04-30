@@ -6,24 +6,174 @@
 - **Tytuł:** SKW_2_APEX
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: Home
+  alias: HOME
+  title: SKW_2_APEX
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Region: My Info
 - **Typ:** Static Content
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: None
+  render-components: Above Content
+advanced:
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 #### Region: Copyright
 - **Typ:** Static Content
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: None
+  render-components: Above Content
+advanced:
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 #### Region: Tytuł — "SKW_2_APEX by DAW"
 - **Typ:** Static Content
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Hero
+  template-options:
+  - '#DEFAULT#'
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+image:
+  file-url: '#APP_FILES#icons/app-icon-512.png'
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 ---
 
 ### Strona 2: DAW_ANKIETA
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: DAW_ANKIETA
+  alias: DAW-ANKIETA
+  title: DAW_ANKIETA
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Region: Przerywnik
 - **Typ:** Static Content
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Blank with Attributes
+  template-options:
+  - '#DEFAULT#'
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 #### Region: P2_SKUTECZNOSC_OCENA
 - **Typ:** Interactive Grid (edytowalny: Update Row)
@@ -36,6 +186,30 @@ WHERE 1=1
   AND A.B_SL_C_PYTANIE_DZIEDZINA_ID = 2 /*skuteczność*/
 
 ```
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  css-classes:
+  - odswiez-mnie
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -53,6 +227,27 @@ WHERE 1=1
 #### Region: Przerywnik
 - **Typ:** Static Content
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Blank with Attributes
+  template-options:
+  - '#DEFAULT#'
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 #### Region: P2_SKUTECZNOSC — "Adekwatność"
 - **Typ:** Interactive Grid (edytowalny: Update Row, Delete Row)
 - **Źródło SQL:**
@@ -64,6 +259,30 @@ WHERE 1=1
   AND A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = 2 /*Skuteczność*/
 
 ```
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  css-classes:
+  - odswiez-mnie
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -97,6 +316,30 @@ WHERE 1=1
 
 ```
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  css-classes:
+  - odswiez-mnie
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
 | ID_FK_B_AUDYT | Hidden | — | ID_FK_B_AUDYT | — | — |
@@ -121,6 +364,30 @@ WHERE 1=1
   AND A.ID_FK_B_SL_C_PYTANIE_DZIEDZINA = 1 /*ADEKWATNOŚĆ*/
 
 ```
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  css-classes:
+  - odswiez-mnie
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -147,15 +414,149 @@ WHERE 1=1
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | P2_AUDYT_ID | Select List | Numer Audytu | — | B_AUDYT.B_AUDYT_NUMER_AUDYTU |
+  <details><summary>atrybuty P2_AUDYT_ID</summary>
+  
+  ```yaml
+settings:
+  page-action-on-selection: Submit Page
+  execute-validations: true
+multiple-values:
+  type: false
+layout:
+  sequence: 20
+  region: No Parent
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  height: 1
+validation:
+  value-required: false
+list-of-values:
+  type: Shared Component
+  list-of-values: B_AUDYT.B_AUDYT_NUMER_AUDYTU
+  display-extra-values: true
+  display-null-value: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+quick-picks:
+  show-quick-picks: false
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 | P2_KONTROLA_ID | Select List | Numer Kontroli | — | B_LISTA_KONTROLI_DO_AUDYTU |
+  <details><summary>atrybuty P2_KONTROLA_ID</summary>
+  
+  ```yaml
+settings:
+  page-action-on-selection: Submit Page
+  execute-validations: true
+multiple-values:
+  type: false
+layout:
+  sequence: 40
+  region: No Parent
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: false
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  height: 1
+validation:
+  value-required: false
+list-of-values:
+  type: Shared Component
+  list-of-values: B_LISTA_KONTROLI_DO_AUDYTU
+  display-extra-values: true
+  display-null-value: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+quick-picks:
+  show-quick-picks: false
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 
 #### Przyciski
 
 - **WyliczOcenę** — ? [Submit Page] **(primary)**
+  <details><summary>atrybuty</summary>
+  ```yaml
+layout:
+  sequence: 10
+  region: No Parent
+  slot: REGION_POSITION_05
+  start-new-layout: false
+  start-new-row: true
+  column: 6
+  new-column: true
+  column-span: Automatic
+appearance:
+  button-template: Text with Icon
+  hot: true
+  template-options:
+  - '#DEFAULT#'
+  - t-Button--iconLeft
+  - t-Button--hoverIconPush
+  - t-Button--gapBottom
+  icon: fa-lg fa-save
+
+  ```
+  </details>
 
 #### Procesy
 
 **P2_ADEKWATNOSC - DMI** (Processing)
+
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+settings:
+  target-type: Region Source
+  prevent-lost-updates: true
+  lock-row: true
+  return-primary-key(s)-after-insert: true
+execution:
+  sequence: 40
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
 
 **WyliczenieOceny - SKUTECZNOSC** (Processing, język: PL/SQL)
 
@@ -236,11 +637,82 @@ END;
 
 ```
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 70
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
+
 **P2_SKUTECZNOSC - DMI** (Processing)
+
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+settings:
+  target-type: Region Source
+  prevent-lost-updates: true
+  lock-row: true
+  return-primary-key(s)-after-insert: true
+execution:
+  sequence: 50
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
 
 **P2_SKUTECZNOSC - Save Interactive Grid Data** (Processing)
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+settings:
+  target-type: Region Source
+  prevent-lost-updates: true
+  lock-row: true
+  return-primary-key(s)-after-insert: true
+execution:
+  sequence: 10
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
+
 **P2_ADEKWATNOSC_OCENA - Save Interactive Grid Data** (Processing)
+
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+settings:
+  target-type: Region Source
+  prevent-lost-updates: true
+  lock-row: true
+  return-primary-key(s)-after-insert: true
+execution:
+  sequence: 30
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
 
 **WyliczenieOceny - ADEKWATNOSC** (Processing, język: PL/SQL)
 
@@ -321,10 +793,45 @@ END;
 
 ```
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 60
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
+
 #### Akcje dynamiczne
 
 - **Oblicz ocenę ważoną AD** — zdarzenie: Change
   - Krok: Set Value
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: Oblicz ocenę ważoną AD
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+  stop-execution-on-error: true
+  wait-for-result: true
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 40
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 - **Ustawienie B_APP_ID_AUDYT** — zdarzenie: Change
   - Krok: Execute Server-side Code
     ```
@@ -333,8 +840,39 @@ END;
 end;
 
     ```
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: Ustawienie B_APP_ID_AUDYT
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+  stop-execution-on-error: true
+  wait-for-result: true
+
+    ```
+    </details>
   - Krok: Refresh
     - Wpływa na: jQuery Selector: .odswiez-mnie
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 20
+  event: Ustawienie B_APP_ID_AUDYT
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 10
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 - **Ustawienie B_APP_ID_KONTROLI** — zdarzenie: Change
   - Krok: Execute Server-side Code
     ```
@@ -343,10 +881,53 @@ end;
 End;
 
     ```
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: Ustawienie B_APP_ID_KONTROLI
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+  stop-execution-on-error: true
+  wait-for-result: true
+
+    ```
+    </details>
   - Krok: Refresh
     - Wpływa na: jQuery Selector: .odswiez-mnie
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 20
+  event: Ustawienie B_APP_ID_KONTROLI
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 20
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 - **Oblicz ocenę ważoną SK** — zdarzenie: Change
   - Krok: Set Value
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: Oblicz ocenę ważoną SK
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+  stop-execution-on-error: true
+  wait-for-result: true
+
+    ```
+    </details>
   - Krok: Execute Server-side Code
     ```
     DECLARE
@@ -413,6 +994,29 @@ BEGIN
 END;
 
     ```
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 30
+  event: Oblicz ocenę ważoną SK
+  fire-when-event-result-is: true
+  fire-on-initialization: false
+  stop-execution-on-error: true
+  wait-for-result: true
+configuration:
+  build-option: Commented Out
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 30
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 
 #### CSS strony
 
@@ -429,10 +1033,76 @@ END;
 ### Strona 3: DAW_WYSZUKIWANIE
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: DAW_WYSZUKIWANIE
+  alias: DAW-WYSZUKIWANIE
+  title: DAW_WYSZUKIWANIE
+appearance:
+  page-mode: Normal
+  page-template: Standard
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Region: Search Results
 - **Typ:** Classic Report
 - **Źródło:** tabela `B_KONTROLA`
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+order-by:
+  type: None
+appearance:
+  template: Standard
+  template-options:
+  - '#DEFAULT#'
+  - t-Region--noPadding
+  - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+  - t-Region--scrollBody
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+server-cache:
+  caching: Disabled
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -458,21 +1128,433 @@ END;
 #### Region: Search
 - **Typ:** Smart Filters
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Standard
+  template-options:
+  - '#DEFAULT#'
+  - t-Region--hideHeader js-addHiddenHeadingRoleDesc
+  - t-Region--scrollBody
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+facets:
+- label:
+    label: Search
+  settings:
+    search-type: Row Search
+    input-field: Top of Faceted Search Region
+  security:
+    store-value-encrypted-in-session-state: true
+- label:
+    label: Control Level
+    show-label-for-current-facet: true
+  appearance:
+    icon: fa-level-up
+    display: Inline
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: true
+    maximum-displayed-entries: 7
+    display-filter-initially: false
+  actions-menu:
+    filter: true
+    chart: false
+  advanced:
+    collapsible: false
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: Status
+    show-label-for-current-facet: true
+  appearance:
+    display: Inline
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    maximum-displayed-entries: 7
+    display-filter-initially: false
+  actions-menu:
+    filter: true
+    chart: false
+  advanced:
+    collapsible: false
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+  configuration:
+    build-option: Commented Out
+- label:
+    label: Domain Process
+    show-label-for-current-facet: true
+  appearance:
+    display: Inline
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    display-filter-initially: false
+  actions-menu:
+    filter: true
+    chart: false
+  advanced:
+    collapsible: false
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: Risks
+    show-label-for-current-facet: true
+  appearance:
+    display: Inline
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    display-filter-initially: false
+  actions-menu:
+    filter: true
+    chart: false
+  advanced:
+    collapsible: false
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: CONTROL GROUP
+    show-label-for-current-facet: true
+  appearance:
+    display: Inline
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    display-filter-initially: false
+  actions-menu:
+    filter: true
+    chart: false
+  advanced:
+    collapsible: false
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+filters:
+- label:
+    label: Search
+  settings:
+    search-type: Row Search
+    collapsed-search-field: false
+  security:
+    store-value-encrypted-in-session-state: true
+- label:
+    label: Control Level
+  appearance:
+    icon: fa-level-up
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: true
+    client-side-filtering: false
+  suggestions:
+    type: Dynamic
+    show-label: true
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: Status
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    client-side-filtering: false
+  suggestions:
+    type: Dynamic
+    show-label: true
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+  configuration:
+    build-option: Commented Out
+- label:
+    label: Domain Process
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    client-side-filtering: false
+  suggestions:
+    type: Dynamic
+    show-label: true
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: Risks
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    client-side-filtering: false
+  suggestions:
+    type: Dynamic
+    show-label: true
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+- label:
+    label: CONTROL GROUP
+  list-of-values:
+    type: Distinct Values
+    sort-direction: Ascending
+    include-null-option: true
+  list-entries:
+    compute-counts: true
+    show-counts: true
+    zero-count-entries: Hide
+    sort-by-top-counts: false
+    show-selected-first: false
+    client-side-filtering: false
+  suggestions:
+    type: Dynamic
+    show-label: true
+  multiple-values:
+    type: false
+  security:
+    store-value-encrypted-in-session-state: true
+    escape-special-characters: true
+
+```
+
+</details>
+
 ---
 
 ### Strona 4: DAW_LISTA_AUDYTOW
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: DAW_LISTA_AUDYTOW
+  alias: DAW-LISTA-AUDYTOW
+  title: DAW_LISTA_AUDYTOW
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Region: Breadcrumb
 - **Typ:** Breadcrumb
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Title Bar
+  template-options:
+  - '#DEFAULT#'
+  - t-BreadcrumbRegion--useBreadcrumbTitle
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 #### Region: filtry-kontroli — "Filtry wyszukiwania"
 - **Typ:** Static Content
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Collapsible
+  template-options:
+  - '#DEFAULT#'
+  - is-expanded
+  - t-Region--scrollBody
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  static-id: filtry-kontroli
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 #### Region: ListaAudytow
 - **Typ:** Interactive Grid (edytowalny: Add Row, Update Row, Delete Row)
 - **Źródło:** tabela `B_AUDYT`
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+printing:
+  page:
+    size: A4
+    orientation: Landscape
+    units: Millimeters
+    width: 297
+    height: 210
+    border-width: 0.5
+  page-header:
+    font: Helvetica
+    font-weight: Normal
+    font-size: 12
+    alignment: center
+  column-headings:
+    font: Helvetica
+    font-weight: Bold
+    font-size: 10
+    background-color: '#EEEEEE'
+  page-footer:
+    font: Helvetica
+    font-weight: Normal
+    font-size: 12
+    alignment: center
+
+```
+
+</details>
 
 | Kolumna | Typ | Nagłówek | Źródło | PK | Link |
 |---------|-----|----------|--------|----|------|
@@ -495,27 +1577,214 @@ END;
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | P4_FILTR_REFERENCE_ID | Text Field | Filtr Reference Id | — | — |
+  <details><summary>atrybuty P4_FILTR_REFERENCE_ID</summary>
+  
+  ```yaml
+settings:
+  subtype: Text
+  trim-spaces: Leading and Trailing
+  text-case: NO CHANGE
+  submit-when-enter-pressed: false
+  disabled: false
+layout:
+  sequence: 10
+  region: filtry-kontroli
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  width: 20
+validation:
+  value-required: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+quick-picks:
+  show-quick-picks: false
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 
 #### Procesy
 
 **ListaAudytow - Save Interactive Grid Data** (Processing)
+
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+settings:
+  target-type: Region Source
+  prevent-lost-updates: true
+  lock-row: true
+  return-primary-key(s)-after-insert: true
+execution:
+  sequence: 10
+  point: Processing
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
 
 ---
 
 ### Strona 5: DAW_IMPORT_KONTROLI
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: DAW_IMPORT_KONTROLI
+  alias: DAW-IMPORT-KONTROLI
+  title: DAW_IMPORT_KONTROLI
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Elementy formularza
 
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | P_ID_LOG_WYNIKU | Hidden | — | — | — |
+  <details><summary>atrybuty P_ID_LOG_WYNIKU</summary>
+  
+  ```yaml
+settings:
+  value-protected: true
+layout:
+  sequence: 30
+  region: No Parent
+  slot: BODY
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  data-type: VARCHAR2
+  storage: Per Session (Persistent)
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 | P_PLIK | File Upload | Plik do wczytania - Excel | — | — |
+  <details><summary>atrybuty P_PLIK</summary>
+  
+  ```yaml
+display:
+  display-as: Inline File Browse
+  capture-using: NONE
+'storage:':
+  type: Table APEX_APPLICATION_TEMP_FILES
+  purge-file-at: End of Session
+  allow-multiple-files: false
+  file-types: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  maximum-file-size: 15000
+layout:
+  sequence: 10
+  region: No Parent
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: false
+  column: Automatic
+  new-column: true
+  column-span: 5
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  width: 30
+validation:
+  value-required: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+security:
+  session-state-protection: Unrestricted
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 
 #### Przyciski
 
 - **WczytajPlik** — ? [Submit Page]
+  <details><summary>atrybuty</summary>
+  ```yaml
+layout:
+  sequence: 20
+  region: No Parent
+  slot: BODY
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  alignment: Left center
+appearance:
+  button-template: Text with Icon
+  hot: false
+  template-options:
+  - '#DEFAULT#'
+  - t-Button--iconLeft
+configuration:
+  build-option: Commented Out
+
+  ```
+  </details>
 
 #### Procesy
 
@@ -595,11 +1864,63 @@ END;
 
 ```
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 10
+  point: Before Header
+  run-process: Once Per Page Visit (default)
+configuration:
+  build-option: Commented Out
+
+```
+
+</details>
+
 ---
 
 ### Strona 6: DAW_WYBOR_KONTROLI
 - **Tryb:** Normal
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: DAW_WYBOR_KONTROLI
+  alias: DAW-WYBOR-KONTROLI
+  title: DAW_WYBOR_KONTROLI
+appearance:
+  page-mode: Normal
+  page-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+
+```
+
+</details>
 
 #### Region: Kontrole — "Wybierz kontrole"
 - **Typ:** Interactive Report
@@ -636,20 +1957,193 @@ ORDER BY
 
 ```
 
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Interactive Report
+  template-options:
+  - '#DEFAULT#'
+  - t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  static-id: ir-kontrole
+  region-display-selector: false
+  exclude-title-from-translation: false
+server-cache:
+  caching: Disabled
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
+
 #### Region: Breadcrumb
 - **Typ:** Breadcrumb
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Title Bar
+  template-options:
+  - '#DEFAULT#'
+  - t-BreadcrumbRegion--useBreadcrumbTitle
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 #### Elementy formularza
 
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | P6_ID_AUDYTU | Text Field | New | — | — |
+  <details><summary>atrybuty P6_ID_AUDYTU</summary>
+  
+  ```yaml
+settings:
+  subtype: Text
+  trim-spaces: Leading and Trailing
+  text-case: NO CHANGE
+  submit-when-enter-pressed: false
+  disabled: false
+layout:
+  sequence: 30
+  region: No Parent
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  width: 30
+validation:
+  value-required: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+quick-picks:
+  show-quick-picks: false
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 | P6_ZAZNACZONE_ID | Text Field | New | — | — |
+  <details><summary>atrybuty P6_ZAZNACZONE_ID</summary>
+  
+  ```yaml
+settings:
+  subtype: Text
+  trim-spaces: Leading and Trailing
+  text-case: NO CHANGE
+  submit-when-enter-pressed: false
+  disabled: false
+layout:
+  sequence: 40
+  region: No Parent
+  slot: BODY
+  alignment: Left
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  label-column-span: Page Template Default
+appearance:
+  template: Optional - Floating
+  template-options:
+  - '#DEFAULT#'
+  width: 30
+validation:
+  value-required: false
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  storage: Per Session (Persistent)
+quick-picks:
+  show-quick-picks: false
+security:
+  session-state-protection: Unrestricted
+  store-value-encrypted-in-session-state: false
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 
 #### Przyciski
 
 - **USUN_Z_AUDYTU** — ? [Submit Page] **(primary)**
+  <details><summary>atrybuty</summary>
+  ```yaml
+layout:
+  sequence: 20
+  region: No Parent
+  slot: BODY
+  start-new-layout: false
+  start-new-row: false
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  alignment: Left center
+appearance:
+  button-template: Text
+  hot: true
+  template-options:
+  - '#DEFAULT#'
+  css-classes:
+  - t-Button--danger
+
+  ```
+  </details>
 - **DODAJ_DO_AUDYTU** — ? [Submit Page] **(primary)**
+  <details><summary>atrybuty</summary>
+  ```yaml
+layout:
+  sequence: 10
+  region: No Parent
+  slot: BODY
+  start-new-layout: false
+  start-new-row: true
+  column: Automatic
+  new-column: true
+  column-span: Automatic
+  alignment: Left center
+appearance:
+  button-template: Text
+  hot: true
+  template-options:
+  - '#DEFAULT#'
+
+  ```
+  </details>
 
 #### Procesy
 
@@ -713,6 +2207,20 @@ EXCEPTION
 END;
 
 ```
+
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 20
+  point: After Submit
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
 
 **Dodaj_Kontrole** (After Submit, język: PL/SQL, przycisk: DODAJ_DO_AUDYTU)
 
@@ -782,14 +2290,86 @@ END;
 
 ```
 
+<details><summary>Pełne atrybuty procesu</summary>
+
+```yaml
+execution:
+  sequence: 10
+  point: After Submit
+  run-process: Once Per Page Visit (default)
+error:
+  display-location: Inline in Notification
+
+```
+
+</details>
+
 #### Akcje dynamiczne
 
 - **DA_Checkbox_Zmiana** — zdarzenie: Change na jQuery Selector: input.cb-kontrola
   - Krok: Execute JavaScript Code
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: DA_Checkbox_Zmiana
+  fire-when-event-result-is: true
+  fire-on-initialization: false
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 10
+  event-scope: Dynamic
+  static-container-(jquery-selector): '#ir-kontrole'
+  type: Immediate
+
+  ```
+  </details>
 - **DA_Po_Odswiezeniu** — zdarzenie: After Refresh na Region: Kontrole
   - Krok: Execute JavaScript Code
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: DA_Po_Odswiezeniu
+  fire-when-event-result-is: true
+  fire-on-initialization: true
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 20
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 - **DA_Zaznacz_Wszystkie** — zdarzenie: Change na jQuery Selector: #cb-all
   - Krok: Execute JavaScript Code
+    <details><summary>atrybuty kroku</summary>
+    ```yaml
+execution:
+  sequence: 10
+  event: DA_Zaznacz_Wszystkie
+  fire-when-event-result-is: true
+  fire-on-initialization: false
+
+    ```
+    </details>
+  <details><summary>atrybuty DA</summary>
+  ```yaml
+execution:
+  sequence: 30
+  event-scope: Static
+  type: Immediate
+
+  ```
+  </details>
 
 #### CSS strony
 
@@ -823,15 +2403,104 @@ END;
 ### Strona 10061: Help
 - **Tryb:** Modal Dialog
 - **Uwierzytelnianie:** Page Requires Authentication
+- **deep-linking:** Application Default
+- **page-access-protection:** Arguments Must Have Checksum
+- **browser-cache:** Application Default
+
+<details><summary>Pełne atrybuty strony</summary>
+
+```yaml
+identification:
+  name: Help
+  alias: PAGE_HELP
+  title: Help
+appearance:
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options:
+  - '#DEFAULT#'
+dialog:
+  chained: false
+  resizable: false
+navigation-menu:
+  override-user-interface-level: false
+navigation:
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: false
+security:
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: false
+  browser-cache: Application Default
+session-management:
+  rejoin-sessions: Application Default
+advanced:
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+server-cache:
+  caching: Disabled
+configuration:
+  build-option: 'Feature: About Page'
+
+```
+
+</details>
 
 #### Region: Search Dialog
 - **Typ:** Dynamic Content
+
+<details><summary>Pełne atrybuty regionu</summary>
+
+```yaml
+appearance:
+  template: Blank with Attributes
+  template-options:
+  - '#DEFAULT#'
+  render-components: Above Content
+accessibility:
+  use-landmark: true
+  landmark-type: Template Default
+advanced:
+  region-display-selector: false
+  exclude-title-from-translation: false
+server-cache:
+  caching: Disabled
+customization:
+  customizable: Not Customizable By End Users
+
+```
+
+</details>
 
 #### Elementy formularza
 
 | Nazwa | Typ | Etykieta | Kolumna | LOV |
 |-------|-----|----------|---------|-----|
 | P10061_PAGE_ID | Hidden | — | — | — |
+  <details><summary>atrybuty P10061_PAGE_ID</summary>
+  
+  ```yaml
+settings:
+  value-protected: true
+layout:
+  sequence: 10
+  region: Search Dialog
+  slot: BODY
+advanced:
+  warn-on-unsaved-changes: Page Default
+source:
+  used: Only when current value in session state is null
+session-state:
+  data-type: VARCHAR2
+  storage: Per Session (Persistent)
+security:
+  session-state-protection: Checksum Required - Session Level
+  store-value-encrypted-in-session-state: true
+  restricted-characters: All characters can be saved.
+
+  ```
+  </details>
 
 ---
 
