@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APEX Export to MD — Panel sterowania</title>
+<style>
+:root {
+    --navy: #1a365d;
+    --navy-light: #2a4a7f;
+    --gold: #d4a843;
+    --gold-light: #e8c76a;
+    --bg: #0f1923;
+    --bg-card: #1a2836;
+    --bg-input: #0d1520;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --text-help: #7a8fa8;
+    --border: #2d4a6f;
+    --success: #48bb78;
+    --error: #fc8181;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+}
+header {
+    background: var(--navy);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 3px solid var(--gold);
+}
+header h1 {
+    font-size: 1.4rem;
+    color: var(--gold);
+}
+header .logo {
+    width: 40px; height: 40px;
+    background: var(--navy);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; color: var(--gold); font-size: 14px;
+}
+main {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.card h2 {
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+.form-group {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(45,74,111,0.3);
+}
+.form-group:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.form-group-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+}
+.form-group-header label {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 600;
+    min-width: 200px;
+}
+.form-group-header input[type="text"],
+.form-group-header input[type="password"],
+.form-group-header select {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+.form-group-header input:focus,
+.form-group-header select:focus {
+    outline: none;
+    border-color: var(--gold);
+}
+.form-group-header input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--gold);
+}
+.form-help {
+    margin-top: 0.35rem;
+    margin-left: 200px;
+    padding-left: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-help);
+    line-height: 1.5;
+}
+.form-help code {
+    background: rgba(212, 168, 67, 0.1);
+    border: 1px solid rgba(212, 168, 67, 0.2);
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--gold-light);
+}
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+.btn {
+    padding: 0.6rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-primary {
+    background: var(--gold);
+    color: var(--navy);
+}
+.btn-primary:hover { background: var(--gold-light); }
+.btn-secondary {
+    background: var(--navy-light);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+.btn-secondary:hover { background: var(--navy); border-color: var(--gold); }
+.btn-success {
+    background: var(--success);
+    color: #1a202c;
+}
+.btn-success:hover { opacity: 0.9; }
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#output-panel {
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    max-height: 300px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    display: none;
+}
+#output-panel.visible { display: block; }
+.status-msg {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    display: none;
+}
+.status-msg.success { display: block; background: rgba(72,187,120,0.15); color: var(--success); border: 1px solid var(--success); }
+.status-msg.error { display: block; background: rgba(252,129,129,0.15); color: var(--error); border: 1px solid var(--error); }
+footer {
+    text-align: center;
+    padding: 1rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="logo">TR</div>
+    <h1>APEX Export to MD — Panel sterowania</h1>
+</header>
+
+<main>
+    <!-- Ścieżki -->
+    <div class="card">
+        <h2>Ścieżki</h2>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="input_dir">Katalog wejściowy</label>
+                <input type="text" id="input_dir" value="_data">
+            </div>
+            <div class="form-help">
+                Ścieżka do katalogu z eksportem APEX (pliki YAML) i/lub plikami DDL (.sql).<br>
+                Przykład: <code>./export</code>, <code>C:\projekty\moja_apka\data</code>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="output_dir">Katalog wyjściowy</label>
+                <input type="text" id="output_dir" value="_out">
+            </div>
+            <div class="form-help">
+                Katalog docelowy dla wygenerowanych plików. Zostanie utworzony, jeśli nie istnieje.<br>
+                Przykład: <code>./docs</code>, <code>./output</code>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="output_prefix">Prefiks plików</label>
+                <input type="text" id="output_prefix" value="apex_export">
+            </div>
+            <div class="form-help">
+                Prefiks nazw plików wyjściowych. Do nazwy automatycznie dodawany jest timestamp.<br>
+                Przykład: <code>moja_apka</code> → <code>20260515_120000_moja_apka_human.md</code>
+            </div>
+        </div>
+    </div>
+
+    <!-- Format wyjściowy -->
+    <div class="card">
+        <h2>Format wyjściowy</h2>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="output_format">Format</label>
+                <select id="output_format">
+                    <option value="both">Oba (human + LLM)</option>
+                    <option value="human">Human (czytelny)</option>
+                    <option value="llm">LLM (zoptymalizowany)</option>
+                </select>
+            </div>
+            <div class="form-help">
+                <code>both</code> — generuje oba formaty Markdown.<br>
+                <code>human</code> — tylko czytelny Markdown z nagłówkami i tabelami.<br>
+                <code>llm</code> — skondensowany format liniowy, zoptymalizowany pod AI.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="include_code">Bloki kodu</label>
+                <select id="include_code">
+                    <option value="full">Pełny kod</option>
+                    <option value="summary">Skrót (1. linia)</option>
+                    <option value="none">Pomiń kod</option>
+                </select>
+            </div>
+            <div class="form-help">
+                <code>full</code> — dołącza pełny kod PL/SQL i JavaScript.<br>
+                <code>summary</code> — tylko pierwsza linia kodu z wielokropkiem.<br>
+                <code>none</code> — pomija wszystkie bloki kodu, zostawia tylko metadane.
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtrowanie stron -->
+    <div class="card">
+        <h2>Filtrowanie stron</h2>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="page_filter">Filtr stron</label>
+                <input type="text" id="page_filter" value="auto">
+            </div>
+            <div class="form-help">
+                <code>auto</code> — heurystyki: pomija strony administracyjne i systemowe.<br>
+                <code>all</code> — wszystkie strony bez filtrowania.<br>
+                <code>prefix:HR_</code> — tylko strony o nazwach zaczynających się od podanego prefiksu.<br>
+                <code>ids:2,5,10</code> — tylko strony o konkretnych ID.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="extra_pages">Dodatkowe strony (ID)</label>
+                <input type="text" id="extra_pages" value="">
+            </div>
+            <div class="form-help">
+                Lista ID stron do dołączenia niezależnie od filtra (rozdzielone przecinkami).<br>
+                Przykład: <code>1,100,9999</code> — dołącza stronę Home i inne pomijane przez filtr.
+            </div>
+        </div>
+    </div>
+
+    <!-- Opcje eksportu -->
+    <div class="card">
+        <h2>Opcje eksportu</h2>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="include_internal_ids">Wewnętrzne ID APEX</label>
+                <input type="checkbox" id="include_internal_ids">
+            </div>
+            <div class="form-help">
+                Zachowuje wewnętrzne identyfikatory APEX (np. <code>12345678901234.00</code>) w eksporcie. Domyślnie są usuwane jako szum.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="include_layout">Szczegóły layoutu</label>
+                <input type="checkbox" id="include_layout">
+            </div>
+            <div class="form-help">
+                Zachowuje informacje o pozycji na stronie, template kolumny i siatce layoutu. Przydatne przy analizie rozkładu regionów.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="include_shared_components">Shared components</label>
+                <input type="checkbox" id="include_shared_components" checked>
+            </div>
+            <div class="form-help">
+                Dołącza sekcję Shared Components: listy wartości (LOV), schematy autoryzacji, menu nawigacyjne, breadcrumbs, role ACL.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="verbose">Szczegółowe logi</label>
+                <input type="checkbox" id="verbose">
+            </div>
+            <div class="form-help">
+                Włącza poziom logowania DEBUG — wyświetla informacje o pomijanych stronach, etapach parsowania i generowania.
+            </div>
+        </div>
+    </div>
+
+    <!-- Generowanie DDL / Migracja -->
+    <div class="card">
+        <h2>Generowanie DDL / Migracja</h2>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="generate_ddl">Generuj skrypt DDL</label>
+                <input type="checkbox" id="generate_ddl">
+            </div>
+            <div class="form-help">
+                Generuje wykonywalny skrypt SQL tworzący wszystkie obiekty bazy danych (sekwencje, tabele, widoki, pakiety).<br>
+                Prefiksy schematu źródłowego są automatycznie usuwane. Kolejność: sekwencje → tabele → widoki → pakiety → klucze obce.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="generate_migration">Generuj pełną migrację</label>
+                <input type="checkbox" id="generate_migration">
+            </div>
+            <div class="form-help">
+                Generuje kompletny skrypt migracyjny: DDL + wyłączenie constraintów + INSERT danych + reset sekwencji + włączenie constraintów.<br>
+                Wymaga podania connection string do bazy źródłowej. Dane są pobierane w momencie generowania.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="db_connection">Connection string</label>
+                <input type="text" id="db_connection" placeholder="user@host:1521/service_name">
+            </div>
+            <div class="form-help">
+                Connection string do bazy Oracle. Hasło podaj osobno w polu poniżej.<br>
+                Przykład: <code>scott@dbserver:1521/ORCL</code>, <code>hr@192.168.1.10:1521/xe</code>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="db_password">Hasło do bazy</label>
+                <input type="password" id="db_password" placeholder="Nie jest zapisywane w ustawieniach">
+            </div>
+            <div class="form-help">
+                Hasło do konta Oracle. Ze względów bezpieczeństwa nie jest zapisywane w pliku ustawień — trzeba je podać przy każdym uruchomieniu.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <button class="btn btn-secondary" id="btn-test-conn" onclick="testConnection()">Testuj połączenie</button>
+                <span id="conn-status" class="status-msg"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Przyciski akcji -->
+    <div class="card">
+        <h2>Akcje</h2>
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="saveSettings()">💾 Zapisz ustawienia</button>
+            <button class="btn btn-primary" id="btn-run" onclick="runPipeline()">▶ Uruchom</button>
+        </div>
+        <div id="run-status" class="status-msg"></div>
+        <div id="output-panel"></div>
+    </div>
+</main>
+
+<footer>
+    <span>APEX Export to MD</span> · <span>Autor: Tomasz Rembiasz</span>
+</footer>
+
+<script>
+// Inicjalizacja
+document.addEventListener('DOMContentLoaded', async () => {
+    const resp = await fetch('/api/settings');
+    const data = await resp.json();
+
+    // Wypełnij formularz zapisanymi ustawieniami
+    const s = data.settings || {};
+    setVal('input_dir', s.input_dir);
+    setVal('output_dir', s.output_dir);
+    setVal('output_prefix', s.output_prefix);
+    setVal('output_format', s.output_format);
+    setVal('include_code', s.include_code);
+    setVal('page_filter', s.page_filter);
+    setVal('extra_pages', s.extra_pages);
+    setCheck('include_internal_ids', s.include_internal_ids);
+    setCheck('include_layout', s.include_layout);
+    setCheck('include_shared_components', s.include_shared_components);
+    setCheck('generate_ddl', s.generate_ddl);
+    setCheck('generate_migration', s.generate_migration);
+    setVal('db_connection', s.db_connection);
+    setCheck('verbose', s.verbose);
+});
+
+function setVal(id, val) {
+    const el = document.getElementById(id);
+    if (el && val !== undefined && val !== null) el.value = val;
+}
+function setCheck(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.checked = !!val;
+}
+
+function getFormData() {
+    return {
+        input_dir: document.getElementById('input_dir').value,
+        output_dir: document.getElementById('output_dir').value,
+        output_prefix: document.getElementById('output_prefix').value,
+        output_format: document.getElementById('output_format').value,
+        include_code: document.getElementById('include_code').value,
+        page_filter: document.getElementById('page_filter').value,
+        extra_pages: document.getElementById('extra_pages').value,
+        include_internal_ids: document.getElementById('include_internal_ids').checked,
+        include_layout: document.getElementById('include_layout').checked,
+        include_shared_components: document.getElementById('include_shared_components').checked,
+        generate_ddl: document.getElementById('generate_ddl').checked,
+        generate_migration: document.getElementById('generate_migration').checked,
+        db_connection: document.getElementById('db_connection').value,
+        db_password: document.getElementById('db_password').value,
+        verbose: document.getElementById('verbose').checked,
+    };
+}
+
+async function saveSettings() {
+    const data = getFormData();
+    delete data.db_password;
+    const resp = await fetch('/api/settings', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    });
+    const result = await resp.json();
+    showStatus('run-status', result.status === 'ok', result.message);
+}
+
+async function testConnection() {
+    const btn = document.getElementById('btn-test-conn');
+    btn.disabled = true;
+    btn.textContent = 'Łączenie...';
+
+    const connStr = document.getElementById('db_connection').value;
+    const password = document.getElementById('db_password').value;
+
+    let fullConn = connStr;
+    if (password && !connStr.includes('/')) {
+        if (connStr.includes('@')) {
+            const [user, host] = connStr.split('@', 2);
+            fullConn = `${user}/${password}@${host}`;
+        }
+    }
+
+    const resp = await fetch('/api/test-connection', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({connection_string: fullConn}),
+    });
+    const result = await resp.json();
+    showStatus('conn-status', result.success, result.message);
+
+    btn.disabled = false;
+    btn.textContent = 'Testuj połączenie';
+}
+
+async function runPipeline() {
+    const btn = document.getElementById('btn-run');
+    btn.disabled = true;
+    btn.textContent = '⏳ Przetwarzanie...';
+
+    const panel = document.getElementById('output-panel');
+    panel.classList.add('visible');
+    panel.textContent = 'Uruchamianie pipeline...\n';
+
+    const data = getFormData();
+    const resp = await fetch('/api/run', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data),
+    });
+    const result = await resp.json();
+
+    panel.textContent = result.logs || '';
+    showStatus('run-status', result.status === 'ok', result.message);
+
+    btn.disabled = false;
+    btn.textContent = '▶ Uruchom';
+}
+
+function showStatus(id, success, message) {
+    const el = document.getElementById(id);
+    el.className = 'status-msg ' + (success ? 'success' : 'error');
+    el.textContent = message;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+</script>
+</body>
+</html>

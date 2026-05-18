@@ -1,0 +1,38 @@
+{
+    "python.analysis.autoImportCompletions": true,
+    "chat.tools.terminal.autoApprove": {
+        "/^\\$npmBin = Join-Path \\$env:APPDATA 'npm'; if \\(Test-Path \\$npmBin\\) \\{ Get-ChildItem \\$npmBin -Filter '\\*mcp\\*' \\| Select-Object -ExpandProperty Name \\} else \\{ 'NO_APPDATA_NPM_DIR' \\}$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^python -m pytest tests/ --tb=short -q$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^\\.venv\\\\Scripts\\\\python\\.exe -m pytest tests/ --tb=short -q$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    },
+    "sqltools.connections": [
+        {
+            "oracleOptions": {
+                "privilege": "Normal",
+                "thickMode": false,
+                "autoCommit": false,
+                "lowerCase": false,
+                "limitPrefetchRows": false
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 1521,
+            "driver": "Oracle",
+            "name": "APEX P24 DAW",
+            "group": "P24",
+            "connectString": "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=p24pd1013)(PORT=1551))(CONNECT_DATA=(SERVICE_NAME=ILAPEX_EMPLOYEE)))",
+            "username": "LUKTREMBIASZ[DAW]",
+            "password": "nE8)4?dpbHJPcuHNjufz"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
