@@ -60,3 +60,29 @@ There is no build pipeline. Deployment is manual:
 ## APEX Page Groups
 
 Pages `p10000`â€“`p10061` cover main audit management. Pages `p00000`â€“`p09999` are system/admin. Page `p20010` covers secondary features.
+
+<!-- selvedge:start -->
+## Selvedge — change tracking
+
+You have access to Selvedge (MCP server: `selvedge`) for change tracking.
+
+**Rules:**
+
+- Call `selvedge.log_change` immediately after adding, modifying, or
+  removing any DB column, table, function, API endpoint, dependency,
+  or env variable.
+- Set `reasoning` to the user's original request or the problem being
+  solved. Write at least one full sentence — the server will warn on
+  empty, very short, or generic values like "user request" or "done".
+  Good example: "User asked to add 2FA — needs phone number to send
+  SMS verification codes."
+- Set `agent` to "claude-code" (or whichever agent you are).
+- Set `session_id` if you have access to the current session/conversation ID.
+- Set `git_commit` to the commit hash once you know it.
+- For multi-entity changes (e.g. adding a whole feature), set a shared
+  `changeset_id` on all related `log_change` calls — use a short slug
+  like `add-stripe-billing`. This lets anyone query the full scope of
+  the change with `selvedge.changeset()`.
+- Before modifying an entity, call `selvedge.diff` or `selvedge.blame`
+  to understand its history and avoid conflicting with past decisions.
+<!-- selvedge:end -->
