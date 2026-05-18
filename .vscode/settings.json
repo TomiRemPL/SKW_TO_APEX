@@ -30,8 +30,8 @@
             "name": "APEX P24 DAW",
             "group": "P24",
             "connectString": "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=p24pd1013)(PORT=1551))(CONNECT_DATA=(SERVICE_NAME=ILAPEX_EMPLOYEE)))",
-            "username": "LUKTREMBIASZ[DAW]",
-            "password": "nE8)4?dpbHJPcuHNjufz"
+            "username": "${env:SKW_SQLTOOLS_USERNAME}",
+            "password": "${env:SKW_SQLTOOLS_PASSWORD}"
         }
     ],
     "sqltools.useNodeRuntime": true
