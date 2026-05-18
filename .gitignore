@@ -10,3 +10,13 @@ venv/
 .env
 .env.*
 !.env.example
+
+# Lokalne artefakty narzędzi/agentów
+.agent/
+.agents/
+.claude/skills/
+.selvedge/
+
+# Wygenerowane artefakty i backupy
+_out/
+CLAUDE.md.bak
