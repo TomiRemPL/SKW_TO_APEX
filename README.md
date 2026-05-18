@@ -109,7 +109,9 @@ usage: apex_export_to_md [-h] [--output-dir OUTPUT_DIR] [--output-prefix OUTPUT_
                          [--format {both,human,llm}] [--include-code {full,summary,none}]
                          [--page-filter PAGE_FILTER] [--extra-pages EXTRA_PAGES]
                          [--include-internal-ids] [--include-layout]
-                         [--no-shared-components] [--verbose]
+                         [--no-shared-components] [--generate-ddl]
+                         [--generate-migration] [--db-connection DB_CONNECTION]
+                         [--gui] [--verbose]
                          input_dir
 
 Konwertuje eksport Oracle APEX (readable YAML) na Markdown.
@@ -128,7 +130,7 @@ python -m apex_export_to_md
 Lub ze wskazaniem katalogu wejściowego:
 
 ```bash
-python -m apex_export_to_md program/readable/application/
+python -m apex_export_to_md _data/readable/application/
 ```
 
 Po wykonaniu w katalogu `_out/` powstaną pliki z timestampem:
