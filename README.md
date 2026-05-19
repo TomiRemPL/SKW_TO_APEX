@@ -112,7 +112,7 @@ usage: apex_export_to_md [-h] [--output-dir OUTPUT_DIR] [--output-prefix OUTPUT_
                          [--no-shared-components] [--generate-ddl]
                          [--generate-migration] [--db-connection DB_CONNECTION]
                          [--gui] [--verbose]
-                         input_dir
+                         [input_dir]
 
 Konwertuje eksport Oracle APEX (readable YAML) na Markdown.
 ```

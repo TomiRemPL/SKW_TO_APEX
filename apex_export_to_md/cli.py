@@ -105,14 +105,11 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
             if part.isdigit():
                 extra_pages.append(int(part))
 
-    # Wykryj plik DDL w katalogu wejściowym
+    # Wykryj plik DDL w katalogu wejściowym (szuka też w katalogach nadrzędnych)
     ddl_file = ""
     input_path = Path(args.input_dir)
     if input_path.exists():
-        for f in input_path.iterdir():
-            if f.is_file() and "DDL" in f.name.upper() and f.suffix.lower() == ".sql":
-                ddl_file = str(f)
-                break
+        ddl_file = _find_ddl_file(input_path)
 
     return AppConfig(
         input_dir=args.input_dir,
@@ -132,6 +129,28 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
         gui=args.gui,
         verbose=args.verbose,
     )
+
+
+def _find_ddl_file(input_path: Path) -> str:
+    """Znajdź plik DDL w katalogu wejściowym lub jego przodkach.
+
+    Szuka plików *DDL*.sql najpierw w podanym katalogu,
+    a następnie w katalogach nadrzędnych (max 3 poziomy w górę).
+    """
+    # Szukaj w podanym katalogu
+    for f in input_path.iterdir():
+        if f.is_file() and "DDL" in f.name.upper() and f.suffix.lower() == ".sql":
+            return str(f)
+    # Szukaj w katalogach nadrzędnych (np. gdy podano _data/readable/application/)
+    parent = input_path.parent
+    for _ in range(3):
+        if parent == parent.parent:
+            break
+        for f in parent.iterdir():
+            if f.is_file() and "DDL" in f.name.upper() and f.suffix.lower() == ".sql":
+                return str(f)
+        parent = parent.parent
+    return ""
 
 
 def find_app_root(input_dir: Path) -> Path:
@@ -195,9 +214,6 @@ def run_pipeline(config: AppConfig) -> None:
         ddl_path = Path(config.ddl_file)
         if ddl_path.exists():
             ddl_schema = parse_ddl_file(ddl_path)
-            logging.info("Sparsowano DDL: %d tabel, %d widoków, %d pakietów, %d procedur",
-                         len(ddl_schema.tables), len(ddl_schema.views),
-                         len(ddl_schema.packages), len(ddl_schema.procedures))
 
     # 6. Zbuduj model aplikacji
     app = ApexApp(

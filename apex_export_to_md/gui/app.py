@@ -130,19 +130,16 @@ async def post_run(request: Request):
 
 def _build_config_from_request(data: dict[str, Any]) -> AppConfig:
     """Zbuduj AppConfig z danych żądania HTTP."""
-    from apex_export_to_md.cli import find_app_root
+    from apex_export_to_md.cli import find_app_root, _find_ddl_file
     from apex_export_to_md.parser.ddl_parser import parse_ddl_file
 
     input_dir = data.get("input_dir", "_data")
     input_path = Path(input_dir)
 
-    # Wykryj plik DDL
+    # Wykryj plik DDL (szuka też w katalogach nadrzędnych)
     ddl_file = ""
     if input_path.exists():
-        for f in input_path.iterdir():
-            if f.is_file() and "DDL" in f.name.upper() and f.suffix.lower() == ".sql":
-                ddl_file = str(f)
-                break
+        ddl_file = _find_ddl_file(input_path)
 
     # Buduj connection string z hasłem
     db_connection = data.get("db_connection", "")
