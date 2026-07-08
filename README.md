@@ -531,6 +531,12 @@ Narzędzie posiada wbudowany interfejs webowy umożliwiający graficzne ustawien
 python -m apex_export_to_md --gui
 ```
 
+Windows (BAT, z aktywacją `.venv` i wczytaniem `.env`):
+
+```bat
+scripts\start-gui-with-env.bat
+```
+
 Serwer startuje na porcie **8338** i automatycznie otwiera przeglądarkę.
 
 ### Funkcje GUI
