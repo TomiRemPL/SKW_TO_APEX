@@ -9,6 +9,7 @@ from apex_export_to_md.models import (
     Button, Branch, PageItem, Validation, LOV, Authorization,
     NavList, AppItem, BuildOption, Breadcrumb, AclRole,
     DDLSchema, DDLTable, DDLView, DDLPackage, DDLProcedure, DDLSequence,
+    AppMetadata,
 )
 
 
@@ -22,6 +23,10 @@ class HumanRenderer(BaseRenderer):
         # Nagłówek aplikacji
         lines.append(f"# Aplikacja {app.name} (ID: {app.id}, alias: {app.alias})")
         lines.append("")
+
+        # Metadane aplikacji (z pliku f*.sql)
+        if app.metadata:
+            lines.extend(self._render_metadata(app.metadata))
 
         # Strony
         if app.pages:
@@ -39,6 +44,81 @@ class HumanRenderer(BaseRenderer):
                 lines.extend(sc_lines)
 
         return "\n".join(lines)
+
+    def _render_metadata(self, meta: AppMetadata) -> list[str]:
+        """Renderuj sekcję metadanych aplikacji."""
+        lines: list[str] = []
+        lines.append("## Informacje o aplikacji")
+        lines.append("")
+        lines.append(f"| Parametr | Wartość |")
+        lines.append(f"|----------|---------|")
+        if meta.app_name:
+            lines.append(f"| Nazwa | {meta.app_name} |")
+        if meta.app_id:
+            lines.append(f"| ID aplikacji | {meta.app_id} |")
+        if meta.alias:
+            lines.append(f"| Alias | {meta.alias} |")
+        if meta.version:
+            lines.append(f"| Wersja | {meta.version} |")
+        if meta.apex_version:
+            lines.append(f"| Wersja APEX | {meta.apex_version} |")
+        if meta.owner:
+            lines.append(f"| Schemat (owner) | {meta.owner} |")
+        if meta.language:
+            lines.append(f"| Język | {meta.language} |")
+        if meta.exported_by:
+            lines.append(f"| Eksportowane przez | {meta.exported_by} |")
+        if meta.copyright:
+            lines.append(f"| Copyright | {meta.copyright} |")
+        if meta.is_pwa:
+            pwa_info = "Tak"
+            if meta.pwa_installable:
+                pwa_info += " (installable)"
+            if meta.push_enabled:
+                pwa_info += " + Push"
+            lines.append(f"| PWA | {pwa_info} |")
+        lines.append("")
+
+        # Statystyki
+        lines.append("### Statystyki eksportu")
+        lines.append("")
+        lines.append("| Komponent | Ilość |")
+        lines.append("|-----------|-------|")
+        if meta.pages_count:
+            lines.append(f"| Strony | {meta.pages_count} |")
+        if meta.regions_count:
+            lines.append(f"| Regiony | {meta.regions_count} |")
+        if meta.items_count:
+            lines.append(f"| Elementy (Items) | {meta.items_count} |")
+        if meta.buttons_count:
+            lines.append(f"| Przyciski | {meta.buttons_count} |")
+        if meta.processes_count:
+            lines.append(f"| Procesy | {meta.processes_count} |")
+        if meta.dynamic_actions_count:
+            lines.append(f"| Akcje dynamiczne | {meta.dynamic_actions_count} |")
+        if meta.validations_count:
+            lines.append(f"| Walidacje | {meta.validations_count} |")
+        if meta.lovs_count:
+            lines.append(f"| LOV | {meta.lovs_count} |")
+        if meta.build_options_count:
+            lines.append(f"| Build Options | {meta.build_options_count} |")
+        if meta.lists_count:
+            lines.append(f"| Listy nawigacyjne | {meta.lists_count} |")
+        lines.append("")
+
+        # Zmienne substytucyjne
+        if meta.substitutions:
+            lines.append("### Zmienne substytucyjne")
+            lines.append("")
+            lines.append("| Nazwa | Wartość |")
+            lines.append("|-------|---------|")
+            for key, val in meta.substitutions.items():
+                lines.append(f"| {key} | {val} |")
+            lines.append("")
+
+        lines.append("---")
+        lines.append("")
+        return lines
 
     def _render_page(self, page: ApexPage) -> list[str]:
         """Renderuj pojedynczą stronę."""

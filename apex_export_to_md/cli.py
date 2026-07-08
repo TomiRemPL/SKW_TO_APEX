@@ -11,12 +11,14 @@ import sys
 from pathlib import Path
 
 from apex_export_to_md.config import AppConfig
+from apex_export_to_md.app_logger import setup_file_logging
 from apex_export_to_md.models import ApexApp
 from apex_export_to_md.parser.page_parser import parse_all_pages
 from apex_export_to_md.parser.shared_parser import (
     load_yaml_file, parse_app_definition, parse_shared_components,
 )
 from apex_export_to_md.parser.ddl_parser import parse_ddl_file
+from apex_export_to_md.parser.app_sql_parser import parse_app_sql_file, find_app_sql_file
 from apex_export_to_md.filters.page_filter import PageFilter
 from apex_export_to_md.renderers.human_renderer import HumanRenderer
 from apex_export_to_md.renderers.llm_renderer import LLMRenderer
@@ -215,6 +217,12 @@ def run_pipeline(config: AppConfig) -> None:
         if ddl_path.exists():
             ddl_schema = parse_ddl_file(ddl_path)
 
+    # 5b. Parsuj plik f*.sql (metadane aplikacji)
+    app_metadata = None
+    app_sql_path = find_app_sql_file(input_path)
+    if app_sql_path:
+        app_metadata = parse_app_sql_file(app_sql_path)
+
     # 6. Zbuduj model aplikacji
     app = ApexApp(
         name=app_name or "APEX App",
@@ -222,6 +230,7 @@ def run_pipeline(config: AppConfig) -> None:
         alias=app_alias or "?",
         pages=filtered_pages,
         ddl_schema=ddl_schema,
+        metadata=app_metadata,
         **shared,
     )
 
@@ -278,6 +287,14 @@ def run_pipeline(config: AppConfig) -> None:
         ddl_path.write_text(ddl_content, encoding="utf-8")
         logging.info("Zapisano DDL: %s (%d znaków)", ddl_path, len(ddl_content))
 
+        # Skrypt rollback (wycofanie)
+        from apex_export_to_md.renderers.rollback_renderer import RollbackRenderer
+        rollback_renderer = RollbackRenderer(config)
+        rollback_content = rollback_renderer.render(app)
+        rollback_path = output_dir / f"{timestamp}_{prefix}_rollback.sql"
+        rollback_path.write_text(rollback_content, encoding="utf-8")
+        logging.info("Zapisano rollback: %s (%d znaków)", rollback_path, len(rollback_content))
+
     # Pełna migracja (--generate-migration)
     if config.generate_migration and ddl_schema:
         if not config.db_connection:
@@ -285,7 +302,28 @@ def run_pipeline(config: AppConfig) -> None:
             sys.exit(1)
         from apex_export_to_md.renderers.migration_renderer import MigrationRenderer
         from apex_export_to_md.db_exporter import export_all_data
+        # Diagnostyka connection string (zamaskowane hasło)
+        _masked = config.db_connection
+        if "/" in _masked and "@" in _masked:
+            _u, _rest = _masked.split("/", 1)
+            _masked = f"{_u}/***@{_rest.split('@', 1)[1]}" if "@" in _rest else _masked
+        logging.info("Łączenie z bazą: %s", _masked)
         db_data = export_all_data(config.db_connection, ddl_schema)
+
+        # Podsumowanie wyeksportowanych danych
+        total_rows = 0
+        logging.info("")
+        logging.info("=== PODSUMOWANIE EKSPORTU DANYCH ===")
+        for td in db_data.tables:
+            row_count = len(td.rows)
+            total_rows += row_count
+            logging.info("  Tabela %-40s: %d wierszy", td.table_name, row_count)
+        logging.info("  %-40s  %s", "-" * 40, "-" * 10)
+        logging.info("  %-40s: %d wierszy", "RAZEM", total_rows)
+        logging.info("  Sekwencje wyeksportowane: %d", len(db_data.sequences))
+        logging.info("  Kolumny identity: %d", len(db_data.identity_max_values))
+        logging.info("")
+
         migration_renderer = MigrationRenderer(config, db_data)
         migration_content = migration_renderer.render(app)
         migration_path = output_dir / f"{timestamp}_{prefix}_migration_full.sql"
@@ -304,6 +342,9 @@ def main() -> None:
         level=log_level,
         format="%(levelname)s: %(message)s",
     )
+
+    # Logowanie do pliku (append mode)
+    setup_file_logging(config.output_dir)
 
     # Tryb GUI
     if config.gui:

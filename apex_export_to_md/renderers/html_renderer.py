@@ -24,7 +24,7 @@ class HTMLRenderer(BaseRenderer):
 
         return (
             self._html_head(title_esc)
-            + self._html_body(title_esc)
+            + self._html_body(title_esc, app)
             + "\n<script>\nconst DATA = "
             + data_json
             + ";\n</script>\n"
@@ -49,7 +49,8 @@ class HTMLRenderer(BaseRenderer):
 </head>
 """
 
-    def _html_body(self, title: str) -> str:
+    def _html_body(self, title: str, app: ApexApp) -> str:
+        info_tab_content = self._render_info_tab(app)
         return f"""<body>
 
 <header>
@@ -67,13 +68,18 @@ class HTMLRenderer(BaseRenderer):
 </header>
 
 <nav class="tabs">
-  <button class="tab active" onclick="switchTab('diagram')">Diagram relacji</button>
+  <button class="tab active" onclick="switchTab('info')">Informacje</button>
+  <button class="tab" onclick="switchTab('diagram')">Diagram relacji</button>
   <button class="tab" onclick="switchTab('browser')">Baza danych</button>
   <button class="tab" onclick="switchTab('map')">APEX \u2194 DB</button>
 </nav>
 
 <main>
-  <div id="tab-diagram" class="tab-content active">
+  <div id="tab-info" class="tab-content active">
+{info_tab_content}
+  </div>
+
+  <div id="tab-diagram" class="tab-content" style="display:none">
     <div id="er-network" style="width:100%;height:600px;border:1px solid #ddd;"></div>
     <div id="node-detail" class="detail-panel"></div>
   </div>
@@ -111,6 +117,94 @@ class HTMLRenderer(BaseRenderer):
   <span>Autor: <strong>Tomasz Rembiasz</strong></span>
 </footer>
 """
+
+    def _render_info_tab(self, app: ApexApp) -> str:
+        """Generuj zawartość zakładki Informacje o projekcie."""
+        meta = app.metadata
+        lines: list[str] = []
+        lines.append('    <div class="info-container">')
+
+        # Sekcja nagłówkowa
+        lines.append('      <div class="info-header">')
+        lines.append(f'        <h2>{html_mod.escape(app.name)}</h2>')
+        if meta and meta.copyright:
+            lines.append(f'        <p class="info-subtitle">{html_mod.escape(meta.copyright)}</p>')
+        lines.append('      </div>')
+
+        # Parametry aplikacji
+        lines.append('      <div class="info-grid">')
+        lines.append('        <div class="info-card">')
+        lines.append('          <h3>Parametry aplikacji</h3>')
+        lines.append('          <table class="info-table">')
+        lines.append(f'            <tr><td>ID aplikacji</td><td><strong>{html_mod.escape(app.id)}</strong></td></tr>')
+        lines.append(f'            <tr><td>Alias</td><td><strong>{html_mod.escape(app.alias)}</strong></td></tr>')
+        if meta:
+            if meta.version:
+                lines.append(f'            <tr><td>Wersja</td><td>{html_mod.escape(meta.version)}</td></tr>')
+            if meta.apex_version:
+                lines.append(f'            <tr><td>Wersja APEX</td><td>{html_mod.escape(meta.apex_version)}</td></tr>')
+            if meta.owner:
+                lines.append(f'            <tr><td>Schemat (owner)</td><td>{html_mod.escape(meta.owner)}</td></tr>')
+            if meta.language:
+                lang_name = {"pl": "polski", "en": "angielski"}.get(meta.language, meta.language)
+                lines.append(f'            <tr><td>Język</td><td>{html_mod.escape(lang_name)}</td></tr>')
+            if meta.exported_by:
+                lines.append(f'            <tr><td>Eksportowane przez</td><td>{html_mod.escape(meta.exported_by)}</td></tr>')
+        lines.append('          </table>')
+        lines.append('        </div>')
+
+        # Funkcjonalności
+        if meta:
+            lines.append('        <div class="info-card">')
+            lines.append('          <h3>Funkcjonalności</h3>')
+            lines.append('          <table class="info-table">')
+            if meta.is_pwa:
+                lines.append('            <tr><td>PWA</td><td><span class="badge badge-yes">Tak</span></td></tr>')
+            if meta.pwa_installable:
+                lines.append('            <tr><td>Instalowalna</td><td><span class="badge badge-yes">Tak</span></td></tr>')
+            if meta.push_enabled:
+                lines.append('            <tr><td>Push Notifications</td><td><span class="badge badge-yes">Tak</span></td></tr>')
+            cache_text = "Wyłączone" if not meta.browser_cache else "Włączone"
+            lines.append(f'            <tr><td>Cache przeglądarki</td><td>{cache_text}</td></tr>')
+            lines.append('          </table>')
+            lines.append('        </div>')
+
+        # Statystyki
+        if meta and meta.pages_count:
+            lines.append('        <div class="info-card">')
+            lines.append('          <h3>Statystyki eksportu</h3>')
+            lines.append('          <div class="stats-grid">')
+            stats = [
+                ("Strony", meta.pages_count),
+                ("Regiony", meta.regions_count),
+                ("Elementy", meta.items_count),
+                ("Przyciski", meta.buttons_count),
+                ("Procesy", meta.processes_count),
+                ("Akcje dyn.", meta.dynamic_actions_count),
+                ("Walidacje", meta.validations_count),
+                ("LOV", meta.lovs_count),
+                ("Listy", meta.lists_count),
+                ("Build Opt.", meta.build_options_count),
+            ]
+            for label, count in stats:
+                if count:
+                    lines.append(f'            <div class="stat-item"><span class="stat-value">{count}</span><span class="stat-label">{label}</span></div>')
+            lines.append('          </div>')
+            lines.append('        </div>')
+
+        # Zmienne substytucyjne
+        if meta and meta.substitutions:
+            lines.append('        <div class="info-card">')
+            lines.append('          <h3>Zmienne substytucyjne</h3>')
+            lines.append('          <table class="info-table">')
+            for key, val in meta.substitutions.items():
+                lines.append(f'            <tr><td><code>{html_mod.escape(key)}</code></td><td>{html_mod.escape(val)}</td></tr>')
+            lines.append('          </table>')
+            lines.append('        </div>')
+
+        lines.append('      </div>')  # info-grid
+        lines.append('    </div>')  # info-container
+        return "\n".join(lines)
 
     def _html_scripts(self) -> str:
         return """<script src="https://unpkg.com/vis-network@9.1.6/standalone/umd/vis-network.min.js"></script>
@@ -486,6 +580,28 @@ footer strong { color: #d4a843; }
 pre { background: #f8f8f8; border: 1px solid #ddd; padding: 12px; overflow-x: auto;
       font-size: 12px; border-radius: 4px; }
 code { font-family: "Fira Code", Consolas, monospace; }
+/* Info tab */
+.info-container { max-width: 960px; margin: 0 auto; }
+.info-header { text-align: center; padding: 24px 0 16px; border-bottom: 2px solid #d4a843;
+               margin-bottom: 24px; }
+.info-header h2 { font-size: 24px; color: #1a365d; margin-bottom: 4px; }
+.info-subtitle { color: #666; font-size: 14px; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+             gap: 16px; }
+.info-card { background: #fff; border: 1px solid #ddd; border-radius: 6px; padding: 16px; }
+.info-card h3 { font-size: 15px; color: #1a365d; margin-bottom: 12px;
+                padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+.info-table { border: none; margin: 0; }
+.info-table td { border: none; padding: 4px 8px; font-size: 13px; }
+.info-table td:first-child { color: #666; white-space: nowrap; }
+.info-table td:last-child { font-weight: 500; }
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+              gap: 8px; }
+.stat-item { text-align: center; padding: 8px; background: #f7fafc; border-radius: 4px; }
+.stat-value { display: block; font-size: 22px; font-weight: 700; color: #1a365d; }
+.stat-label { display: block; font-size: 11px; color: #666; margin-top: 2px; }
+.badge-yes { background: #c6f6d5; color: #276749; padding: 2px 8px; border-radius: 3px;
+             font-size: 12px; font-weight: 600; }
 </style>"""
 
     # ------------------------------------------------------------------

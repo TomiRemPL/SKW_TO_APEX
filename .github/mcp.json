@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "lean-ctx": {
+      "args": [],
+      "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe",
+      "env": {
+        "LEAN_CTX_DATA_DIR": "C:\\Users\\trembiasz\\.config\\lean-ctx"
+      }
+    }
+  }
+}

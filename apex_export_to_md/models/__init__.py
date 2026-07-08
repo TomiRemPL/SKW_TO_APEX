@@ -5,6 +5,7 @@ from apex_export_to_md.models.apex_models import (
     LOV, Authorization, NavList, AppItem, BuildOption, Breadcrumb, AclRole,
     DDLSchema, DDLTable, DDLColumn, DDLConstraint, DDLView,
     DDLPackage, DDLProcedure, DDLSequence,
+    AppMetadata,
 )
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     "LOV", "Authorization", "NavList", "AppItem", "BuildOption", "Breadcrumb", "AclRole",
     "DDLSchema", "DDLTable", "DDLColumn", "DDLConstraint", "DDLView",
     "DDLPackage", "DDLProcedure", "DDLSequence",
+    "AppMetadata",
 ]

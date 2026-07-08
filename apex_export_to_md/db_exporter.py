@@ -85,6 +85,19 @@ def test_connection(connection_string: str) -> tuple[bool, str]:
         return False, f"Błąd: {e}"
 
 
+def _materialize_value(value: Any) -> Any:
+    """Zamień obiekt LOB na zwykły string/bytes (wymaga aktywnego połączenia)."""
+    if value is None:
+        return None
+    if oracledb is not None:
+        if isinstance(value, oracledb.LOB):
+            return value.read()
+    # Fallback: jeśli ma metodę read() — prawdopodobnie LOB
+    if hasattr(value, 'read') and callable(value.read):
+        return value.read()
+    return value
+
+
 def export_table_data(conn: Any, table_name: str) -> TableData:
     """Wyeksportuj wszystkie wiersze z tabeli.
 
@@ -104,7 +117,7 @@ def export_table_data(conn: Any, table_name: str) -> TableData:
         return TableData(
             table_name=table_name,
             columns=columns,
-            rows=[list(row) for row in rows],
+            rows=[[_materialize_value(v) for v in row] for row in rows],
         )
     except Exception as e:
         logger.warning("Błąd odczytu tabeli %s: %s", table_name, e)

@@ -188,6 +188,38 @@ class AclRole:
 
 
 @dataclass
+class AppMetadata:
+    """Metadane aplikacji APEX z pliku eksportu SQL (f*.sql)."""
+    app_id: str = ""
+    app_name: str = ""
+    alias: str = ""
+    version: str = ""                   # np. "Release 1.0"
+    apex_version: str = ""              # np. "24.2.10"
+    owner: str = ""                     # schemat (np. DAW)
+    exported_by: str = ""               # kto wyeksportował
+    language: str = ""                  # pl, en, ...
+    # Statystyki
+    pages_count: int = 0
+    items_count: int = 0
+    regions_count: int = 0
+    buttons_count: int = 0
+    processes_count: int = 0
+    dynamic_actions_count: int = 0
+    validations_count: int = 0
+    lovs_count: int = 0
+    auth_schemes_count: int = 0
+    build_options_count: int = 0
+    lists_count: int = 0
+    # Ustawienia
+    is_pwa: bool = False
+    pwa_installable: bool = False
+    push_enabled: bool = False
+    browser_cache: bool = False
+    copyright: str = ""
+    substitutions: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass
 class DDLColumn:
     """Kolumna tabeli z DDL."""
     name: str
@@ -285,3 +317,4 @@ class ApexApp:
     breadcrumbs: list[Breadcrumb] = field(default_factory=list)
     acl_roles: list[AclRole] = field(default_factory=list)
     ddl_schema: DDLSchema | None = None
+    metadata: AppMetadata | None = None

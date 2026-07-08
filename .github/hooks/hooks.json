@@ -1,0 +1,27 @@
+{
+  "hooks": {
+    "postToolUse": [
+      {
+        "bash": "\"/c/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook observe",
+        "powershell": "& \"C:/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook observe",
+        "timeoutSec": 5,
+        "type": "command"
+      }
+    ],
+    "preToolUse": [
+      {
+        "bash": "\"/c/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook rewrite",
+        "powershell": "& \"C:/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook rewrite",
+        "timeoutSec": 15,
+        "type": "command"
+      },
+      {
+        "bash": "\"/c/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook redirect",
+        "powershell": "& \"C:/Users/trembiasz/.cargo/bin/lean-ctx.exe\" hook redirect",
+        "timeoutSec": 5,
+        "type": "command"
+      }
+    ]
+  },
+  "version": 1
+}

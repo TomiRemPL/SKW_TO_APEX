@@ -206,14 +206,33 @@ def _parse_views(content: str) -> list[DDLView]:
 
 
 def _parse_packages(content: str) -> list[DDLPackage]:
-    """Wyciągnij CREATE PACKAGE (spec)."""
+    """Wyciągnij CREATE PACKAGE (spec + body, połączone w jeden obiekt)."""
     packages: list[DDLPackage] = []
-    pattern = re.compile(
-        r'create\s+or\s+replace\s+PACKAGE\s+(?:\w+\s+)?(\w+)\s+AS\s+(.*?)END\s+\1\s*;',
+    # Najpierw specyfikacje (CREATE PACKAGE ... AS ... END;) — bez BODY
+    spec_pattern = re.compile(
+        r'create\s+or\s+replace\s+PACKAGE\s+(?!BODY\b)(?:\w+\.)?(\w+)\s+AS\s+(.*?)END\s+\1\s*;',
         re.DOTALL | re.IGNORECASE,
     )
-    for match in pattern.finditer(content):
+    for match in spec_pattern.finditer(content):
         packages.append(DDLPackage(name=match.group(1), code=match.group(2).strip()))
+
+    # Następnie body (CREATE PACKAGE BODY ... AS ... END;) — dołącz do istniejącego
+    body_pattern = re.compile(
+        r'create\s+or\s+replace\s+PACKAGE\s+BODY\s+(?:\w+\.)?(\w+)\s+AS\s+(.*?)END\s+\1\s*;',
+        re.DOTALL | re.IGNORECASE,
+    )
+    pkg_map = {p.name.upper(): p for p in packages}
+    for match in body_pattern.finditer(content):
+        name = match.group(1)
+        body_code = match.group(2).strip()
+        existing = pkg_map.get(name.upper())
+        if existing:
+            # Połącz spec + body
+            existing.code = existing.code + "\n\n-- PACKAGE BODY --\n\n" + body_code
+        else:
+            # Body bez specyfikacji (rzadki przypadek)
+            packages.append(DDLPackage(name=name, code=body_code))
+
     return packages
 
 

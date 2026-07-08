@@ -1,0 +1,79 @@
+# AGENTS.md
+
+Instructions for AI coding agents working in this repository.
+
+## Project Summary
+
+Python CLI tool (`apex_export_to_md`) that converts Oracle APEX application exports (YAML readable format) and DDL files into multiple documentation formats (Markdown, HTML, SQL migration scripts). The APEX application itself is an Internal Control Management and Audit System (Polish UI).
+
+## Quick Commands
+
+```bash
+# Run the CLI (default: reads from _data/, outputs to _out/)
+python -m apex_export_to_md
+
+# Run with options
+python -m apex_export_to_md _data --format llm --verbose
+
+# Start the web GUI (FastAPI on port 8338)
+python -m apex_export_to_md --gui
+
+# Run all tests
+python -m pytest tests/ -v
+
+# Run a specific test file
+python -m pytest tests/test_page_parser.py -v
+```
+
+## Architecture
+
+Pipeline pattern with strict layer separation:
+
+```text
+YAML files → Parser → [ApexApp model] → Filter → Renderer → output files
+DDL file  → DDL Parser → [DDLSchema model] → DDL Renderer → output files
+```
+
+Key directories:
+
+- `apex_export_to_md/parser/` — YAML and DDL parsing (input)
+- `apex_export_to_md/models/` — Dataclasses (`ApexApp`, `ApexPage`, `Region`, `DDLSchema`, etc.)
+- `apex_export_to_md/filters/` — Page filtering heuristics
+- `apex_export_to_md/renderers/` — Output formatters (inherit from `BaseRenderer`)
+- `apex_export_to_md/gui/` — FastAPI web interface
+- `_data/` — Source data (APEX YAML export + DDL SQL)
+- `_out/` — Generated output (timestamped files)
+
+## Conventions
+
+- **Language:** Code comments, docstrings, CLI help, and UI text are in **Polish**
+- **Python version:** 3.10+ (uses `X | Y` union syntax, `list[T]` generics)
+- **Dependencies:** Minimal — PyYAML, pytest, oracledb, FastAPI, uvicorn, jinja2
+- **No build system:** Run directly with `python -m`. No setup.py/pyproject.toml packaging
+- **Testing:** pytest with fixtures in `tests/conftest.py`. Test file names mirror source modules
+- **Renderers:** New output formats subclass `BaseRenderer` and implement `render(app: ApexApp) -> str`
+- **Config:** All settings flow through `AppConfig` dataclass. CLI args → `AppConfig` → pipeline
+
+## File Naming
+
+Output files use timestamp prefix: `YYYYMMDD_HHMMSS_{output_prefix}_{renderer_suffix}.{ext}`
+
+## Database Context
+
+See [CLAUDE.md](CLAUDE.md) for full Oracle APEX application context (tables, PL/SQL packages, security model). The DDL is in `_data/skw_to_apex_DDL_1.sql`.
+
+## Common Pitfalls
+
+- YAML keys use hyphens (`page-group`, `source-table`), model fields use underscores
+- `yaml_helpers.py` provides `safe_get()` for deeply nested YAML access — always use it
+- Page filter "auto" mode excludes standard APEX admin pages; check `config.py` for heuristics
+- The `_data/readable/application/` structure mirrors APEX's own export layout
+
+<!-- lean-ctx -->
+## lean-ctx
+
+Prefer lean-ctx MCP tools over native equivalents for token savings:
+`ctx_read` > Read/cat, `ctx_search` > Grep/rg, `ctx_shell` > bash, `ctx_tree` > ls/find.
+Native Edit/Write/Glob stay as-is; use `ctx_edit` only when Edit needs an unavailable Read.
+Full rules: LEAN-CTX.md (open on demand — do not auto-load).
+<!-- /lean-ctx -->

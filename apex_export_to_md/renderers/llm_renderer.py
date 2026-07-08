@@ -23,6 +23,30 @@ class LLMRenderer(BaseRenderer):
         # Nagłówek aplikacji
         lines.append(f"APP:{app.id}|{app.alias}|{app.name}")
 
+        # Metadane (z pliku f*.sql)
+        if app.metadata:
+            meta = app.metadata
+            parts = []
+            if meta.apex_version:
+                parts.append(f"APEX={meta.apex_version}")
+            if meta.owner:
+                parts.append(f"OWNER={meta.owner}")
+            if meta.version:
+                parts.append(f"VER={meta.version}")
+            if meta.language:
+                parts.append(f"LANG={meta.language}")
+            if meta.is_pwa:
+                parts.append("PWA=Y")
+            if meta.pages_count:
+                parts.append(f"PAGES={meta.pages_count}")
+            if meta.regions_count:
+                parts.append(f"REGIONS={meta.regions_count}")
+            if parts:
+                lines.append(f"META:|{'|'.join(parts)}")
+            if meta.substitutions:
+                subs = "|".join(f"{k}={v}" for k, v in meta.substitutions.items())
+                lines.append(f"SUBS:|{subs}")
+
         # Strony
         for page in app.pages:
             lines.extend(self._render_page(page))

@@ -1,14 +1,28 @@
 {
-    "servers": {
-        "fetch": {
-            "type": "stdio",
-            "command": "uvx",
-            "args": ["mcp-server-fetch"]
-        },
-        "selvedge": {
-            "type": "stdio",
-            "command": "uvx",
-            "args": ["--from", "selvedge", "selvedge-server"]
-        }
+  "servers": {
+    "fetch": {
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "command": "uvx",
+      "type": "stdio"
+    },
+    "lean-ctx": {
+      "args": [],
+      "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe",
+      "env": {
+        "LEAN_CTX_DATA_DIR": "C:\\Users\\trembiasz\\.config\\lean-ctx"
+      },
+      "type": "stdio"
+    },
+    "selvedge": {
+      "args": [
+        "--from",
+        "selvedge",
+        "selvedge-server"
+      ],
+      "command": "uvx",
+      "type": "stdio"
     }
+  }
 }

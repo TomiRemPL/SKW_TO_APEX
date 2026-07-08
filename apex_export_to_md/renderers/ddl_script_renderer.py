@@ -98,12 +98,30 @@ class DDLScriptRenderer(BaseRenderer):
             lines.append(fk_sql)
             lines.append("")
 
+        # Podsumowanie obiektów
+        lines.append("-- ============================================================")
+        lines.append("-- PODSUMOWANIE")
+        lines.append("-- ============================================================")
+        lines.append(f"-- Sekwencje:  {len(ddl.sequences)}")
+        lines.append(f"-- Tabele:     {len(ddl.tables)}")
+        lines.append(f"-- Widoki:     {len(ddl.views)}")
+        lines.append(f"-- Pakiety:    {len(ddl.packages)}")
+        lines.append(f"-- Procedury:  {len(ddl.procedures)}")
+        lines.append(f"-- RAZEM:      {len(ddl.sequences) + len(ddl.tables) + len(ddl.views) + len(ddl.packages) + len(ddl.procedures)}")
+        lines.append("")
         lines.append("-- ============================================================")
         lines.append("-- KONIEC SKRYPTU DDL")
         lines.append("-- ============================================================")
 
         return "\n".join(lines)
+    def _strip_empty_lines(self, sql: str) -> str:
+        """Usuń puste linie z bloku kodu SQL.
 
+        APEX SQL Workshop traktuje pustą linię jako koniec kodu,
+        dlatego usuwamy linie składające się wyłącznie z whitespace.
+        """
+        lines = sql.split('\n')
+        return '\n'.join(line for line in lines if line.strip())
     def _strip_schema(self, sql: str, schema: str) -> str:
         """Usuń referencje do schematu źródłowego z SQL."""
         if not schema:
@@ -118,6 +136,7 @@ class DDLScriptRenderer(BaseRenderer):
         """Generuj CREATE SEQUENCE."""
         if seq.raw_sql:
             sql = self._strip_schema(seq.raw_sql, schema)
+            sql = self._strip_empty_lines(sql)
             if not sql.rstrip().endswith(';'):
                 sql += ';'
             return sql
@@ -145,7 +164,7 @@ class DDLScriptRenderer(BaseRenderer):
         """Generuj CREATE TABLE (bez FK)."""
         if table.raw_sql:
             sql = self._strip_schema(table.raw_sql, schema)
-            # Usuń USING INDEX i ENABLE z końca constraints
+            sql = self._strip_empty_lines(sql)
             if not sql.rstrip().endswith(';'):
                 sql += ';'
             return sql
@@ -202,16 +221,19 @@ class DDLScriptRenderer(BaseRenderer):
     def _render_view(self, view: DDLView, schema: str) -> str:
         """Generuj CREATE OR REPLACE VIEW."""
         sql = self._strip_schema(view.sql, schema)
+        sql = self._strip_empty_lines(sql)
         return f'CREATE OR REPLACE VIEW "{view.name}" AS\n{sql};'
 
     def _render_package(self, pkg: DDLPackage, schema: str) -> str:
         """Generuj CREATE OR REPLACE PACKAGE."""
         code = self._strip_schema(pkg.code, schema)
+        code = self._strip_empty_lines(code)
         return f"CREATE OR REPLACE PACKAGE {pkg.name} AS\n{code}\nEND {pkg.name};\n/"
 
     def _render_procedure(self, proc: DDLProcedure, schema: str) -> str:
         """Generuj CREATE OR REPLACE PROCEDURE/FUNCTION."""
         code = self._strip_schema(proc.code, schema)
+        code = self._strip_empty_lines(code)
         return f"CREATE OR REPLACE {code}\nEND {proc.name};\n/"
 
     def _render_foreign_keys(self, ddl: DDLSchema) -> str:

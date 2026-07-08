@@ -90,10 +90,43 @@ async def post_run(request: Request):
     data = await request.json()
     try:
         config = _build_config_from_request(data)
-        # Uruchom pipeline w osobnym wątku
+
+        # Wstępna walidacja połączenia z bazą (jeśli wymagane)
+        if config.generate_migration:
+            if not config.db_connection:
+                return JSONResponse(content={
+                    "status": "error",
+                    "message": "Generowanie migracji wymaga podania connection string i hasła.",
+                    "logs": "",
+                })
+            try:
+                from apex_export_to_md.db_exporter import test_connection
+                success, msg = test_connection(config.db_connection)
+                if not success:
+                    return JSONResponse(content={
+                        "status": "error",
+                        "message": f"Nie można połączyć z bazą: {msg}",
+                        "logs": "Sprawdź:\n"
+                                "- Czy VPN jest aktywny?\n"
+                                "- Czy connection string jest poprawny (user@host:port/service)?\n"
+                                "- Czy hasło jest prawidłowe?\n"
+                                "- Czy baza jest dostępna z tej maszyny?",
+                    })
+            except ImportError:
+                return JSONResponse(content={
+                    "status": "error",
+                    "message": "Pakiet 'oracledb' nie jest zainstalowany (pip install oracledb).",
+                    "logs": "",
+                })
+
+        # Uruchom pipeline
         from apex_export_to_md.cli import run_pipeline
+        from apex_export_to_md.app_logger import setup_file_logging
         import io
         import sys
+
+        # Logowanie do pliku
+        setup_file_logging(config.output_dir)
 
         # Przechwytuj logi
         log_capture = io.StringIO()
@@ -118,12 +151,29 @@ async def post_run(request: Request):
                 "message": "Pipeline zakończył się błędem.",
                 "logs": logs,
             })
+        except Exception as e:
+            logs = log_capture.getvalue()
+            error_msg = str(e)
+            hint = ""
+            if "DPY-" in error_msg:
+                hint = ("\nWskazówka: Błąd połączenia z bazą Oracle.\n"
+                        "Sprawdź VPN, connection string i hasło.")
+            return JSONResponse(content={
+                "status": "error",
+                "message": f"Błąd: {error_msg}{hint}",
+                "logs": logs,
+            })
         finally:
             root_logger.removeHandler(handler)
     except Exception as e:
+        error_msg = str(e)
+        hint = ""
+        if "DPY-" in error_msg:
+            hint = ("\nWskazówka: Błąd połączenia z bazą Oracle.\n"
+                    "Sprawdź VPN, connection string i hasło.")
         return JSONResponse(content={
             "status": "error",
-            "message": f"Błąd: {e}",
+            "message": f"Błąd: {error_msg}{hint}",
             "logs": "",
         })
 
@@ -144,11 +194,15 @@ def _build_config_from_request(data: dict[str, Any]) -> AppConfig:
     # Buduj connection string z hasłem
     db_connection = data.get("db_connection", "")
     db_password = data.get("db_password", "")
+    logger.debug("GUI db_connection input: '%s', has password: %s",
+                 db_connection, bool(db_password))
     if db_password and db_connection and "/" not in db_connection.split("@")[0]:
         # Format: user@host:port/service → user/password@host:port/service
         if "@" in db_connection:
             user_part, host_part = db_connection.split("@", 1)
             db_connection = f"{user_part}/{db_password}@{host_part}"
+    logger.debug("GUI db_connection result (masked): '%s'",
+                 db_connection[:3] + "***" if db_connection else "(empty)")
 
     # Extra pages
     extra_pages: list[int] = []
