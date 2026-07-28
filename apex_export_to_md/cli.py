@@ -87,6 +87,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Connection string Oracle, np. user/pass@host:1521/service_name",
     )
     parser.add_argument(
+        "--fetch-ddl-from-db", action="store_true",
+        help="Pobierz DDL automatycznie z bazy Oracle na podstawie keyword w komentarzach",
+    )
+    parser.add_argument(
+        "--ddl-keyword", default="",
+        help="Keyword do filtrowania obiektów DB (np. */OnSite*/)",
+    )
+    parser.add_argument(
         "--gui", action="store_true",
         help="Uruchom interfejs webowy (FastAPI) w przeglądarce",
     )
@@ -128,6 +136,8 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
         generate_ddl=args.generate_ddl,
         generate_migration=args.generate_migration,
         db_connection=args.db_connection,
+        fetch_ddl_from_db=args.fetch_ddl_from_db,
+        ddl_keyword=args.ddl_keyword,
         gui=args.gui,
         verbose=args.verbose,
     )
@@ -181,6 +191,37 @@ def run_pipeline(config: AppConfig) -> None:
     if not input_path.exists():
         logging.error("Katalog nie istnieje: %s", input_path)
         sys.exit(1)
+
+    # 0. Automatyczne pobieranie DDL z bazy (jeśli włączone)
+    if config.fetch_ddl_from_db:
+        from apex_export_to_md.ddl_fetcher import fetch_ddl_from_database
+
+        # Walidacja
+        if not config.db_connection:
+            logging.error("Automatyczne pobieranie DDL wymaga --db-connection")
+            sys.exit(1)
+        if not config.ddl_keyword:
+            logging.error("Automatyczne pobieranie DDL wymaga --ddl-keyword")
+            sys.exit(1)
+
+        logging.info("=== POBIERANIE DDL Z BAZY ORACLE ===")
+        logging.info("Keyword: %s", config.ddl_keyword)
+
+        # Pobierz DDL z bazy
+        success, ddl_file_path = fetch_ddl_from_database(
+            config.db_connection,
+            config.ddl_keyword,
+            input_path,
+        )
+
+        if not success:
+            logging.error("Nie udało się pobrać DDL z bazy")
+            sys.exit(1)
+
+        # Ustaw ścieżkę do wygenerowanego pliku DDL
+        config.ddl_file = ddl_file_path
+        logging.info("Plik DDL zostanie użyty w pipeline: %s", config.ddl_file)
+        logging.info("=" * 40)
 
     app_root = find_app_root(input_path)
     pages_dir = app_root / "pages"

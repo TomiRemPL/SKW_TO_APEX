@@ -40,6 +40,8 @@ PARAM_HELP: dict[str, str] = {
     "generate_migration": "Generuje pełny skrypt migracyjny z danymi (wymaga połączenia z bazą)",
     "db_connection": "Connection string Oracle, np. user@host:1521/service_name (hasło podaj osobno w polu poniżej)",
     "db_password": "Hasło do bazy danych (nie jest zapisywane w ustawieniach)",
+    "fetch_ddl_from_db": "Pobierz automatycznie DDL obiektów z bazy Oracle na podstawie keyword w komentarzach",
+    "ddl_keyword": "Keyword do wyszukania w komentarzach obiektów (np. */OnSite*/). Filtrowanie: LIKE '%keyword%'",
     "verbose": "Włącz szczegółowe logi (poziom DEBUG)",
 }
 
@@ -228,6 +230,8 @@ def _build_config_from_request(data: dict[str, Any]) -> AppConfig:
         generate_ddl=data.get("generate_ddl", False),
         generate_migration=data.get("generate_migration", False),
         db_connection=db_connection,
+        fetch_ddl_from_db=data.get("fetch_ddl_from_db", False),
+        ddl_keyword=data.get("ddl_keyword", ""),
         verbose=data.get("verbose", False),
     )
 

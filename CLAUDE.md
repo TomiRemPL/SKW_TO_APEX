@@ -4,22 +4,101 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Oracle APEX 24.1 application for **Internal Control Management and Audit System** (Polish: System Kontroli Wewnętrznych). Built on Oracle Database with schema `DAW`. The UI language is Polish.
+This repository contains **two distinct components**:
+
+1. **Oracle APEX 24.1 Application** — Internal Control Management and Audit System (Polish: System Kontroli Wewnętrznych), built on Oracle Database with schema `DAW`. UI language is Polish.
+2. **Python Documentation Tool** — CLI tool (`apex_export_to_md`) that converts APEX exports (YAML) and DDL files into multiple documentation formats (Markdown, HTML, SQL migration scripts).
+
+Most development work will be on the **Python tool**. The APEX application data serves as input for the tool.
 
 ## Repository Structure
 
+**Python Tool:**
+- `apex_export_to_md/` — Main Python package
+  - `cli.py` — Entry point, argument parsing, pipeline orchestration
+  - `config.py` — `AppConfig` dataclass and filtering heuristics
+  - `parser/` — YAML and DDL parsing (input layer)
+  - `models/` — Dataclasses (`ApexApp`, `ApexPage`, `Region`, `DDLSchema`, etc.)
+  - `filters/` — Page filtering logic
+  - `renderers/` — Output formatters (all inherit from `BaseRenderer`)
+  - `gui/` — FastAPI web interface (port 8338)
+- `tests/` — pytest test suite (mirrors source structure)
+- `_out/` — Generated output files (timestamped)
+
+**APEX Application Data:**
 - `_data/skw_to_apex_DDL_1.sql` — Full database schema: tables, views, PL/SQL packages
-- `/_data/readable/application` — APEX application export (YAML format, app ID 160, alias START338)
+- `_data/readable/application/` — APEX application export (YAML format, app ID 160, alias START338)
   - `f338.yaml` — Root application definition
   - `pages/` — Individual APEX page definitions (35+ pages)
   - `shared_components/` — LOVs, auth schemes, navigation, ACL roles
 
-## Deployment
+## Common Commands
 
-There is no build pipeline. Deployment is manual:
+**Run the Python tool:**
+```bash
+# Basic usage (reads _data/, outputs to _out/)
+python -m apex_export_to_md
+
+# With options
+python -m apex_export_to_md _data --format llm --verbose --page-filter prefix:DAW_
+
+# Automatic DDL fetching from Oracle database
+python -m apex_export_to_md _data --fetch-ddl-from-db --ddl-keyword "*/OnSite*/" --db-connection "user/pass@host:1521/service"
+
+# Start web GUI (FastAPI on port 8338)
+python -m apex_export_to_md --gui
+
+# Windows shortcut with .env loading
+scripts\start-gui-with-env.bat
+```
+
+**Run tests:**
+```bash
+# All tests
+pytest tests/ -v
+
+# Specific test module
+pytest tests/test_page_parser.py -v
+pytest tests/test_human_renderer.py -v
+```
+
+**Setup:**
+```bash
+# Create virtual environment
+python -m venv .venv
+.venv\Scripts\Activate.ps1  # Windows PowerShell
+source .venv/bin/activate    # Linux/macOS
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Python Tool Architecture
+
+Pipeline pattern with strict layer separation:
+
+```
+YAML files → Parser → [ApexApp model] → Filter → Renderer → output files
+DDL file  → DDL Parser → [DDLSchema model] → DDL Renderer → output files
+```
+
+**Key principles:**
+- Config flows through `AppConfig` dataclass: CLI args → `AppConfig` → pipeline
+- New output formats subclass `BaseRenderer` and implement `render(app: ApexApp) -> str`
+- YAML keys use hyphens (`page-group`), model fields use underscores (`page_group`)
+- Use `yaml_helpers.safe_get()` for deeply nested YAML access
+- All code/docs/UI text in **Polish**
+- Python 3.10+ required (uses `X | Y` syntax, `list[T]` generics)
+- No build system — run directly with `python -m apex_export_to_md`
+
+**Output file naming:** `YYYYMMDD_HHMMSS_{output_prefix}_{suffix}.{ext}`
+
+## APEX Application Deployment
+
+There is no build pipeline for the APEX app. Deployment is manual:
 
 1. Execute `_data/skw_to_apex_DDL_1.sql` against the Oracle database (schema `DAW`)
-2. Import the `_data/` directory into Oracle APEX using the APEX import tool or `apex export`/`apex import` CLI
+2. Import `_data/readable/application/` into Oracle APEX using the APEX import tool or `apex export`/`apex import` CLI
 
 ## Database Architecture
 

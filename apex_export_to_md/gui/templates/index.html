@@ -376,6 +376,28 @@ footer {
 
         <div class="form-group">
             <div class="form-group-header">
+                <label for="fetch_ddl_from_db">Pobierz DDL automatycznie z bazy</label>
+                <input type="checkbox" id="fetch_ddl_from_db">
+            </div>
+            <div class="form-help">
+                Automatycznie pobiera definicje DDL obiektów bazy danych, które zawierają keyword w komentarzu.<br>
+                Wymaga podania connection string, hasła i keyword. Wygenerowany plik DDL zostanie użyty w pipeline.
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
+                <label for="ddl_keyword">Keyword filtrowania</label>
+                <input type="text" id="ddl_keyword" placeholder="*/OnSite*/">
+            </div>
+            <div class="form-help">
+                Keyword do wyszukania w komentarzach obiektów bazodanowych (case-insensitive).<br>
+                Przykład: <code>*/OnSite*/</code>, <code>*/HR*/</code>. Filtrowanie: <code>LIKE '%keyword%'</code>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="form-group-header">
                 <label for="db_connection">Connection string</label>
                 <input type="text" id="db_connection" placeholder="user@host:1521/service_name">
             </div>
@@ -422,25 +444,36 @@ footer {
 <script>
 // Inicjalizacja
 document.addEventListener('DOMContentLoaded', async () => {
-    const resp = await fetch('/api/settings');
-    const data = await resp.json();
+    try {
+        const resp = await fetch('/api/settings');
+        if (!resp.ok) {
+            console.error('Błąd HTTP ładowania ustawień:', resp.status);
+            return;
+        }
+        const data = await resp.json();
 
-    // Wypełnij formularz zapisanymi ustawieniami
-    const s = data.settings || {};
-    setVal('input_dir', s.input_dir);
-    setVal('output_dir', s.output_dir);
-    setVal('output_prefix', s.output_prefix);
-    setVal('output_format', s.output_format);
-    setVal('include_code', s.include_code);
-    setVal('page_filter', s.page_filter);
-    setVal('extra_pages', s.extra_pages);
-    setCheck('include_internal_ids', s.include_internal_ids);
-    setCheck('include_layout', s.include_layout);
-    setCheck('include_shared_components', s.include_shared_components);
-    setCheck('generate_ddl', s.generate_ddl);
-    setCheck('generate_migration', s.generate_migration);
-    setVal('db_connection', s.db_connection);
-    setCheck('verbose', s.verbose);
+        // Wypełnij formularz zapisanymi ustawieniami
+        const s = data.settings || {};
+        setVal('input_dir', s.input_dir);
+        setVal('output_dir', s.output_dir);
+        setVal('output_prefix', s.output_prefix);
+        setVal('output_format', s.output_format);
+        setVal('include_code', s.include_code);
+        setVal('page_filter', s.page_filter);
+        setVal('extra_pages', s.extra_pages);
+        setCheck('include_internal_ids', s.include_internal_ids);
+        setCheck('include_layout', s.include_layout);
+        setCheck('include_shared_components', s.include_shared_components);
+        setCheck('generate_ddl', s.generate_ddl);
+        setCheck('generate_migration', s.generate_migration);
+        setCheck('fetch_ddl_from_db', s.fetch_ddl_from_db);
+        setVal('ddl_keyword', s.ddl_keyword);
+        setVal('db_connection', s.db_connection);
+        setCheck('verbose', s.verbose);
+    } catch (error) {
+        console.error('Błąd połączenia z serwerem:', error);
+        alert('⚠ Błąd połączenia z serwerem API.\n\nSprawdź czy serwer FastAPI jest uruchomiony:\npython -m apex_export_to_md --gui');
+    }
 });
 
 function setVal(id, val) {
@@ -466,6 +499,8 @@ function getFormData() {
         include_shared_components: document.getElementById('include_shared_components').checked,
         generate_ddl: document.getElementById('generate_ddl').checked,
         generate_migration: document.getElementById('generate_migration').checked,
+        fetch_ddl_from_db: document.getElementById('fetch_ddl_from_db').checked,
+        ddl_keyword: document.getElementById('ddl_keyword').value,
         db_connection: document.getElementById('db_connection').value,
         db_password: document.getElementById('db_password').value,
         verbose: document.getElementById('verbose').checked,
@@ -473,15 +508,24 @@ function getFormData() {
 }
 
 async function saveSettings() {
-    const data = getFormData();
-    delete data.db_password;
-    const resp = await fetch('/api/settings', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data),
-    });
-    const result = await resp.json();
-    showStatus('run-status', result.status === 'ok', result.message);
+    try {
+        const data = getFormData();
+        delete data.db_password;
+        const resp = await fetch('/api/settings', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        });
+        if (!resp.ok) {
+            showStatus('run-status', false, `Błąd HTTP: ${resp.status}`);
+            return;
+        }
+        const result = await resp.json();
+        showStatus('run-status', result.status === 'ok', result.message);
+    } catch (error) {
+        console.error('Błąd połączenia:', error);
+        showStatus('run-status', false, '❌ Błąd połączenia z serwerem API. Sprawdź czy serwer jest uruchomiony.');
+    }
 }
 
 async function testConnection() {
@@ -489,25 +533,36 @@ async function testConnection() {
     btn.disabled = true;
     btn.textContent = 'Łączenie...';
 
-    const connStr = document.getElementById('db_connection').value;
-    const password = document.getElementById('db_password').value;
+    try {
+        const connStr = document.getElementById('db_connection').value;
+        const password = document.getElementById('db_password').value;
 
-    let fullConn = connStr;
-    if (password && connStr.includes('@') && !connStr.split('@')[0].includes('/')) {
-        const [user, host] = connStr.split('@', 2);
-        fullConn = `${user}/${password}@${host}`;
+        let fullConn = connStr;
+        if (password && connStr.includes('@') && !connStr.split('@')[0].includes('/')) {
+            const [user, host] = connStr.split('@', 2);
+            fullConn = `${user}/${password}@${host}`;
+        }
+
+        const resp = await fetch('/api/test-connection', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({connection_string: fullConn}),
+        });
+        if (!resp.ok) {
+            showStatus('conn-status', false, `Błąd HTTP: ${resp.status}`);
+            btn.disabled = false;
+            btn.textContent = 'Testuj połączenie';
+            return;
+        }
+        const result = await resp.json();
+        showStatus('conn-status', result.success, result.message);
+    } catch (error) {
+        console.error('Błąd połączenia:', error);
+        showStatus('conn-status', false, '❌ Błąd połączenia z serwerem API. Sprawdź czy serwer jest uruchomiony.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Testuj połączenie';
     }
-
-    const resp = await fetch('/api/test-connection', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({connection_string: fullConn}),
-    });
-    const result = await resp.json();
-    showStatus('conn-status', result.success, result.message);
-
-    btn.disabled = false;
-    btn.textContent = 'Testuj połączenie';
 }
 
 async function runPipeline() {
@@ -519,19 +574,32 @@ async function runPipeline() {
     panel.classList.add('visible');
     panel.textContent = 'Uruchamianie pipeline...\n';
 
-    const data = getFormData();
-    const resp = await fetch('/api/run', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data),
-    });
-    const result = await resp.json();
+    try {
+        const data = getFormData();
+        const resp = await fetch('/api/run', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data),
+        });
+        if (!resp.ok) {
+            panel.textContent = `Błąd HTTP: ${resp.status}\n`;
+            showStatus('run-status', false, `Błąd HTTP: ${resp.status}`);
+            btn.disabled = false;
+            btn.textContent = '▶ Uruchom';
+            return;
+        }
+        const result = await resp.json();
 
-    panel.textContent = result.logs || '';
-    showStatus('run-status', result.status === 'ok', result.message);
-
-    btn.disabled = false;
-    btn.textContent = '▶ Uruchom';
+        panel.textContent = result.logs || '';
+        showStatus('run-status', result.status === 'ok', result.message);
+    } catch (error) {
+        console.error('Błąd połączenia:', error);
+        panel.textContent = 'Błąd połączenia z serwerem API.\n\n' + error.toString();
+        showStatus('run-status', false, '❌ Błąd połączenia z serwerem API. Sprawdź czy serwer jest uruchomiony.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '▶ Uruchom';
+    }
 }
 
 function showStatus(id, success, message) {

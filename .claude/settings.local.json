@@ -1,74 +1,75 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(npx -y @anthropic-ai/mcp-server-fetch --version)",
+      "Bash(uvx mcp-server-fetch:*)",
+      "mcp__lean-ctx__ctx_shell"
+    ]
+  },
   "hooks": {
     "PostToolUse": [
       {
+        "matcher": ".*",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe"
           }
-        ],
-        "matcher": ".*"
+        ]
       }
     ],
     "PreCompact": [
       {
+        "matcher": ".*",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe"
           }
-        ],
-        "matcher": ".*"
+        ]
       }
     ],
     "PreToolUse": [
       {
+        "matcher": "Bash|bash|PowerShell|powershell",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook rewrite",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook rewrite"
           }
-        ],
-        "matcher": "Bash|bash|PowerShell|powershell"
+        ]
       },
       {
+        "matcher": "Read|read|ReadFile|read_file|View|view|Grep|grep|Search|search|ListFiles|list_files|ListDirectory|list_directory",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook redirect",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook redirect"
           }
-        ],
-        "matcher": "Read|read|ReadFile|read_file|View|view|Grep|grep|Search|search|ListFiles|list_files|ListDirectory|list_directory"
+        ]
       }
     ],
     "Stop": [
       {
+        "matcher": ".*",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe"
           }
-        ],
-        "matcher": ".*"
+        ]
       }
     ],
     "UserPromptSubmit": [
       {
+        "matcher": ".*",
         "hooks": [
           {
-            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe",
-            "type": "command"
+            "type": "command",
+            "command": "C:/Users/trembiasz/.cargo/bin/lean-ctx.exe hook observe"
           }
-        ],
-        "matcher": ".*"
+        ]
       }
-    ]
-  },
-  "permissions": {
-    "allow": [
-      "Bash(npx -y @anthropic-ai/mcp-server-fetch --version)",
-      "Bash(uvx mcp-server-fetch:*)"
     ]
   }
 }

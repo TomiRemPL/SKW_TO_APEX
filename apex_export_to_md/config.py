@@ -36,6 +36,10 @@ class AppConfig:
     generate_migration: bool = False
     db_connection: str = ""
 
+    # --- Automatyczne pobieranie DDL z bazy ---
+    fetch_ddl_from_db: bool = False
+    ddl_keyword: str = ""
+
     # --- GUI ---
     gui: bool = False
 

@@ -111,6 +111,7 @@ usage: apex_export_to_md [-h] [--output-dir OUTPUT_DIR] [--output-prefix OUTPUT_
                          [--include-internal-ids] [--include-layout]
                          [--no-shared-components] [--generate-ddl]
                          [--generate-migration] [--db-connection DB_CONNECTION]
+                         [--fetch-ddl-from-db] [--ddl-keyword DDL_KEYWORD]
                          [--gui] [--verbose]
                          [input_dir]
 
@@ -284,10 +285,33 @@ Flaga (bez wartości). Generuje pełny skrypt migracyjny: DDL + wyłączenie con
 
 #### `--db-connection CONNECTION_STRING`
 
-Connection string do bazy Oracle. Wymagany przy `--generate-migration`.
+Connection string do bazy Oracle. Wymagany przy `--generate-migration` i `--fetch-ddl-from-db`.
 
 - **Format:** `user/pass@host:port/service_name`
 - **Przykład:** `--db-connection daw/haslo@dbserver:1521/ORCL`
+
+---
+
+#### `--fetch-ddl-from-db`
+
+Flaga (bez wartości). Automatycznie pobiera DDL obiektów z bazy Oracle na podstawie keyword w komentarzach. Wymaga `--db-connection` i `--ddl-keyword`.
+
+- Wyszukuje obiekty z keyword w komentarzach (case-insensitive, `LIKE '%keyword%'`)
+- Pobiera DDL używając `DBMS_METADATA.GET_DDL()`
+- Typy obiektów: tabele, widoki, sekwencje, indeksy, pakiety, procedury, funkcje, triggery
+- Generuje plik `auto_ddl_{keyword}.sql` w katalogu input
+- Wygenerowany plik DDL jest automatycznie używany w pipeline
+- **Przykład:** `--fetch-ddl-from-db --ddl-keyword "*/OnSite*/" --db-connection user/pass@host:1521/service`
+
+---
+
+#### `--ddl-keyword KEYWORD`
+
+Keyword do filtrowania obiektów bazy danych po komentarzach. Wymagany przy `--fetch-ddl-from-db`.
+
+- **Format:** Dowolny ciąg znaków (np. `*/OnSite*/`, `HR-Module`)
+- Wyszukiwanie: `LIKE '%keyword%'` (case-insensitive)
+- **Przykład:** `--ddl-keyword "*/OnSite*/"`
 
 ---
 
