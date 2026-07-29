@@ -6,6 +6,10 @@ import pytest
 from apex_export_to_md.ddl_fetcher import (
     _sanitize_keyword,
     _find_objects_by_keyword,
+    _extract_comment_text,
+    _find_code_objects_by_comment_keyword,
+    _extract_sequence_names,
+    _find_sequences_used_by_tables,
     _get_ddl,
     _get_comments,
     fetch_ddl_from_database,
@@ -20,8 +24,10 @@ def test_sanitize_keyword():
     assert _sanitize_keyword("@#$%Special!") == "Special"
 
 
+@patch("apex_export_to_md.ddl_fetcher._find_sequences_used_by_tables")
+@patch("apex_export_to_md.ddl_fetcher._find_code_objects_by_comment_keyword")
 @patch("apex_export_to_md.ddl_fetcher.oracledb")
-def test_find_objects_by_keyword(mock_oracledb):
+def test_find_objects_by_keyword(mock_oracledb, mock_code_objects, mock_sequences):
     """Sprawdza wyszukiwanie obiektów po keyword."""
     # Mock połączenia i cursora
     mock_conn = MagicMock()
@@ -33,12 +39,15 @@ def test_find_objects_by_keyword(mock_oracledb):
     mock_cursor.fetchall.side_effect = [
         [("TABLE1", "TEST_USER"), ("TABLE2", "TEST_USER")],  # Tabele
         [("VIEW1", "TEST_USER")],  # Widoki
-        [("SEQ1", "TEST_USER")],  # Sekwencje
         [("IDX1", "TEST_USER")],  # Indeksy
-        [("PKG1", "TEST_USER")],  # Pakiety
-        [("PROC1", "TEST_USER")],  # Procedury
-        [("FUNC1", "TEST_USER")],  # Funkcje
         [("TRG1", "TEST_USER")],  # Triggery
+    ]
+    mock_sequences.return_value = [("SEQ1", "TEST_USER")]
+    # Kolejność wywołań: PACKAGE, PROCEDURE, FUNCTION
+    mock_code_objects.side_effect = [
+        {"PKG1"},
+        {"PROC1"},
+        {"FUNC1"},
     ]
 
     results = _find_objects_by_keyword(mock_conn, "*/OnSite*/")
@@ -51,6 +60,77 @@ def test_find_objects_by_keyword(mock_oracledb):
     assert len(results["PROCEDURE"]) == 1
     assert len(results["FUNCTION"]) == 1
     assert len(results["TRIGGER"]) == 1
+    mock_sequences.assert_called_once_with(mock_conn, "TEST_USER", ["TABLE1", "TABLE2"])
+
+
+def test_extract_comment_text():
+    """Sprawdza wyciąganie tekstu komentarzy (-- oraz /* */) z kodu."""
+    source = (
+        "PACKAGE BODY PKG_TEST AS\n"
+        "  /* OnSiteApp */\n"
+        "  PROCEDURE FOO IS -- zwykla linia\n"
+        "  BEGIN NULL; END;\n"
+        "END;"
+    )
+    comment_text = _extract_comment_text(source)
+    assert "OnSiteApp" in comment_text
+    assert "zwykla linia" in comment_text
+    assert "BEGIN NULL" not in comment_text
+
+
+@patch("apex_export_to_md.ddl_fetcher.oracledb")
+def test_find_code_objects_by_comment_keyword(mock_oracledb):
+    """Sprawdza wyszukiwanie obiektów kodu po keyword w komentarzu."""
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_cursor.fetchall.return_value = [
+        ("PKG_MATCH", "-- */OnSiteApp*/"),
+        ("PKG_MATCH", "PROCEDURE FOO IS BEGIN NULL; END;"),
+        ("PKG_OTHER", "-- inny projekt"),
+    ]
+
+    names = _find_code_objects_by_comment_keyword(
+        mock_conn, "TEST_USER", "*/OnSiteApp*/", ("PACKAGE", "PACKAGE BODY")
+    )
+
+    assert names == {"PKG_MATCH"}
+
+
+def test_extract_sequence_names():
+    """Sprawdza wyciąganie nazw sekwencji z odwołań NEXTVAL."""
+    text = 'DEFAULT ON NULL "DAW"."DAW_SEQ_A_ANKIETA_PK".NEXTVAL'
+    assert _extract_sequence_names(text) == {"DAW_SEQ_A_ANKIETA_PK"}
+
+    text2 = "SELECT my_seq.nextval FROM dual"
+    assert _extract_sequence_names(text2) == {"MY_SEQ"}
+
+
+@patch("apex_export_to_md.ddl_fetcher.oracledb")
+def test_find_sequences_used_by_tables(mock_oracledb):
+    """Sprawdza wykrywanie sekwencji na podstawie DEFAULT kolumn i triggerów."""
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+    mock_conn.cursor.return_value = mock_cursor
+
+    mock_cursor.fetchall.side_effect = [
+        [('"SEQ_A".NEXTVAL',)],  # DATA_DEFAULT
+        [("BEGIN :new.id := seq_b.nextval; END;",)],  # TRIGGER_BODY
+        [("SEQ_A", "TEST_USER"), ("SEQ_B", "TEST_USER")],  # ALL_SEQUENCES
+    ]
+
+    result = _find_sequences_used_by_tables(mock_conn, "TEST_USER", ["TABLE1"])
+
+    assert len(result) == 2
+
+
+def test_find_sequences_used_by_tables_no_tables():
+    """Sprawdza, że brak tabel zwraca pustą listę bez odpytywania bazy."""
+    mock_conn = MagicMock()
+    result = _find_sequences_used_by_tables(mock_conn, "TEST_USER", [])
+    assert result == []
+    mock_conn.cursor.assert_not_called()
 
 
 @patch("apex_export_to_md.ddl_fetcher.oracledb")

@@ -1,7 +1,9 @@
 """Moduł automatycznego pobierania DDL z bazy Oracle.
 
-Wyszukuje obiekty bazy danych na podstawie keyword w komentarzach
-i generuje kompletny plik DDL używając DBMS_METADATA.
+Wyszukuje obiekty bazy danych na podstawie keyword: tabele i widoki po
+komentarzu (COMMENT ON), pakiety/procedury/funkcje po keyword w komentarzu
+kodu źródłowego, sekwencje na podstawie DEFAULT kolumn i triggerów tabel.
+Generuje kompletny plik DDL używając DBMS_METADATA.
 """
 from __future__ import annotations
 import logging
@@ -29,6 +31,124 @@ def _check_oracledb() -> None:
 def _sanitize_keyword(keyword: str) -> str:
     """Usuń znaki specjalne z keyword dla nazwy pliku."""
     return re.sub(r'[^\w\-]', '', keyword)
+
+
+def _extract_comment_text(source_text: str) -> str:
+    """Wyciągnij tekst komentarzy SQL/PLSQL (-- oraz /* ... */) z kodu źródłowego.
+
+    Używane do wyszukiwania keyword tylko w komentarzach kodu pakietów,
+    procedur i funkcji (nie w treści logiki, żeby uniknąć fałszywych trafień).
+    """
+    parts: list[str] = []
+    for match in re.finditer(r'/\*.*?\*/', source_text, re.DOTALL):
+        parts.append(match.group(0))
+    for line in source_text.splitlines():
+        idx = line.find('--')
+        if idx != -1:
+            parts.append(line[idx:])
+    return "\n".join(parts)
+
+
+def _find_code_objects_by_comment_keyword(
+    conn: Any, owner: str, keyword: str, source_types: tuple[str, ...]
+) -> set[str]:
+    """Znajdź nazwy obiektów kodu (PACKAGE/PACKAGE BODY/PROCEDURE/FUNCTION),
+    których komentarz w kodzie źródłowym zawiera keyword.
+
+    Dla PACKAGE sprawdzane są niezależnie SPEC i BODY (source_types może
+    zawierać oba typy) — wystarczy, że keyword wystąpi w jednym z nich.
+    """
+    cursor = conn.cursor()
+    keyword_upper = keyword.upper()
+    names: set[str] = set()
+    try:
+        placeholders = ",".join(f":t{i}" for i in range(len(source_types)))
+        params: dict[str, str] = {"owner": owner}
+        for i, source_type in enumerate(source_types):
+            params[f"t{i}"] = source_type
+
+        cursor.execute(f"""
+            SELECT name, text
+            FROM ALL_SOURCE
+            WHERE owner = :owner AND type IN ({placeholders})
+            ORDER BY name, line
+        """, params)
+
+        grouped: dict[str, list[str]] = {}
+        for name, text in cursor.fetchall():
+            grouped.setdefault(name, []).append(text or "")
+
+        for name, lines in grouped.items():
+            comment_text = _extract_comment_text("".join(lines))
+            if keyword_upper in comment_text.upper():
+                names.add(name)
+    finally:
+        cursor.close()
+    return names
+
+
+def _extract_sequence_names(text: str) -> set[str]:
+    """Wyciągnij nazwy sekwencji z odwołań SEQ.NEXTVAL w tekście SQL/PLSQL."""
+    return {
+        match.group(1).upper()
+        for match in re.finditer(r'"?(\w+)"?\s*\.\s*NEXTVAL', text, re.IGNORECASE)
+    }
+
+
+def _find_sequences_used_by_tables(
+    conn: Any, owner: str, table_names: list[str]
+) -> list[tuple[str, str]]:
+    """Znajdź sekwencje używane przez podane tabele.
+
+    Sprawdza zarówno DEFAULT kolumn (np. nowoczesny wzorzec
+    "DEFAULT seq.NEXTVAL"), jak i treść triggerów powiązanych z tabelą
+    (starszy wzorzec: trigger BEFORE INSERT wywołujący seq.NEXTVAL).
+    """
+    if not table_names:
+        return []
+
+    cursor = conn.cursor()
+    try:
+        placeholders = ",".join(f":t{i}" for i in range(len(table_names)))
+        params = {f"t{i}": name for i, name in enumerate(table_names)}
+        params["owner"] = owner
+
+        seq_names: set[str] = set()
+
+        cursor.execute(f"""
+            SELECT data_default
+            FROM ALL_TAB_COLUMNS
+            WHERE owner = :owner AND table_name IN ({placeholders})
+              AND data_default IS NOT NULL
+        """, params)
+        for (data_default,) in cursor.fetchall():
+            if data_default:
+                seq_names |= _extract_sequence_names(str(data_default))
+
+        cursor.execute(f"""
+            SELECT trigger_body
+            FROM ALL_TRIGGERS
+            WHERE owner = :owner AND table_name IN ({placeholders})
+        """, params)
+        for (trigger_body,) in cursor.fetchall():
+            if trigger_body:
+                seq_names |= _extract_sequence_names(str(trigger_body))
+
+        if not seq_names:
+            return []
+
+        seq_names_list = sorted(seq_names)
+        seq_placeholders = ",".join(f":s{i}" for i in range(len(seq_names_list)))
+        seq_params = {f"s{i}": name for i, name in enumerate(seq_names_list)}
+        seq_params["owner"] = owner
+        cursor.execute(f"""
+            SELECT sequence_name, sequence_owner
+            FROM ALL_SEQUENCES
+            WHERE sequence_owner = :owner AND sequence_name IN ({seq_placeholders})
+        """, seq_params)
+        return cursor.fetchall()
+    finally:
+        cursor.close()
 
 
 def _connect_to_db(connection_string: str) -> Any:
@@ -95,18 +215,10 @@ def _find_objects_by_keyword(conn: Any, keyword: str) -> dict[str, list[tuple[st
         results['VIEW'] = cursor.fetchall()
         logger.info("Znaleziono %d widoków z keyword '%s'", len(results['VIEW']), keyword)
 
-        # 3. Sekwencje - sprawdź czy istnieją komentarze (ALL_MVIEW_COMMENTS lub custom)
-        # Oracle nie ma standardowych komentarzy dla sekwencji, więc pominiemy filtrowanie
-        # i pobierzemy wszystkie sekwencje użytkownika (można ulepszyć w przyszłości)
-        # Alternatywa: użyć ALL_SEQUENCES z filtrem na nazwie (jeśli keyword jest w nazwie)
-        cursor.execute("""
-            SELECT sequence_name, sequence_owner
-            FROM ALL_SEQUENCES
-            WHERE sequence_owner = :owner
-              AND UPPER(sequence_name) LIKE UPPER(:keyword)
-        """, {"owner": current_user, "keyword": keyword_pattern})
-        results['SEQUENCE'] = cursor.fetchall()
-        logger.info("Znaleziono %d sekwencji pasujących do keyword", len(results['SEQUENCE']))
+        # 3. Sekwencje - wykryte na podstawie DEFAULT kolumn i triggerów tabel z keyword
+        table_names_for_seq = [t[0] for t in results['TABLE']]
+        results['SEQUENCE'] = _find_sequences_used_by_tables(conn, current_user, table_names_for_seq)
+        logger.info("Znaleziono %d sekwencji używanych przez tabele z keyword", len(results['SEQUENCE']))
 
         # 4. Indeksy - dla tabel z keyword
         if results['TABLE']:
@@ -124,38 +236,26 @@ def _find_objects_by_keyword(conn: Any, keyword: str) -> dict[str, list[tuple[st
             results['INDEX'] = cursor.fetchall()
             logger.info("Znaleziono %d indeksów dla tabel z keyword", len(results['INDEX']))
 
-        # 5. Pakiety - ALL_SOURCE nie ma komentarzy, więc użyjemy ALL_OBJECTS + nazwa
-        cursor.execute("""
-            SELECT object_name, owner
-            FROM ALL_OBJECTS
-            WHERE object_type = 'PACKAGE'
-              AND owner = :owner
-              AND UPPER(object_name) LIKE UPPER(:keyword)
-        """, {"owner": current_user, "keyword": keyword_pattern})
-        results['PACKAGE'] = cursor.fetchall()
-        logger.info("Znaleziono %d pakietów pasujących do keyword", len(results['PACKAGE']))
+        # 5. Pakiety - keyword w komentarzu kodu (SPEC lub BODY, niezależnie)
+        package_names = _find_code_objects_by_comment_keyword(
+            conn, current_user, keyword, ('PACKAGE', 'PACKAGE BODY')
+        )
+        results['PACKAGE'] = [(name, current_user) for name in sorted(package_names)]
+        logger.info("Znaleziono %d pakietów z keyword '%s' w komentarzu kodu", len(results['PACKAGE']), keyword)
 
-        # 6. Procedury standalone
-        cursor.execute("""
-            SELECT object_name, owner
-            FROM ALL_OBJECTS
-            WHERE object_type = 'PROCEDURE'
-              AND owner = :owner
-              AND UPPER(object_name) LIKE UPPER(:keyword)
-        """, {"owner": current_user, "keyword": keyword_pattern})
-        results['PROCEDURE'] = cursor.fetchall()
-        logger.info("Znaleziono %d procedur pasujących do keyword", len(results['PROCEDURE']))
+        # 6. Procedury standalone - keyword w komentarzu kodu
+        procedure_names = _find_code_objects_by_comment_keyword(
+            conn, current_user, keyword, ('PROCEDURE',)
+        )
+        results['PROCEDURE'] = [(name, current_user) for name in sorted(procedure_names)]
+        logger.info("Znaleziono %d procedur z keyword '%s' w komentarzu kodu", len(results['PROCEDURE']), keyword)
 
-        # 7. Funkcje standalone
-        cursor.execute("""
-            SELECT object_name, owner
-            FROM ALL_OBJECTS
-            WHERE object_type = 'FUNCTION'
-              AND owner = :owner
-              AND UPPER(object_name) LIKE UPPER(:keyword)
-        """, {"owner": current_user, "keyword": keyword_pattern})
-        results['FUNCTION'] = cursor.fetchall()
-        logger.info("Znaleziono %d funkcji pasujących do keyword", len(results['FUNCTION']))
+        # 7. Funkcje - keyword w komentarzu kodu
+        function_names = _find_code_objects_by_comment_keyword(
+            conn, current_user, keyword, ('FUNCTION',)
+        )
+        results['FUNCTION'] = [(name, current_user) for name in sorted(function_names)]
+        logger.info("Znaleziono %d funkcji z keyword '%s' w komentarzu kodu", len(results['FUNCTION']), keyword)
 
         # 8. Triggery - dla tabel z keyword
         if results['TABLE']:
@@ -329,8 +429,9 @@ def fetch_ddl_from_database(connection_string: str, keyword: str, output_dir: Pa
                         f.write("\n\n")
 
                         # Dla pakietów: pobierz również PACKAGE BODY
+                        # (DBMS_METADATA.GET_DDL wymaga typu 'PACKAGE_BODY' z podkreślnikiem)
                         if obj_type == 'PACKAGE':
-                            body_ddl = _get_ddl(conn, 'PACKAGE BODY', obj_name, owner)
+                            body_ddl = _get_ddl(conn, 'PACKAGE_BODY', obj_name, owner)
                             if body_ddl:
                                 f.write(f"-- PACKAGE BODY: {obj_name}\n")
                                 f.write(body_ddl)

@@ -249,7 +249,8 @@ def _parse_packages(content: str) -> list[DDLPackage]:
     packages: list[DDLPackage] = []
     # Najpierw specyfikacje (CREATE PACKAGE ... AS ... END;) — bez BODY
     spec_pattern = re.compile(
-        r'create\s+or\s+replace\s+PACKAGE\s+(?!BODY\b)(?:\w+\.)?(\w+)\s+AS\s+(.*?)END\s+\1\s*;',
+        r'create\s+or\s+replace\s+(?:EDITIONABLE\s+)?PACKAGE\s+(?!BODY\b)'
+        r'(?:"[^"]+"\.)?"?(\w+)"?\s+AS\s+(.*?)END\s+\1\s*;',
         re.DOTALL | re.IGNORECASE,
     )
     for match in spec_pattern.finditer(content):
@@ -257,7 +258,8 @@ def _parse_packages(content: str) -> list[DDLPackage]:
 
     # Następnie body (CREATE PACKAGE BODY ... AS ... END;) — dołącz do istniejącego
     body_pattern = re.compile(
-        r'create\s+or\s+replace\s+PACKAGE\s+BODY\s+(?:\w+\.)?(\w+)\s+AS\s+(.*?)END\s+\1\s*;',
+        r'create\s+or\s+replace\s+(?:EDITIONABLE\s+)?PACKAGE\s+BODY\s+'
+        r'(?:"[^"]+"\.)?"?(\w+)"?\s+AS\s+(.*?)END\s+\1\s*;',
         re.DOTALL | re.IGNORECASE,
     )
     pkg_map = {p.name.upper(): p for p in packages}
@@ -279,7 +281,8 @@ def _parse_procedures(content: str) -> list[DDLProcedure]:
     """Wyciągnij samodzielne CREATE PROCEDURE/FUNCTION (nie z pakietu)."""
     procedures: list[DDLProcedure] = []
     pattern = re.compile(
-        r'create\s+or\s+replace\s+(PROCEDURE|FUNCTION)\s+(\w+)\s*'
+        r'create\s+or\s+replace\s+(?:EDITIONABLE\s+)?(PROCEDURE|FUNCTION)\s+'
+        r'(?:"[^"]+"\.)?"?(\w+)"?\s*'
         r'(.*?)END\s+\2\s*;',
         re.DOTALL | re.IGNORECASE,
     )
