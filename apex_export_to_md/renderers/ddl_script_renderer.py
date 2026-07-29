@@ -1,7 +1,8 @@
 """DDL Script Renderer — generuje wykonywalny skrypt SQL tworzący obiekty bazy danych.
 
 Generuje skrypt gotowy do uruchomienia na nowym schemacie Oracle.
-Kolejność: sekwencje → tabele (bez FK) → widoki → pakiety → procedury → ALTER TABLE ADD FK.
+Kolejność: sekwencje → tabele (bez FK) → indeksy → widoki → pakiety → procedury
+→ triggery → ALTER TABLE ADD FK.
 Usuwa referencje do schematu źródłowego (np. "DAW".).
 """
 from __future__ import annotations
@@ -9,6 +10,7 @@ import re
 from apex_export_to_md.renderers.base_renderer import BaseRenderer
 from apex_export_to_md.models import (
     ApexApp, DDLSchema, DDLTable, DDLSequence, DDLView, DDLPackage, DDLProcedure,
+    DDLIndex, DDLTrigger,
 )
 
 
@@ -58,7 +60,18 @@ class DDLScriptRenderer(BaseRenderer):
             lines.append(comments_sql)
             lines.append("")
 
-        # 4. Widoki
+
+        # 4. Indeksy
+        if ddl.indexes:
+            lines.append("-- ============================================================")
+            lines.append("-- INDEKSY")
+            lines.append("-- ============================================================")
+            lines.append("")
+            for idx in ddl.indexes:
+                lines.append(self._render_index(idx, ddl.source_schema))
+                lines.append("")
+
+        # 5. Widoki
         if ddl.views:
             lines.append("-- ============================================================")
             lines.append("-- WIDOKI")
@@ -68,7 +81,7 @@ class DDLScriptRenderer(BaseRenderer):
                 lines.append(self._render_view(view, ddl.source_schema))
                 lines.append("")
 
-        # 5. Pakiety PL/SQL
+        # 6. Pakiety PL/SQL
         if ddl.packages:
             lines.append("-- ============================================================")
             lines.append("-- PAKIETY PL/SQL")
@@ -78,7 +91,7 @@ class DDLScriptRenderer(BaseRenderer):
                 lines.append(self._render_package(pkg, ddl.source_schema))
                 lines.append("")
 
-        # 6. Procedury i funkcje
+        # 7. Procedury i funkcje
         if ddl.procedures:
             lines.append("-- ============================================================")
             lines.append("-- PROCEDURY I FUNKCJE")
@@ -88,7 +101,17 @@ class DDLScriptRenderer(BaseRenderer):
                 lines.append(self._render_procedure(proc, ddl.source_schema))
                 lines.append("")
 
-        # 7. Klucze obce (ALTER TABLE ADD CONSTRAINT FK)
+        # 8. Triggery
+        if ddl.triggers:
+            lines.append("-- ============================================================")
+            lines.append("-- TRIGGERY")
+            lines.append("-- ============================================================")
+            lines.append("")
+            for trg in ddl.triggers:
+                lines.append(self._render_trigger(trg, ddl.source_schema))
+                lines.append("")
+
+        # 9. Klucze obce (ALTER TABLE ADD CONSTRAINT FK)
         fk_sql = self._render_foreign_keys(ddl)
         if fk_sql:
             lines.append("-- ============================================================")
@@ -104,10 +127,12 @@ class DDLScriptRenderer(BaseRenderer):
         lines.append("-- ============================================================")
         lines.append(f"-- Sekwencje:  {len(ddl.sequences)}")
         lines.append(f"-- Tabele:     {len(ddl.tables)}")
+        lines.append(f"-- Indeksy:    {len(ddl.indexes)}")
         lines.append(f"-- Widoki:     {len(ddl.views)}")
         lines.append(f"-- Pakiety:    {len(ddl.packages)}")
         lines.append(f"-- Procedury:  {len(ddl.procedures)}")
-        lines.append(f"-- RAZEM:      {len(ddl.sequences) + len(ddl.tables) + len(ddl.views) + len(ddl.packages) + len(ddl.procedures)}")
+        lines.append(f"-- Triggery:   {len(ddl.triggers)}")
+        lines.append(f"-- RAZEM:      {len(ddl.sequences) + len(ddl.tables) + len(ddl.indexes) + len(ddl.views) + len(ddl.packages) + len(ddl.procedures) + len(ddl.triggers)}")
         lines.append("")
         lines.append("-- ============================================================")
         lines.append("-- KONIEC SKRYPTU DDL")
@@ -235,6 +260,25 @@ class DDLScriptRenderer(BaseRenderer):
         code = self._strip_schema(proc.code, schema)
         code = self._strip_empty_lines(code)
         return f"CREATE OR REPLACE {code}\nEND {proc.name};\n/"
+
+    def _render_index(self, idx: DDLIndex, schema: str) -> str:
+        """Generuj CREATE [UNIQUE] INDEX."""
+        if idx.raw_sql:
+            sql = self._strip_schema(idx.raw_sql, schema)
+            sql = self._strip_empty_lines(sql)
+            if not sql.rstrip().endswith(';'):
+                sql += ';'
+            return sql
+
+        unique_part = "UNIQUE " if idx.unique else ""
+        cols = ", ".join(f'"{c}"' for c in idx.columns)
+        return f'CREATE {unique_part}INDEX "{idx.name}" ON "{idx.table_name}" ({cols});'
+
+    def _render_trigger(self, trg: DDLTrigger, schema: str) -> str:
+        """Generuj CREATE OR REPLACE TRIGGER."""
+        code = self._strip_schema(trg.code, schema)
+        code = self._strip_empty_lines(code)
+        return f"{code}\n/"
 
     def _render_foreign_keys(self, ddl: DDLSchema) -> str:
         """Generuj ALTER TABLE ADD CONSTRAINT FOREIGN KEY."""

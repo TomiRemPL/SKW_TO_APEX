@@ -74,4 +74,20 @@ class DDLLLMRenderer(BaseRenderer):
                 parts.append(f"incr:{seq.increment_by}")
             lines.append("|".join(parts))
 
+        for idx in ddl.indexes:
+            parts = [f"IDX:{idx.name}", f"tbl:{idx.table_name}", f"cols:{','.join(idx.columns)}"]
+            if idx.unique:
+                parts.append("unique:true")
+            lines.append("|".join(parts))
+
+        for trg in ddl.triggers:
+            parts = [f"===TRG:{trg.name}"]
+            if trg.table_name:
+                parts.append(f"tbl:{trg.table_name}")
+            lines.append("|".join(parts))
+            if trg.code and self._should_include_code():
+                lines.append("```plsql")
+                lines.append(trg.code)
+                lines.append("```")
+
         return "\n".join(lines)

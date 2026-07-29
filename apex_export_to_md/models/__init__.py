@@ -4,7 +4,7 @@ from apex_export_to_md.models.apex_models import (
     DynamicAction, DynamicActionStep, Button, Branch, Validation,
     LOV, Authorization, NavList, AppItem, BuildOption, Breadcrumb, AclRole,
     DDLSchema, DDLTable, DDLColumn, DDLConstraint, DDLView,
-    DDLPackage, DDLProcedure, DDLSequence,
+    DDLPackage, DDLProcedure, DDLSequence, DDLIndex, DDLTrigger,
     AppMetadata,
 )
 
@@ -13,6 +13,6 @@ __all__ = [
     "DynamicAction", "DynamicActionStep", "Button", "Branch", "Validation",
     "LOV", "Authorization", "NavList", "AppItem", "BuildOption", "Breadcrumb", "AclRole",
     "DDLSchema", "DDLTable", "DDLColumn", "DDLConstraint", "DDLView",
-    "DDLPackage", "DDLProcedure", "DDLSequence",
+    "DDLPackage", "DDLProcedure", "DDLSequence", "DDLIndex", "DDLTrigger",
     "AppMetadata",
 ]

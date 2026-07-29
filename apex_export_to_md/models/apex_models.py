@@ -291,6 +291,24 @@ class DDLSequence:
 
 
 @dataclass
+class DDLIndex:
+    """Indeks z DDL (CREATE [UNIQUE] INDEX)."""
+    name: str
+    table_name: str
+    columns: list[str] = field(default_factory=list)
+    unique: bool = False
+    raw_sql: str | None = None
+
+
+@dataclass
+class DDLTrigger:
+    """Trigger PL/SQL z DDL."""
+    name: str
+    table_name: str | None = None  # nazwa tabeli wykryta z "ON <tabela>"
+    code: str = ""
+
+
+@dataclass
 class DDLSchema:
     """Pełny schemat bazy danych wyekstrahowany z DDL."""
     tables: list[DDLTable] = field(default_factory=list)
@@ -298,6 +316,8 @@ class DDLSchema:
     packages: list[DDLPackage] = field(default_factory=list)
     procedures: list[DDLProcedure] = field(default_factory=list)
     sequences: list[DDLSequence] = field(default_factory=list)
+    indexes: list[DDLIndex] = field(default_factory=list)
+    triggers: list[DDLTrigger] = field(default_factory=list)
     raw_content: str = ""  # surowa treść pliku DDL
     source_schema: str = ""  # nazwa schematu źródłowego (np. DAW)
 

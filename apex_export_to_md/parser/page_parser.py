@@ -16,7 +16,7 @@ from apex_export_to_md.models import (
 )
 from apex_export_to_md.parser.yaml_helpers import (
     safe_get, safe_get_str, safe_get_int, safe_get_bool, safe_get_list,
-    collect_build_options,
+    collect_build_options, sanitize_yaml_text,
 )
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ def parse_all_pages(pages_dir: Path) -> list[ApexPage]:
     for yaml_file in sorted(pages_dir.glob("p*.yaml")):
         try:
             with open(yaml_file, "r", encoding="utf-8") as f:
-                data = yaml.safe_load(f)
+                data = yaml.safe_load(sanitize_yaml_text(f.read()))
             if data:
                 page = parse_page(data)
                 pages.append(page)

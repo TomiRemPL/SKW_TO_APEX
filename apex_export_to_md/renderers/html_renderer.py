@@ -224,6 +224,7 @@ class HTMLRenderer(BaseRenderer):
             "views": [],
             "packages": [],
             "sequences": [],
+            "triggers": [],
             "edges": [],
             "pages": [],
             "links": [],
@@ -269,6 +270,14 @@ class HTMLRenderer(BaseRenderer):
                             "columns": c.columns,
                             "unique": True,
                         })
+                existing_idx_names = {i["name"] for i in table_obj["indexes"]}
+                for idx in ddl.indexes:
+                    if idx.table_name == t.name and idx.name not in existing_idx_names:
+                        table_obj["indexes"].append({
+                            "name": idx.name,
+                            "columns": idx.columns,
+                            "unique": idx.unique,
+                        })
                 data["tables"].append(table_obj)
 
             for t in ddl.tables:
@@ -304,6 +313,12 @@ class HTMLRenderer(BaseRenderer):
                     "start": seq.start_with or "1",
                     "incr": seq.increment_by or "1",
                     "cache": "NOCACHE",
+                })
+
+            for trg in ddl.triggers:
+                data["triggers"].append({
+                    "name": trg.name,
+                    "table": trg.table_name or "",
                 })
 
         for page in app.pages:

@@ -132,6 +132,11 @@ class MigrationRenderer(DDLScriptRenderer):
             lines.append(fk_sql)
             lines.append("")
 
+        # Indeksy
+        for idx in ddl.indexes:
+            lines.append(self._render_index(idx, schema))
+            lines.append("")
+
         # Widoki
         for view in ddl.views:
             lines.append(self._render_view(view, schema))
@@ -147,10 +152,15 @@ class MigrationRenderer(DDLScriptRenderer):
             lines.append(self._render_procedure(proc, schema))
             lines.append("")
 
+        # Triggery
+        for trg in ddl.triggers:
+            lines.append(self._render_trigger(trg, schema))
+            lines.append("")
+
         return "\n".join(lines)
 
     def _render_disable_constraints(self, ddl: DDLSchema) -> str:
-        """Generuj ALTER TABLE DISABLE CONSTRAINT dla FK."""
+        """Generuj ALTER TABLE DISABLE CONSTRAINT dla FK oraz DISABLE TRIGGER."""
         lines: list[str] = []
         for table in ddl.tables:
             for c in table.constraints:
@@ -158,10 +168,12 @@ class MigrationRenderer(DDLScriptRenderer):
                     lines.append(
                         f'ALTER TABLE "{table.name}" DISABLE CONSTRAINT "{c.name}";'
                     )
+        for trg in ddl.triggers:
+            lines.append(f'ALTER TRIGGER "{trg.name}" DISABLE;')
         return "\n".join(lines)
 
     def _render_enable_constraints(self, ddl: DDLSchema) -> str:
-        """Generuj ALTER TABLE ENABLE CONSTRAINT dla FK."""
+        """Generuj ALTER TABLE ENABLE CONSTRAINT dla FK oraz ENABLE TRIGGER."""
         lines: list[str] = []
         for table in ddl.tables:
             for c in table.constraints:
@@ -169,6 +181,8 @@ class MigrationRenderer(DDLScriptRenderer):
                     lines.append(
                         f'ALTER TABLE "{table.name}" ENABLE CONSTRAINT "{c.name}";'
                     )
+        for trg in ddl.triggers:
+            lines.append(f'ALTER TRIGGER "{trg.name}" ENABLE;')
         return "\n".join(lines)
 
     def _render_inserts(self) -> str:

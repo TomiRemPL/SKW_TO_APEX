@@ -12,7 +12,7 @@ import yaml
 from apex_export_to_md.models import (
     LOV, Authorization, NavList, AppItem, BuildOption, Breadcrumb, AclRole,
 )
-from apex_export_to_md.parser.yaml_helpers import safe_get, safe_get_str
+from apex_export_to_md.parser.yaml_helpers import safe_get, safe_get_str, sanitize_yaml_text
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +24,7 @@ def load_yaml_file(path: Path) -> Any:
         return None
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return yaml.safe_load(f)
+            return yaml.safe_load(sanitize_yaml_text(f.read()))
     except Exception as e:
         logger.warning("Błąd wczytywania %s: %s", path.name, e)
         return None

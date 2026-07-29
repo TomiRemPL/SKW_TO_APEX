@@ -9,6 +9,17 @@ import re
 from typing import Any
 
 
+def sanitize_yaml_text(text: str) -> str:
+    """Zamień znaki tabulacji na spacje przed parsowaniem YAML.
+
+    Eksport APEX czasem zawiera dosłowne znaki tabulacji wewnątrz wartości
+    (np. dane rozdzielone tabulatorem), których YAML nie akceptuje jako
+    część zwykłego skalaru. Zamiana na spacje pozwala sparsować plik bez
+    modyfikowania oryginalnych plików źródłowych w _data/readable/.
+    """
+    return text.replace("\t", " ")
+
+
 def safe_get(data: dict | None, key_path: str, default: Any = None) -> Any:
     """Bezpieczne odczytanie wartości z zagnieżdżonego słownika.
 

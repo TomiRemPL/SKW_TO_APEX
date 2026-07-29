@@ -128,4 +128,29 @@ class DDLHumanRenderer(BaseRenderer):
                 lines.append(f"- {', '.join(parts)}")
             lines.append("")
 
+        # Indeksy
+        if ddl.indexes:
+            lines.append("## Indeksy")
+            lines.append("")
+            for idx in ddl.indexes:
+                unique_str = "UNIQUE " if idx.unique else ""
+                cols = ", ".join(idx.columns)
+                lines.append(f"- {unique_str}`{idx.name}` na `{idx.table_name}` ({cols})")
+            lines.append("")
+
+        # Triggery
+        if ddl.triggers:
+            lines.append("## Triggery")
+            lines.append("")
+            for trg in ddl.triggers:
+                lines.append(f"### Trigger: `{trg.name}`")
+                if trg.table_name:
+                    lines.append(f"> Tabela: `{trg.table_name}`")
+                lines.append("")
+                if trg.code and self._should_include_code():
+                    lines.append("```plsql")
+                    lines.append(trg.code)
+                    lines.append("```")
+                    lines.append("")
+
         return "\n".join(lines)

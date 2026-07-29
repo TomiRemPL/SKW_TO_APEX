@@ -10,7 +10,7 @@ from pathlib import Path
 
 from apex_export_to_md.models import (
     DDLSchema, DDLTable, DDLColumn, DDLConstraint, DDLView,
-    DDLPackage, DDLProcedure, DDLSequence,
+    DDLPackage, DDLProcedure, DDLSequence, DDLIndex, DDLTrigger,
 )
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,8 @@ def parse_ddl_file(path: Path) -> DDLSchema:
     schema.packages = _parse_packages(content)
     schema.procedures = _parse_procedures(content)
     schema.sequences = _parse_sequences(content)
+    schema.indexes = _parse_indexes(content)
+    schema.triggers = _parse_triggers(content)
 
     # Komentarze do tabel i kolumn
     _parse_comments(content, schema)
@@ -35,9 +37,11 @@ def parse_ddl_file(path: Path) -> DDLSchema:
     # Klucze obce (ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY)
     _parse_alter_constraints(content, schema)
 
-    logger.info("DDL: %d tabel, %d widoków, %d pakietów, %d procedur, %d sekwencji",
+    logger.info("DDL: %d tabel, %d widoków, %d pakietów, %d procedur, %d sekwencji, "
+                "%d indeksów, %d triggerów",
                 len(schema.tables), len(schema.views), len(schema.packages),
-                len(schema.procedures), len(schema.sequences))
+                len(schema.procedures), len(schema.sequences),
+                len(schema.indexes), len(schema.triggers))
     return schema
 
 
@@ -50,17 +54,31 @@ def _detect_source_schema(content: str) -> str:
 
 
 def _parse_tables(content: str) -> list[DDLTable]:
-    """Wyciągnij CREATE TABLE z treścią kolumn."""
+    """Wyciągnij CREATE TABLE z treścią kolumn.
+
+    Obsługuje zarówno nazwy proste ("NAZWA"), jak i kwalifikowane
+    dowolnym schematem ("SCHEMAT"."NAZWA"). Nawiasy listy kolumn są
+    dopasowywane przez liczenie głębokości (nie regexem), bo mogą
+    zawierać zagnieżdżone nawiasy (np. STORAGE(...)), a po zamknięciu
+    listy kolumn może wystąpić dodatkowa klauzula (SEGMENT CREATION,
+    TABLESPACE...) przed właściwym średnikiem kończącym instrukcję.
+    """
     tables: list[DDLTable] = []
-    # Wzorzec: CREATE TABLE "NAZWA" (\n...\n) ;
-    pattern = re.compile(
-        r'CREATE\s+TABLE\s+"([^"]+)"\s*\(\s*(.*?)\)\s*;',
-        re.DOTALL | re.IGNORECASE,
+    header_pattern = re.compile(
+        r'CREATE\s+TABLE\s+(?:"[^"]+"\.)?"([^"]+)"\s*\(',
+        re.IGNORECASE,
     )
-    for match in pattern.finditer(content):
-        table_name = match.group(1)
-        body = match.group(2)
-        raw_sql = match.group(0)
+    for header_match in header_pattern.finditer(content):
+        table_name = header_match.group(1)
+        open_paren_idx = header_match.end() - 1
+        close_paren_idx = _find_matching_paren(content, open_paren_idx)
+        if close_paren_idx is None:
+            continue
+        semi_idx = content.find(";", close_paren_idx)
+        if semi_idx == -1:
+            continue
+        body = content[open_paren_idx + 1:close_paren_idx]
+        raw_sql = content[header_match.start():semi_idx + 1]
         columns, constraints = _parse_table_body(body)
         tables.append(DDLTable(
             name=table_name,
@@ -69,6 +87,19 @@ def _parse_tables(content: str) -> list[DDLTable]:
             raw_sql=raw_sql,
         ))
     return tables
+
+
+def _find_matching_paren(content: str, open_idx: int) -> int | None:
+    """Znajdź indeks nawiasu zamykającego dla nawiasu otwierającego na open_idx."""
+    depth = 0
+    for i in range(open_idx, len(content)):
+        if content[i] == '(':
+            depth += 1
+        elif content[i] == ')':
+            depth -= 1
+            if depth == 0:
+                return i
+    return None
 
 
 def _parse_table_body(body: str) -> tuple[list[DDLColumn], list[DDLConstraint]]:
@@ -84,23 +115,31 @@ def _parse_table_body(body: str) -> tuple[list[DDLColumn], list[DDLConstraint]]:
         if not part:
             continue
 
-        # Constraint inline
+        # Constraint inline (PK/UNIQUE/CHECK/FOREIGN KEY, ta ostatnia z opcjonalnym REFERENCES)
         constraint_match = re.match(
-            r'CONSTRAINT\s+"([^"]+)"\s+(PRIMARY\s+KEY|UNIQUE|CHECK)\s*\(([^)]*)\)',
+            r'CONSTRAINT\s+"([^"]+)"\s+(PRIMARY\s+KEY|UNIQUE|CHECK|FOREIGN\s+KEY)\s*\(([^)]*)\)'
+            r'(?:\s*REFERENCES\s+(?:"[^"]+"\.)?"([^"]+)"\s*\(([^)]*)\))?',
             part, re.IGNORECASE,
         )
         if constraint_match:
             cname = constraint_match.group(1)
-            ctype = constraint_match.group(2).upper()
+            ctype = re.sub(r'\s+', ' ', constraint_match.group(2).upper())
             ccols_raw = constraint_match.group(3)
             ccols = [c.strip().strip('"') for c in ccols_raw.split(",")]
             check_cond = None
+            ref_table = None
+            ref_col = None
             if ctype == "CHECK":
                 check_match = re.search(r'CHECK\s*\((.+)\)', part, re.IGNORECASE | re.DOTALL)
                 if check_match:
                     check_cond = check_match.group(1).strip()
+            if ctype == "FOREIGN KEY" and constraint_match.group(4):
+                ref_table = constraint_match.group(4)
+                ref_cols = [c.strip().strip('"') for c in (constraint_match.group(5) or "").split(",")]
+                ref_col = ref_cols[0] if ref_cols else None
             constraints.append(DDLConstraint(
                 name=cname, type=ctype, columns=ccols, check_condition=check_cond,
+                ref_table=ref_table, ref_column=ref_col,
             ))
             # Ustaw PK na kolumnach
             if ctype == "PRIMARY KEY":
@@ -196,7 +235,7 @@ def _parse_views(content: str) -> list[DDLView]:
     """Wyciągnij CREATE VIEW."""
     views: list[DDLView] = []
     pattern = re.compile(
-        r'CREATE\s+(?:OR\s+REPLACE\s+)?(?:FORCE\s+)?(?:EDITIONABLE\s+)?VIEW\s+"([^"]+)"\s*'
+        r'CREATE\s+(?:OR\s+REPLACE\s+)?(?:FORCE\s+)?(?:EDITIONABLE\s+)?VIEW\s+(?:"[^"]+"\.)?"([^"]+)"\s*'
         r'(?:\([^)]*\)\s*)?AS\s+(.*?)(?:;\s*$|\n\s*\n)',
         re.DOTALL | re.IGNORECASE | re.MULTILINE,
     )
@@ -254,7 +293,7 @@ def _parse_sequences(content: str) -> list[DDLSequence]:
     """Wyciągnij CREATE SEQUENCE."""
     sequences: list[DDLSequence] = []
     pattern = re.compile(
-        r'CREATE\s+SEQUENCE\s+"([^"]+)"\s*(.*?);',
+        r'CREATE\s+SEQUENCE\s+(?:"[^"]+"\.)?"([^"]+)"\s*(.*?);',
         re.DOTALL | re.IGNORECASE,
     )
     for match in pattern.finditer(content):
@@ -303,13 +342,62 @@ def _parse_sequences(content: str) -> list[DDLSequence]:
     return sequences
 
 
+def _parse_indexes(content: str) -> list[DDLIndex]:
+    """Wyciągnij CREATE [UNIQUE] INDEX ... ON ... (kolumny)."""
+    indexes: list[DDLIndex] = []
+    pattern = re.compile(
+        r'CREATE\s+(UNIQUE\s+)?INDEX\s+(?:"[^"]+"\.)?"([^"]+)"\s+ON\s+'
+        r'(?:"[^"]+"\.)?"([^"]+)"\s*\(([^)]*)\)',
+        re.IGNORECASE,
+    )
+    for match in pattern.finditer(content):
+        is_unique = bool(match.group(1))
+        idx_name = match.group(2)
+        table_name = match.group(3)
+        columns = [c.strip().strip('"') for c in match.group(4).split(",")]
+        indexes.append(DDLIndex(
+            name=idx_name,
+            table_name=table_name,
+            columns=columns,
+            unique=is_unique,
+            raw_sql=match.group(0).strip(),
+        ))
+    return indexes
+
+
+def _extract_trigger_table(header: str) -> str | None:
+    """Wyciągnij nazwę tabeli z nagłówka triggera (\"ON <tabela>\")."""
+    match = re.search(r'\bON\s+(?:"?\w+"?\.)?"?(\w+)"?', header, re.IGNORECASE)
+    return match.group(1) if match else None
+
+
+def _parse_triggers(content: str) -> list[DDLTrigger]:
+    """Wyciągnij CREATE [OR REPLACE] TRIGGER — bloki zakończone samotnym '/'."""
+    triggers: list[DDLTrigger] = []
+    pattern = re.compile(
+        r'create\s+or\s+replace\s+(?:EDITIONABLE\s+)?TRIGGER\s+'
+        r'(?:"?\w+"?\.)?"?(\w+)"?\s*(.*?)\n\s*/\s*(?:\n|$)',
+        re.DOTALL | re.IGNORECASE,
+    )
+    for match in pattern.finditer(content):
+        name = match.group(1)
+        body = match.group(2)
+        full_code = f"CREATE OR REPLACE TRIGGER {name}\n{body.strip()}"
+        triggers.append(DDLTrigger(
+            name=name,
+            table_name=_extract_trigger_table(body),
+            code=full_code,
+        ))
+    return triggers
+
+
 def _parse_comments(content: str, schema: DDLSchema) -> None:
     """Parsuj COMMENT ON TABLE/COLUMN i przypisz do tabel."""
     table_map = {t.name: t for t in schema.tables}
 
     # COMMENT ON TABLE
     for match in re.finditer(
-        r"COMMENT\s+ON\s+TABLE\s+\"([^\"]+)\"\s+IS\s+'((?:[^']|'')*)'",
+        r"COMMENT\s+ON\s+TABLE\s+(?:\"[^\"]+\"\.)?\"([^\"]+)\"\s+IS\s+'((?:[^']|'')*)'",
         content, re.IGNORECASE,
     ):
         tname = match.group(1)
@@ -325,7 +413,7 @@ def _parse_comments(content: str, schema: DDLSchema) -> None:
 
     # COMMENT ON COLUMN
     for match in re.finditer(
-        r"COMMENT\s+ON\s+COLUMN\s+\"([^\"]+)\"\.\"([^\"]+)\"\s+IS\s+'((?:[^']|'')*)'",
+        r"COMMENT\s+ON\s+COLUMN\s+(?:\"[^\"]+\"\.)?\"([^\"]+)\"\.\"([^\"]+)\"\s+IS\s+'((?:[^']|'')*)'",
         content, re.IGNORECASE,
     ):
         tname = match.group(1)
@@ -340,8 +428,8 @@ def _parse_alter_constraints(content: str, schema: DDLSchema) -> None:
     table_map = {t.name: t for t in schema.tables}
 
     pattern = re.compile(
-        r'ALTER\s+TABLE\s+"([^"]+)"\s+ADD\s+CONSTRAINT\s+"([^"]+)"\s+'
-        r'FOREIGN\s+KEY\s*\("([^"]+)"\)\s*REFERENCES\s+"([^"]+)"\s*\("([^"]+)"\)',
+        r'ALTER\s+TABLE\s+(?:"[^"]+"\.)?"([^"]+)"\s+ADD\s+CONSTRAINT\s+"([^"]+)"\s+'
+        r'FOREIGN\s+KEY\s*\("([^"]+)"\)\s*REFERENCES\s+(?:"[^"]+"\.)?"([^"]+)"\s*\("([^"]+)"\)',
         re.IGNORECASE,
     )
     for match in pattern.finditer(content):
