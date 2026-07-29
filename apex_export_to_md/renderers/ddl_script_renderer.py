@@ -158,14 +158,7 @@ class DDLScriptRenderer(BaseRenderer):
         return result
 
     def _render_sequence(self, seq: DDLSequence, schema: str) -> str:
-        """Generuj CREATE SEQUENCE."""
-        if seq.raw_sql:
-            sql = self._strip_schema(seq.raw_sql, schema)
-            sql = self._strip_empty_lines(sql)
-            if not sql.rstrip().endswith(';'):
-                sql += ';'
-            return sql
-
+        """Generuj minimalny CREATE SEQUENCE (bez klauzul storage)."""
         parts = [f'CREATE SEQUENCE "{seq.name}"']
         if seq.min_value:
             parts.append(f"  MINVALUE {seq.min_value}")
@@ -186,25 +179,16 @@ class DDLScriptRenderer(BaseRenderer):
         return "\n".join(parts) + ";"
 
     def _render_table(self, table: DDLTable, schema: str) -> str:
-        """Generuj CREATE TABLE (bez FK)."""
-        if table.raw_sql:
-            sql = self._strip_schema(table.raw_sql, schema)
-            sql = self._strip_empty_lines(sql)
-            if not sql.rstrip().endswith(';'):
-                sql += ';'
-            return sql
-
-        # Fallback: generuj z modelu
+        """Generuj minimalny CREATE TABLE (bez FK, bez klauzul storage/tablespace)."""
         col_defs: list[str] = []
         for col in table.columns:
             col_def = f'    "{col.name}" {col.data_type}'
             if col.identity and col.identity_def:
-                col_def += f" {col.identity_def}"
+                col_def += f" {self._strip_schema(col.identity_def, schema)}"
             elif col.default:
-                col_def += f" DEFAULT {col.default}"
-            if not col.nullable:
-                col_def += " NOT NULL"
-            col_def += " ENABLE"
+                col_def += f" DEFAULT {self._strip_schema(col.default, schema)}"
+            if not col.nullable or col.identity:
+                col_def += " NOT NULL ENABLE"
             col_defs.append(col_def)
 
         # PK constraint
@@ -212,7 +196,7 @@ class DDLScriptRenderer(BaseRenderer):
         for pk in pk_constraints:
             cols = ", ".join(f'"{c}"' for c in pk.columns)
             name_part = f'CONSTRAINT "{pk.name}" ' if pk.name else ""
-            col_defs.append(f"    {name_part}PRIMARY KEY ({cols}) ENABLE")
+            col_defs.append(f"    {name_part}PRIMARY KEY ({cols}) USING INDEX ENABLE")
 
         # UNIQUE, CHECK constraints (nie FK)
         for c in table.constraints:
@@ -262,14 +246,7 @@ class DDLScriptRenderer(BaseRenderer):
         return f"CREATE OR REPLACE {code}\nEND {proc.name};\n/"
 
     def _render_index(self, idx: DDLIndex, schema: str) -> str:
-        """Generuj CREATE [UNIQUE] INDEX."""
-        if idx.raw_sql:
-            sql = self._strip_schema(idx.raw_sql, schema)
-            sql = self._strip_empty_lines(sql)
-            if not sql.rstrip().endswith(';'):
-                sql += ';'
-            return sql
-
+        """Generuj minimalny CREATE [UNIQUE] INDEX (bez klauzul storage)."""
         unique_part = "UNIQUE " if idx.unique else ""
         cols = ", ".join(f'"{c}"' for c in idx.columns)
         return f'CREATE {unique_part}INDEX "{idx.name}" ON "{idx.table_name}" ({cols});'

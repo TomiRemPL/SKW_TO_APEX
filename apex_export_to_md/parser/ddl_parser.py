@@ -46,8 +46,20 @@ def parse_ddl_file(path: Path) -> DDLSchema:
 
 
 def _detect_source_schema(content: str) -> str:
-    """Wykryj nazwę schematu źródłowego z referencji w DDL (np. \"DAW\".\"SEQ\")."""
-    match = re.search(r'"(\w+)"\."\w+"\."NEXTVAL"', content, re.IGNORECASE)
+    """Wykryj nazwę schematu źródłowego z DDL.
+
+    Najpewniejszym źródłem jest prefiks schematu w nagłówku
+    CREATE TABLE "SCHEMA"."TABELA" (zawsze cytowany przez DBMS_METADATA).
+    Jeśli w pliku nie ma żadnej tabeli (np. same widoki), próbujemy
+    wykryć schemat z odwołań do sekwencji w klauzuli DEFAULT/NEXTVAL —
+    zarówno w wersji w pełni cytowanej ("SCHEMA"."SEQ"."NEXTVAL"), jak
+    i niecytowanej (SCHEMA.SEQ.NEXTVAL), używanej przez starsze wzorce
+    kolumn auto-increment w APEX.
+    """
+    match = re.search(r'CREATE\s+TABLE\s+"(\w+)"\.', content, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    match = re.search(r'"?(\w+)"?\s*\.\s*"?\w+"?\s*\.\s*"?NEXTVAL"?', content, re.IGNORECASE)
     if match:
         return match.group(1)
     return ""
