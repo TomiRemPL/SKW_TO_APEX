@@ -103,3 +103,20 @@ def test_render_zawiera_konfiguracje_techniczna():
     assert "META:|COMPAT=21.2|PAGE_PROTECTION=Y|BOOKMARK_CHECKSUM=SH512" in output
     assert "SECURITY=MUST_NOT_BE_PUBLIC_USER" in output
     assert "FILES_VER=13" in output
+
+
+def test_render_dane_semantyczne():
+    """Format LLM zapisuje zwięzłe informacje o źródle i procesie DML."""
+    app = _make_app()
+    region = app.pages[0].regions[0]
+    region.source_owner = "DAW"
+    region.source_where = "STATUS = 'Otwarty'"
+    app.pages[0].processes[0].target_type = "REGION_SOURCE"
+    app.pages[0].processes[0].prevent_lost_updates = True
+
+    output = LLMRenderer(AppConfig()).render(app)
+
+    assert "src:DAW.B_AUDYT" in output
+    assert "where:STATUS = 'Otwarty'" in output
+    assert "target:REGION_SOURCE" in output
+    assert "prevent_lost_update:true" in output

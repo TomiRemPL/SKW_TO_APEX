@@ -429,10 +429,14 @@ class HTMLRenderer(BaseRenderer):
                 "type": r.type,
                 "title": r.title or r.name,
                 "source_table": r.source_table or "",
+                "source_owner": r.source_owner or "",
                 "source_sql": r.source_sql or "",
+                "source_where": r.source_where or "",
+                "page_items_to_submit": r.page_items_to_submit or "",
                 "parent_region": r.parent_region or "",
                 "editable": r.editable,
                 "allowed_operations": r.allowed_operations,
+                "lost_update_type": r.lost_update_type or "",
                 "template": r.template or "",
                 "slot": r.slot or "",
                 "sequence": r.sequence,
@@ -448,6 +452,10 @@ class HTMLRenderer(BaseRenderer):
                     "source_column": col.source_column or "",
                     "primary_key": col.primary_key,
                     "link_target": col.link_target or "",
+                    "link_text": col.link_text or "",
+                    "link_clear_cache": col.link_clear_cache or "",
+                    "master_region": col.master_region or "",
+                    "master_column": col.master_column or "",
                     "lov": col.lov or "",
                     "sortable": col.sortable,
                     "column_alignment": col.column_alignment or "",
@@ -470,8 +478,11 @@ class HTMLRenderer(BaseRenderer):
                 "name": item.name,
                 "type": item.type,
                 "label": item.label or "",
+                "label_alignment": item.label_alignment or "",
                 "source_column": item.source_column or "",
                 "lov": item.lov or "",
+                "lov_display_null_value": item.lov_display_null_value or "",
+                "lov_display_extra_values": item.lov_display_extra_values or False,
                 "default_value": item.default_value or "",
                 "data_type": item.data_type or "",
                 "storage": item.storage or "",
@@ -481,6 +492,11 @@ class HTMLRenderer(BaseRenderer):
                 "slot": item.slot or "",
                 "sequence": item.sequence,
                 "source_type": item.source_type or "",
+                "form_region": item.form_region or "",
+                "source_primary_key": item.source_primary_key or False,
+                "source_query_only": item.source_query_only or False,
+                "value_required": item.value_required or False,
+                "validation_max_length": item.validation_max_length,
                 "build_option": item.build_option or "",
                 "raw_attributes": {
                     "data_type": item.data_type,
@@ -498,6 +514,9 @@ class HTMLRenderer(BaseRenderer):
                 "action": btn.action or "",
                 "target_page": btn.target_page or "",
                 "is_hot": btn.is_hot,
+                "confirmation_message": btn.confirmation_message or "",
+                "confirmation_style": btn.confirmation_style or "",
+                "server_side_condition": btn.server_side_condition or "",
                 "build_option": btn.build_option or "",
                 "raw_attributes": {
                     "is_hot": btn.is_hot,
@@ -516,6 +535,14 @@ class HTMLRenderer(BaseRenderer):
                 "when_button_pressed": proc.when_button_pressed or "",
                 "error_display_location": proc.error_display_location or "",
                 "error_message": proc.error_message or "",
+                "target_type": proc.target_type or "",
+                "return_primary_key_after_insert": proc.return_primary_key_after_insert or False,
+                "prevent_lost_updates": proc.prevent_lost_updates or False,
+                "lock_row": proc.lock_row or False,
+                "success_message": proc.success_message or "",
+                "owner": proc.owner or "",
+                "package": proc.package or "",
+                "procedure_or_function": proc.procedure_or_function or "",
                 "build_option": proc.build_option or "",
                 "raw_attributes": {
                     "error_display_location": proc.error_display_location,
@@ -530,12 +557,16 @@ class HTMLRenderer(BaseRenderer):
                 "event": da.event,
                 "selection_type": da.selection_type or "",
                 "trigger_selector": da.trigger_selector or "",
+                "client_side_condition": da.client_side_condition or "",
                 "build_option": da.build_option or "",
                 "actions": [{
                     "type": step.type,
                     "code": step.code or "",
                     "affected_elements": step.affected_elements or "",
                     "fire_on_initialization": step.fire_on_initialization,
+                    "maintain_pagination": step.maintain_pagination or False,
+                    "show_processing": step.show_processing or False,
+                    "items_to_submit": step.items_to_submit or "",
                     "raw_attributes": {},
                 } for step in da.actions],
                 "raw_attributes": {},
@@ -1110,9 +1141,12 @@ function renderRegions(regions) {
     html += '<div class="subsection-title">' + escapeHtml(r.title || r.name) + boBadge(r.build_option) + '</div>';
     html += '<div class="subsection-meta">';
     html += '<span class="badge badge-type">' + r.type + '</span>';
-    if (r.source_table) html += ' \u2190 tabela: <strong>' + r.source_table + '</strong>';
+    if (r.source_table) html += ' \u2190 tabela: <strong>' + escapeHtml((r.source_owner ? r.source_owner + "." : "") + r.source_table) + '</strong>';
     if (r.editable) html += ' <span class="badge badge-hot">edytowalny</span>';
     if (r.allowed_operations && r.allowed_operations.length) html += ' [' + r.allowed_operations.join(', ') + ']';
+    if (r.lost_update_type) html += ' | konflikt aktualizacji: ' + escapeHtml(r.lost_update_type);
+    if (r.source_where) html += ' | filtr: <code>' + escapeHtml(r.source_where) + '</code>';
+    if (r.page_items_to_submit) html += ' | przesyła: ' + escapeHtml(r.page_items_to_submit);
     if (r.parent_region) html += ' | region nadrz\u0119dny: ' + r.parent_region;
     if (r.server_side_condition) html += ' | warunek: <code>' + escapeHtml(r.server_side_condition) + '</code>';
     if (r.pagination) html += ' | paginacja: ' + escapeHtml(r.pagination);
@@ -1126,6 +1160,8 @@ function renderRegions(regions) {
         if (c.sortable) info += '<span class="badge badge-type">sort</span> ';
         if (c.column_alignment) info += '<span class="badge badge-type">' + escapeHtml(c.column_alignment) + '</span> ';
         if (c.link_target) info += '<span class="badge badge-link">\u2192 str.' + c.link_target + '</span> ';
+        if (c.link_text) info += 'link: ' + escapeHtml(c.link_text) + ' ';
+        if (c.master_region || c.master_column) info += 'master: ' + escapeHtml((c.master_region || "?") + "." + (c.master_column || "?")) + ' ';
         if (c.lov) info += "LOV: " + c.lov + " ";
         if (c.build_option) info += boBadge(c.build_option);
         html += "<tr><td>" + escapeHtml(c.name) + "</td><td>" + escapeHtml(c.type) + "</td>" +
@@ -1147,6 +1183,13 @@ function renderItems(items) {
     if (it.data_type) info.push(escapeHtml(it.data_type));
     if (it.session_state_protection) info.push(escapeHtml(it.session_state_protection));
     if (it.storage) info.push(escapeHtml(it.storage));
+    if (it.value_required) info.push("wymagane");
+    if (it.validation_max_length) info.push("max. " + it.validation_max_length);
+    if (it.form_region) info.push("formularz: " + escapeHtml(it.form_region));
+    if (it.source_primary_key) info.push("PK");
+    if (it.source_query_only) info.push("tylko odczyt");
+    if (it.lov_display_null_value) info.push("pusta: " + escapeHtml(it.lov_display_null_value));
+    if (it.lov_display_extra_values) info.push("LOV rozszerzalny");
     var nameCol = escapeHtml(it.name) + boBadge(it.build_option);
     html += "<tr><td>" + nameCol + "</td><td>" + escapeHtml(it.type) + "</td>" +
       "<td>" + (escapeHtml(it.label) || "\u2014") + "</td>" +
@@ -1167,6 +1210,8 @@ function renderButtons(buttons) {
     html += 'Label: <strong>' + escapeHtml(b.label || b.name) + '</strong>';
     if (b.action) html += ' | Akcja: ' + escapeHtml(b.action);
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
+    if (b.confirmation_message) html += ' | Potwierdzenie: ' + escapeHtml(b.confirmation_message);
+    if (b.server_side_condition) html += ' | warunek: <code>' + escapeHtml(b.server_side_condition) + '</code>';
     html += '</div></div>';
   });
   return html;
@@ -1184,6 +1229,12 @@ function renderProcesses(processes) {
     if (pr.when_button_pressed) html += ' | przycisk: <strong>' + escapeHtml(pr.when_button_pressed) + '</strong>';
     if (pr.condition) html += ' | warunek: <code>' + escapeHtml(pr.condition) + '</code>';
     if (pr.error_display_location) html += ' | b\u0142\u0105d: ' + escapeHtml(pr.error_display_location);
+    if (pr.target_type) html += ' | operacja: ' + escapeHtml(pr.target_type);
+    if (pr.return_primary_key_after_insert) html += ' | zwraca PK';
+    if (pr.prevent_lost_updates) html += ' | kontrola lost update';
+    if (pr.lock_row) html += ' | blokada wiersza';
+    if (pr.success_message) html += ' | sukces: ' + escapeHtml(pr.success_message);
+    if (pr.package || pr.procedure_or_function) html += ' | wywołanie: <code>' + escapeHtml((pr.owner ? pr.owner + "." : "") + (pr.package || "?") + "." + (pr.procedure_or_function || "?")) + '</code>';
     html += '</div>';
     if (pr.code) {
       var lang = detectLang(pr.code, pr.language);
@@ -1203,6 +1254,7 @@ function renderDynamicActions(das) {
     html += '<span class="badge badge-event">' + escapeHtml(da.event) + '</span>';
     if (da.selection_type) html += ' <span class="badge badge-trigger">' + escapeHtml(da.selection_type) + '</span>';
     if (da.trigger_selector) html += ' \u2192 ' + escapeHtml(da.trigger_selector);
+    if (da.client_side_condition) html += ' | warunek JS: <code>' + escapeHtml(da.client_side_condition) + '</code>';
     html += '</div>';
     if (da.actions.length) {
       da.actions.forEach(function(step, i) {
@@ -1210,6 +1262,8 @@ function renderDynamicActions(das) {
         html += '<strong>Krok ' + (i+1) + ':</strong> ' + escapeHtml(step.type);
         if (step.affected_elements) html += ' \u2192 ' + escapeHtml(step.affected_elements);
         if (step.fire_on_initialization) html += ' <span class="badge badge-point">init</span>';
+        if (step.maintain_pagination) html += ' | zachowuje paginację';
+        if (step.items_to_submit) html += ' | przesyła: ' + escapeHtml(step.items_to_submit);
         if (step.code) {
           var lang = detectLang(step.code, step.type);
           html += codeBlock(step.code, lang);
@@ -1248,10 +1302,6 @@ function renderBranches(branches) {
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
     if (b.target_url) html += ' | URL: ' + escapeHtml(b.target_url);
     if (b.condition) html += ' | warunek: ' + escapeHtml(b.condition);
-    html += '</div></div>';
-  });
-  return html;
-}
     html += '</div></div>';
   });
   return html;

@@ -1,7 +1,7 @@
 """Testy HTML renderera."""
 from apex_export_to_md.renderers.html_renderer import HTMLRenderer
 from apex_export_to_md.config import AppConfig
-from apex_export_to_md.models import ApexApp, ApexPage, AppMetadata, Process
+from apex_export_to_md.models import ApexApp, ApexPage, AppMetadata, Button, Process, Region
 
 
 def test_html_renderer_serialize_page_build_option():
@@ -43,3 +43,30 @@ def test_html_renderer_zawiera_konfiguracje_techniczna():
     assert "SH512" in output
     assert "MUST_NOT_BE_PUBLIC_USER" in output
     assert "Magazyn plików statycznych" in output
+
+
+def test_html_renderer_javascript_obsluguje_zakladki_bez_bledu_skladni():
+    """Skrypt zakładek nie zawiera osieroconego fragmentu JavaScript."""
+    script = HTMLRenderer(AppConfig())._app_js()
+
+    assert "function switchTab(name)" in script
+    assert "return html;\n}\n\n// === INIT ===" in script
+
+
+def test_html_renderer_serializuje_dane_semantyczne():
+    """HTML przekazuje do widoku dane funkcjonalne regionu i procesu."""
+    page = ApexPage(
+        id=1,
+        name="P1",
+        regions=[Region(name="R1", type="Form", source_table="B_AUDYT", source_owner="DAW",
+                        source_where="STATUS = 'Otwarty'", lost_update_type="Row Values")],
+        buttons=[Button(name="SAVE", confirmation_message="Zapisać?")],
+        processes=[Process(name="Zapisz", type="DML", target_type="REGION_SOURCE",
+                           prevent_lost_updates=True, success_message="Zapisano")],
+    )
+    serialized = HTMLRenderer(AppConfig())._serialize_page(page)
+
+    assert serialized["regions"][0]["source_owner"] == "DAW"
+    assert serialized["regions"][0]["lost_update_type"] == "Row Values"
+    assert serialized["buttons"][0]["confirmation_message"] == "Zapisać?"
+    assert serialized["processes"][0]["prevent_lost_updates"] is True

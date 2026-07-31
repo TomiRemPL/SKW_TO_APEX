@@ -60,8 +60,9 @@ class DDLHumanRenderer(BaseRenderer):
                     lines.append("**Klucze obce:**")
                     for fk in fk_constraints:
                         cols = ", ".join(fk.columns)
+                        name_part = f"{fk.name}: " if fk.name else ""
                         lines.append(
-                            f"- `{cols}` → `{fk.ref_table}`.`{fk.ref_column}`"
+                            f"- {name_part}`{cols}` → `{fk.ref_table}`.`{fk.ref_column}`"
                         )
                     lines.append("")
                 if other_constraints:

@@ -26,12 +26,12 @@ def _compress_condition(ssc: Any) -> str | None:
     """Skondensuj blok server-side-condition do jednego stringa.
 
     Wzorzec zgodny z _parse_processes/_parse_branches: iteracja po kluczach
-    (type, value, expression) plus when-button-pressed.
+    (type, value, expression, item) plus when-button-pressed.
     """
     if not isinstance(ssc, dict) or not ssc:
         return None
     cond_parts: list[str] = []
-    for key in ("type", "value", "expression"):
+    for key in ("type", "value", "expression", "item"):
         val = ssc.get(key)
         if val:
             cond_parts.append(f"{key}={val}")
@@ -196,11 +196,15 @@ def _parse_regions(regions_data: list[dict]) -> list[Region]:
             title=safe_get_str(ident, "title"),
             type=safe_get_str(ident, "type", "") or "",
             source_table=safe_get_str(source, "table-name"),
+            source_owner=safe_get_str(source, "table-owner"),
             source_sql=safe_get(source, "sql-query"),
+            source_where=safe_get_str(source, "where-clause"),
+            page_items_to_submit=safe_get_str(source, "page-items-to-submit"),
             parent_region=_clean_parent_region(safe_get_str(r, "layout.parent-region")),
             columns=_parse_columns(r.get("columns", [])),
             editable=safe_get_bool(edit, "enabled") if isinstance(edit, dict) else False,
             allowed_operations=safe_get_list(edit, "allowed-operations") if isinstance(edit, dict) else [],
+            lost_update_type=safe_get_str(edit, "lost-update-type") if isinstance(edit, dict) else None,
             template=template,
             template_options=template_options,
             slot=safe_get_str(layout, "slot") if isinstance(layout, dict) else None,
@@ -258,6 +262,10 @@ def _parse_columns(columns_data: list[dict]) -> list[Column]:
             source_column=safe_get_str(source, "database-column"),
             data_type=safe_get_str(source, "data-type"),
             link_target=link_target,
+            link_text=safe_get_str(link, "link-text"),
+            link_clear_cache=safe_get_str(link, "target.clear-cache"),
+            master_region=safe_get_str(c, "master-detail.master-region", strip_id=True),
+            master_column=safe_get_str(c, "master-detail.master-column"),
             lov=safe_get_str(c, "list-of-values.list-of-values", strip_id=True),
             primary_key=safe_get_bool(source, "primary-key"),
             sortable=sortable,
@@ -293,8 +301,11 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
             name=safe_get_str(ident, "name", "") or "",
             type=safe_get_str(ident, "type", "") or "",
             label=safe_get_str(item_data, "label.label"),
+            label_alignment=safe_get_str(item_data, "label.alignment"),
             source_column=source_column,
             lov=safe_get_str(item_data, "list-of-values.list-of-values", strip_id=True),
+            lov_display_null_value=safe_get_str(item_data, "list-of-values.display-null-value"),
+            lov_display_extra_values=safe_get_bool(item_data, "list-of-values.display-extra-values") or None,
             default_value=safe_get_str(item_data, "default.static-value"),
             data_type=safe_get_str(session_state, "data-type") if isinstance(session_state, dict) else None,
             storage=safe_get_str(session_state, "storage") if isinstance(session_state, dict) else None,
@@ -307,6 +318,11 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
             sequence=safe_get_int(layout, "sequence") or None if isinstance(layout, dict) else None,
             source_type=source_type or None,
             source_used=safe_get_str(source, "used"),
+            source_primary_key=safe_get_bool(source, "primary-key") or None,
+            source_query_only=safe_get_bool(source, "query-only") or None,
+            form_region=safe_get_str(source, "form-region", strip_id=True),
+            value_required=safe_get_bool(item_data, "validation.value-required") or None,
+            validation_max_length=safe_get_int(item_data, "validation.maximum-length") or None,
             warn_on_unsaved=safe_get_str(item_data, "advanced.warn-on-unsaved-changes"),
             build_option=safe_get_str(item_data, "configuration.build-option", strip_id=True),
         )
@@ -338,6 +354,9 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
             action=safe_get_str(behavior, "action") if isinstance(behavior, dict) else None,
             target_page=target_page,
             is_hot=safe_get_bool(b, "appearance.hot"),
+            confirmation_message=safe_get_str(b, "confirmation.message"),
+            confirmation_style=safe_get_str(b, "confirmation.style"),
+            server_side_condition=_compress_condition(b.get("server-side-condition")),
             build_option=safe_get_str(b, "configuration.build-option", strip_id=True),
         )
         buttons.append(button)
@@ -350,6 +369,7 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
     for p in processes_data or []:
         ident = p.get("identification", {})
         source = p.get("source", {})
+        settings = p.get("settings", {})
         proc_type = safe_get_str(ident, "type", "") or ""
 
         # Kod — zależnie od typu procesu
@@ -360,7 +380,6 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
 
         # Procesy typu Invoke API — złóż opis z settings
         if not code and "invoke" in proc_type.lower():
-            settings = p.get("settings", {})
             pkg = safe_get_str(settings, "package")
             proc = safe_get_str(settings, "procedure-or-function")
             if pkg or proc:
@@ -392,6 +411,15 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
             when_button_pressed=btn_pressed,
             error_display_location=error_display_location,
             error_message=error_message,
+            target_type=safe_get_str(settings, "target-type") if isinstance(settings, dict) else None,
+            return_primary_key_after_insert=safe_get_bool(settings, "return-primary-key(s)-after-insert") or None if isinstance(settings, dict) else None,
+            prevent_lost_updates=safe_get_bool(settings, "prevent-lost-updates") or None if isinstance(settings, dict) else None,
+            lock_row=safe_get_bool(settings, "lock-row") or None if isinstance(settings, dict) else None,
+            show_success_messages=safe_get_bool(settings, "show-success-messages") or None if isinstance(settings, dict) else None,
+            success_message=safe_get_str(p, "success-message.success-message"),
+            owner=safe_get_str(settings, "owner") if isinstance(settings, dict) else None,
+            package=safe_get_str(settings, "package") if isinstance(settings, dict) else None,
+            procedure_or_function=safe_get_str(settings, "procedure-or-function") if isinstance(settings, dict) else None,
             build_option=safe_get_str(p, "configuration.build-option", strip_id=True),
         )
         processes.append(process)
@@ -420,6 +448,7 @@ def _parse_dynamic_actions(da_data: list[dict]) -> list[DynamicAction]:
             trigger_selector=trigger,
             event_scope=safe_get_str(da, "execution.event-scope"),
             static_container=safe_get(da, "execution.static-container-(jquery-selector)"),
+            client_side_condition=safe_get_str(da, "client-side-condition.javascript-expression"),
             actions=_parse_da_steps(da.get("actions", [])),
             build_option=safe_get_str(da, "configuration.build-option", strip_id=True),
         )
@@ -460,6 +489,9 @@ def _parse_da_steps(steps_data: list[dict]) -> list[DynamicActionStep]:
             code=code,
             affected_elements=affected_str,
             fire_on_initialization=safe_get_bool(s, "execution.fire-on-initialization"),
+            maintain_pagination=safe_get_bool(settings, "maintain-pagination") or None if isinstance(settings, dict) else None,
+            show_processing=safe_get_bool(settings, "show-processing") or None if isinstance(settings, dict) else None,
+            items_to_submit=safe_get_str(settings, "items-to-submit") if isinstance(settings, dict) else None,
         )
         steps.append(step)
     return steps

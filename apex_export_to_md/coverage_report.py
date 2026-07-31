@@ -341,6 +341,14 @@ def _model_field_populated(app: ApexApp) -> dict[str, int]:
         counts["page.computations"] += len(page.computations)
 
         for r in page.regions:
+            counts["region.source_table"] += 1 if r.source_table else 0
+            counts["region.source_owner"] += 1 if r.source_owner else 0
+            counts["region.source_sql"] += 1 if r.source_sql else 0
+            counts["region.source_where"] += 1 if r.source_where else 0
+            counts["region.page_items_to_submit"] += 1 if r.page_items_to_submit else 0
+            counts["region.editable"] += 1 if r.editable else 0
+            counts["region.allowed_operations"] += 1 if r.allowed_operations else 0
+            counts["region.lost_update_type"] += 1 if r.lost_update_type else 0
             counts["region.server_side_condition"] += 1 if r.server_side_condition else 0
             counts["region.template_options"] += 1 if r.template_options else 0
             counts["region.pagination"] += 1 if r.pagination else 0
@@ -348,10 +356,25 @@ def _model_field_populated(app: ApexApp) -> dict[str, int]:
             counts["region.sequence"] += 1 if r.sequence else 0
             counts["region.source_location"] += 1 if r.source_location else 0
             for c in r.columns:
+                counts["column.link_text"] += 1 if c.link_text else 0
+                counts["column.link_target"] += 1 if c.link_target else 0
+                counts["column.master_region"] += 1 if c.master_region else 0
+                counts["column.master_column"] += 1 if c.master_column else 0
                 counts["column.column_alignment"] += 1 if c.column_alignment else 0
                 counts["column.heading_alignment"] += 1 if c.heading_alignment else 0
                 counts["column.sortable"] += 1 if c.sortable else 0
         for it in page.items:
+            counts["page_item.label"] += 1 if it.label else 0
+            counts["page_item.label_alignment"] += 1 if it.label_alignment else 0
+            counts["page_item.value_required"] += 1 if it.value_required else 0
+            counts["page_item.validation_max_length"] += 1 if it.validation_max_length else 0
+            counts["page_item.source_primary_key"] += 1 if it.source_primary_key else 0
+            counts["page_item.source_query_only"] += 1 if it.source_query_only else 0
+            counts["page_item.form_region"] += 1 if it.form_region else 0
+            counts["page_item.source_used"] += 1 if it.source_used else 0
+            counts["page_item.lov"] += 1 if it.lov else 0
+            counts["page_item.lov_display_null_value"] += 1 if it.lov_display_null_value else 0
+            counts["page_item.lov_display_extra_values"] += 1 if it.lov_display_extra_values else 0
             counts["page_item.data_type"] += 1 if it.data_type else 0
             counts["page_item.storage"] += 1 if it.storage else 0
             counts["page_item.session_state_protection"] += 1 if it.session_state_protection else 0
@@ -359,6 +382,27 @@ def _model_field_populated(app: ApexApp) -> dict[str, int]:
             counts["page_item.region"] += 1 if it.region else 0
         for p in page.processes:
             counts["process.error_display_location"] += 1 if p.error_display_location else 0
+            counts["process.target_type"] += 1 if p.target_type else 0
+            counts["process.return_primary_key_after_insert"] += 1 if p.return_primary_key_after_insert else 0
+            counts["process.prevent_lost_updates"] += 1 if p.prevent_lost_updates else 0
+            counts["process.lock_row"] += 1 if p.lock_row else 0
+            counts["process.show_success_messages"] += 1 if p.show_success_messages else 0
+            counts["process.success_message"] += 1 if p.success_message else 0
+            counts["process.owner"] += 1 if p.owner else 0
+            counts["process.package"] += 1 if p.package else 0
+            counts["process.procedure_or_function"] += 1 if p.procedure_or_function else 0
+        for button in page.buttons:
+            counts["button.confirmation_message"] += 1 if button.confirmation_message else 0
+            counts["button.confirmation_style"] += 1 if button.confirmation_style else 0
+            counts["button.server_side_condition"] += 1 if button.server_side_condition else 0
+        for action in page.dynamic_actions:
+            counts["dynamic_action.event"] += 1 if action.event else 0
+            counts["dynamic_action.selection_type"] += 1 if action.selection_type else 0
+            counts["dynamic_action.client_side_condition"] += 1 if action.client_side_condition else 0
+            for step in action.actions:
+                counts["dynamic_action_step.maintain_pagination"] += 1 if step.maintain_pagination else 0
+                counts["dynamic_action_step.show_processing"] += 1 if step.show_processing else 0
+                counts["dynamic_action_step.items_to_submit"] += 1 if step.items_to_submit else 0
 
     # Shared components
     counts["shared.authentications"] = len(app.authentications)

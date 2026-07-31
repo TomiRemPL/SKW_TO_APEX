@@ -17,6 +17,10 @@ class Column:
     source_column: str | None = None
     data_type: str | None = None
     link_target: str | None = None      # numer strony docelowej
+    link_text: str | None = None
+    link_clear_cache: str | None = None
+    master_region: str | None = None
+    master_column: str | None = None
     lov: str | None = None
     primary_key: bool = False
     sortable: bool = False
@@ -35,11 +39,15 @@ class Region:
     type: str
     title: str | None = None            # tytuł widoczny dla użytkownika
     source_table: str | None = None
+    source_owner: str | None = None
     source_sql: str | None = None
+    source_where: str | None = None
+    page_items_to_submit: str | None = None
     parent_region: str | None = None
     columns: list[Column] = field(default_factory=list)
     editable: bool = False
     allowed_operations: list[str] = field(default_factory=list)
+    lost_update_type: str | None = None
     template: str | None = None
     template_options: list[str] = field(default_factory=list)
     slot: str | None = None
@@ -61,8 +69,11 @@ class PageItem:
     name: str
     type: str
     label: str | None = None
+    label_alignment: str | None = None
     source_column: str | None = None
     lov: str | None = None
+    lov_display_null_value: str | None = None
+    lov_display_extra_values: bool | None = None
     default_value: str | None = None
     data_type: str | None = None
     storage: str | None = None
@@ -75,6 +86,11 @@ class PageItem:
     sequence: int | None = None
     source_type: str | None = None
     source_used: str | None = None
+    source_primary_key: bool | None = None
+    source_query_only: bool | None = None
+    form_region: str | None = None
+    value_required: bool | None = None
+    validation_max_length: int | None = None
     warn_on_unsaved: str | None = None
     build_option: str | None = None
 
@@ -91,6 +107,15 @@ class Process:
     when_button_pressed: str | None = None
     error_display_location: str | None = None
     error_message: str | None = None
+    target_type: str | None = None
+    return_primary_key_after_insert: bool | None = None
+    prevent_lost_updates: bool | None = None
+    lock_row: bool | None = None
+    show_success_messages: bool | None = None
+    success_message: str | None = None
+    owner: str | None = None
+    package: str | None = None
+    procedure_or_function: str | None = None
     build_option: str | None = None
 
 
@@ -112,6 +137,9 @@ class DynamicActionStep:
     code: str | None = None
     affected_elements: str | None = None
     fire_on_initialization: bool = False
+    maintain_pagination: bool | None = None
+    show_processing: bool | None = None
+    items_to_submit: str | None = None
 
 
 @dataclass
@@ -123,6 +151,7 @@ class DynamicAction:
     trigger_selector: str | None = None
     event_scope: str | None = None      # Dynamic, Static
     static_container: str | None = None
+    client_side_condition: str | None = None
     actions: list[DynamicActionStep] = field(default_factory=list)
     build_option: str | None = None
 
@@ -135,6 +164,9 @@ class Button:
     action: str | None = None           # Submit Page, Redirect...
     target_page: int | None = None
     is_hot: bool = False                # przycisk główny (primary)
+    confirmation_message: str | None = None
+    confirmation_style: str | None = None
+    server_side_condition: str | None = None
     build_option: str | None = None
 
 

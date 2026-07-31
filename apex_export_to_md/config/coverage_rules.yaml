@@ -5,6 +5,14 @@ mapped_keys:
   region.layout.slot: region.slot
   region.layout.sequence: region.sequence
   region.source.location: region.source_location
+  region.source.table-name: region.source_table
+  region.source.table-owner: region.source_owner
+  region.source.sql-query: region.source_sql
+  region.source.where-clause: region.source_where
+  region.source.page-items-to-submit: region.page_items_to_submit
+  region.attributes.edit.enabled: region.editable
+  region.attributes.edit.allowed-operations: region.allowed_operations
+  region.attributes.edit.lost-update-type: region.lost_update_type
   column.layout.column-alignment: column.column_alignment
   column.heading.alignment: column.heading_alignment
   column.enable-users-to.sort: column.sortable
@@ -13,7 +21,37 @@ mapped_keys:
   page-item.security.session-state-protection: page_item.session_state_protection
   page-item.security.store-value-encrypted: page_item.store_encrypted
   page-item.layout.region: page_item.region
+  page-item.label.label: page_item.label
+  page-item.label.alignment: page_item.label_alignment
+  page-item.validation.value-required: page_item.value_required
+  page-item.validation.maximum-length: page_item.validation_max_length
+  page-item.source.primary-key: page_item.source_primary_key
+  page-item.source.query-only: page_item.source_query_only
+  page-item.source.form-region: page_item.form_region
+  page-item.source.used: page_item.source_used
+  page-item.list-of-values.list-of-values: page_item.lov
+  page-item.list-of-values.display-null-value: page_item.lov_display_null_value
+  page-item.list-of-values.display-extra-values: page_item.lov_display_extra_values
   process.error.display-location: process.error_display_location
+  process.settings.target-type: process.target_type
+  process.settings.return-primary-key(s)-after-insert: process.return_primary_key_after_insert
+  process.settings.prevent-lost-updates: process.prevent_lost_updates
+  process.settings.lock-row: process.lock_row
+  process.settings.show-success-messages: process.show_success_messages
+  process.success-message.success-message: process.success_message
+  button.confirmation.message: button.confirmation_message
+  button.confirmation.style: button.confirmation_style
+  button.server-side-condition.item: button.server_side_condition
+  column.link.link-text: column.link_text
+  column.link.target.page: column.link_target
+  column.master-detail.master-region: column.master_region
+  column.master-detail.master-column: column.master_column
+  dynamic-action.when.event: dynamic_action.event
+  dynamic-action.when.selection-type: dynamic_action.selection_type
+  dynamic-action.client-side-condition.javascript-expression: dynamic_action.client_side_condition
+  dynamic-action.actions.settings.maintain-pagination: dynamic_action_step.maintain_pagination
+  dynamic-action.actions.settings.show-processing: dynamic_action_step.show_processing
+  dynamic-action.actions.settings.items-to-submit: dynamic_action_step.items_to_submit
   computation.item-name: page.computations
   page.dialog.chained: page.dialog
   page.help.help-text: page.help_text
@@ -45,6 +83,14 @@ ignore_keys:
   - execution-options
   - execution
   - grid
+  - printing
+  - actions-menu
+  - search-bar
+  - break-formatting
+  - lazy-loading
+  - character-counter
+  - auto-height
+  - resizable
 
 shared_files:
   authentications: shared_components/authentications.yaml

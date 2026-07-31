@@ -122,3 +122,26 @@ def test_render_zawiera_konfiguracje_techniczna():
     assert "| Ochrona stron | Włączona |" in output
     assert "| Algorytm checksum bookmarków | SH512 |" in output
     assert "| Magazyn plików statycznych | DB |" in output
+
+
+def test_render_zawiera_dane_semantyczne():
+    """Markdown pokazuje walidacje, DML i potwierdzenia istotne funkcjonalnie."""
+    app = _make_app_with_page()
+    region = app.pages[0].regions[0]
+    region.source_owner = "DAW"
+    region.source_where = "STATUS = 'Otwarty'"
+    region.lost_update_type = "Row Values"
+    proc = app.pages[0].processes[0]
+    proc.target_type = "REGION_SOURCE"
+    proc.prevent_lost_updates = True
+    proc.success_message = "Zapisano"
+    app.pages[0].buttons[0].confirmation_message = "Potwierdź zapis"
+
+    output = HumanRenderer(AppConfig()).render(app)
+
+    assert "DAW.B_AUDYT" in output
+    assert "STATUS = 'Otwarty'" in output
+    assert "Strategia konfliktu aktualizacji" in output
+    assert "Operacja docelowa: REGION_SOURCE" in output
+    assert "zapobiega lost update" in output
+    assert "Potwierdzenie: Potwierdź zapis" in output

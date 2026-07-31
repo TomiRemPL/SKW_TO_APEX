@@ -30,6 +30,8 @@ class DDLLLMRenderer(BaseRenderer):
                     col_parts.append("nn:true")
                 if col.primary_key:
                     col_parts.append("pk:true")
+                if col.identity:
+                    col_parts.append("identity:true")
                 if col.default:
                     col_parts.append(f"def:{col.default}")
                 lines.append("|".join(col_parts))
@@ -39,6 +41,8 @@ class DDLLLMRenderer(BaseRenderer):
                 if c.type == "FOREIGN KEY":
                     cols = ",".join(c.columns)
                     lines.append(f"FK:{cols}->{c.ref_table}.{c.ref_column}")
+                elif c.type == "UNIQUE":
+                    lines.append(f"UNQ:{c.name}|{','.join(c.columns)}")
                 elif c.type == "CHECK" and c.check_condition:
                     lines.append(f"CHK:{c.name}|{c.check_condition}")
 

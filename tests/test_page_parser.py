@@ -257,3 +257,77 @@ def test_parse_page_build_option():
     assert page.regions[0].build_option == "Exclude"
     assert page.regions[0].columns[0].build_option == "Commented Out"
     assert page.items[0].build_option == "Commented Out"
+
+
+def test_parse_page_dane_semantyczne_dokumentacji():
+    """Parser wyciąga reguły biznesowe potrzebne w dokumentacji."""
+    yaml_data = {
+        "identification": {"id": 50, "name": "P50"},
+        "regions": [{
+            "identification": {"name": "Formularz", "type": "Form"},
+            "source": {
+                "table-name": "B_AUDYT", "table-owner": "DAW",
+                "where-clause": "STATUS = 'Otwarty'", "page-items-to-submit": "P50_STATUS",
+            },
+            "attributes": {"edit": {"lost-update-type": "Row Values"}},
+            "columns": [{
+                "identification": {"column-name": "ID_AUDYT", "type": "Link"},
+                "link": {"link-text": "Szczegóły", "target": {"page": "51", "clear-cache": "51"}},
+                "master-detail": {"master-region": "Nagłówek", "master-column": "ID_AUDYT"},
+            }],
+        }],
+        "page-items": [{
+            "identification": {"name": "P50_NAZWA", "type": "Text Field"},
+            "label": {"label": "Nazwa", "alignment": "Left"},
+            "source": {"type": "Database Column", "database-column": "NAZWA", "primary-key": True,
+                       "query-only": True, "form-region": "Formularz"},
+            "validation": {"value-required": True, "maximum-length": 100},
+            "list-of-values": {"display-null-value": "- wybierz -", "display-extra-values": True},
+        }],
+        "buttons": [{
+            "identification": {"button-name": "USUN"},
+            "confirmation": {"message": "Usunąć audyt?", "style": "Danger"},
+            "server-side-condition": {"type": "Item is NOT NULL", "item": "P50_ID"},
+        }],
+        "processes": [{
+            "identification": {"name": "Zapisz", "type": "Form - Automatic Row Processing (DML)"},
+            "settings": {
+                "target-type": "REGION_SOURCE", "return-primary-key(s)-after-insert": True,
+                "prevent-lost-updates": True, "lock-row": True, "show-success-messages": True,
+                "owner": "DAW", "package": "PKG_AUDYT", "procedure-or-function": "ZAPISZ",
+            },
+            "success-message": {"success-message": "Zapisano"},
+        }],
+        "dynamic-actions": [{
+            "identification": {"name": "Odśwież"}, "when": {"event": "Change"},
+            "client-side-condition": {"javascript-expression": "$v('P50_STATUS') === 'O'"},
+            "actions": [{
+                "identification": {"action": "Refresh"},
+                "settings": {"maintain-pagination": True, "show-processing": True, "items-to-submit": "P50_STATUS"},
+            }],
+        }],
+    }
+    page = parse_page(yaml_data)
+    region = page.regions[0]
+    item = page.items[0]
+    column = region.columns[0]
+    button = page.buttons[0]
+    process = page.processes[0]
+    action = page.dynamic_actions[0]
+
+    assert region.source_owner == "DAW"
+    assert region.source_where == "STATUS = 'Otwarty'"
+    assert region.lost_update_type == "Row Values"
+    assert column.link_text == "Szczegóły"
+    assert column.master_region == "Nagłówek"
+    assert item.value_required is True
+    assert item.validation_max_length == 100
+    assert item.form_region == "Formularz"
+    assert item.lov_display_extra_values is True
+    assert button.confirmation_message == "Usunąć audyt?"
+    assert button.server_side_condition == "type=Item is NOT NULL, item=P50_ID"
+    assert process.target_type == "REGION_SOURCE"
+    assert process.prevent_lost_updates is True
+    assert process.package == "PKG_AUDYT"
+    assert action.client_side_condition == "$v('P50_STATUS') === 'O'"
+    assert action.actions[0].maintain_pagination is True

@@ -158,8 +158,22 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"seq:{item.sequence}")
             if item.source_type:
                 parts.append(f"src_type:{item.source_type}")
+            if item.form_region:
+                parts.append(f"form_region:{item.form_region}")
+            if item.source_primary_key:
+                parts.append("src_pk:true")
+            if item.source_query_only:
+                parts.append("query_only:true")
+            if item.value_required:
+                parts.append("required:true")
+            if item.validation_max_length:
+                parts.append(f"max_len:{item.validation_max_length}")
             if item.lov:
                 parts.append(f"lov:{item.lov}")
+            if item.lov_display_null_value:
+                parts.append(f"lov_null:{item.lov_display_null_value}")
+            if item.lov_display_extra_values:
+                parts.append("lov_extra:true")
             if item.default_value:
                 parts.append(f"default:{item.default_value}")
             if item.build_option:
@@ -177,6 +191,10 @@ class LLMRenderer(BaseRenderer):
                 parts.append("hot:true")
             if btn.target_page:
                 parts.append(f"target:page{btn.target_page}")
+            if btn.confirmation_message:
+                parts.append(f"confirm:{btn.confirmation_message}")
+            if btn.server_side_condition:
+                parts.append(f"ssc:{btn.server_side_condition}")
             if btn.build_option:
                 parts.append(f"build_opt:{btn.build_option}")
             lines.append("|".join(parts))
@@ -195,6 +213,18 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"err_loc:{proc.error_display_location}")
             if proc.error_message:
                 parts.append(f"err_msg:{proc.error_message}")
+            if proc.target_type:
+                parts.append(f"target:{proc.target_type}")
+            if proc.return_primary_key_after_insert:
+                parts.append("return_pk:true")
+            if proc.prevent_lost_updates:
+                parts.append("prevent_lost_update:true")
+            if proc.lock_row:
+                parts.append("lock_row:true")
+            if proc.success_message:
+                parts.append(f"success:{proc.success_message}")
+            if proc.package or proc.procedure_or_function:
+                parts.append(f"proc:{proc.owner + '.' if proc.owner else ''}{proc.package or '?'}.{proc.procedure_or_function or '?'}")
             if proc.build_option:
                 parts.append(f"build_opt:{proc.build_option}")
             lines.append("|".join(parts))
@@ -211,6 +241,8 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"trigger:{da.trigger_selector}")
             if da.event_scope:
                 parts.append(f"scope:{da.event_scope}")
+            if da.client_side_condition:
+                parts.append(f"client_cond:{da.client_side_condition}")
             if da.build_option:
                 parts.append(f"build_opt:{da.build_option}")
             lines.append("|".join(parts))
@@ -220,6 +252,10 @@ class LLMRenderer(BaseRenderer):
                     step_parts.append(f"affects:{step.affected_elements}")
                 if step.fire_on_initialization:
                     step_parts.append("init:true")
+                if step.maintain_pagination:
+                    step_parts.append("keep_page:true")
+                if step.items_to_submit:
+                    step_parts.append(f"submit:{step.items_to_submit}")
                 lines.append("|".join(step_parts))
                 if step.code:
                     lines.extend(self._render_code_or_summary(step.code, "plsql"))
@@ -267,7 +303,14 @@ class LLMRenderer(BaseRenderer):
         if region.source_location:
             parts.append(f"src_loc:{region.source_location}")
         if region.source_table:
-            parts.append(f"src:{region.source_table}")
+            source = f"{region.source_owner}." if region.source_owner else ""
+            parts.append(f"src:{source}{region.source_table}")
+        if region.source_where:
+            parts.append(f"where:{region.source_where}")
+        if region.page_items_to_submit:
+            parts.append(f"submit:{region.page_items_to_submit}")
+        if region.lost_update_type:
+            parts.append(f"lost_update:{region.lost_update_type}")
         if region.source_sql and self._should_include_code():
             parts.append("src:SQL")
         if region.editable:
@@ -314,6 +357,10 @@ class LLMRenderer(BaseRenderer):
                 col_parts.append(f"seq:{col.sequence}")
             if col.link_target:
                 col_parts.append(f"link:page{col.link_target}")
+            if col.link_text:
+                col_parts.append(f"link_text:{col.link_text}")
+            if col.master_region or col.master_column:
+                col_parts.append(f"master:{col.master_region or '?'}.{col.master_column or '?'}")
             if col.lov:
                 col_parts.append(f"lov:{col.lov}")
             if col.build_option:

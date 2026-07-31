@@ -199,16 +199,33 @@ class HumanRenderer(BaseRenderer):
         if page.items:
             lines.append("#### Elementy formularza")
             lines.append("")
-            lines.append("| Nazwa | Typ | Etykieta | Kolumna | LOV | Typ danych | Ochrona stanu |")
-            lines.append("|-------|-----|----------|---------|-----|------------|---------------|")
+            lines.append("| Nazwa | Typ | Etykieta | Kolumna | LOV | Walidacja | Źródło |")
+            lines.append("|-------|-----|----------|---------|-----|-----------|--------|")
             for item in page.items:
-                dtype = item.data_type or "—"
-                prot = item.session_state_protection or "—"
+                validation: list[str] = []
+                if item.value_required:
+                    validation.append("wymagane")
+                if item.validation_max_length:
+                    validation.append(f"max. {item.validation_max_length}")
+                source: list[str] = []
+                if item.form_region:
+                    source.append(f"formularz: {item.form_region}")
+                if item.source_primary_key:
+                    source.append("PK")
+                if item.source_query_only:
+                    source.append("tylko odczyt")
                 lines.append(
                     f"| {item.name}{_bo_suffix(item.build_option)} | {item.type} "
                     f"| {item.label or '—'} | {item.source_column or '—'} "
-                    f"| {item.lov or '—'} | {dtype} | {prot} |"
+                    f"| {item.lov or '—'} | {', '.join(validation) or '—'} | {', '.join(source) or '—'} |"
                 )
+                if item.lov_display_null_value or item.lov_display_extra_values:
+                    lov_info: list[str] = []
+                    if item.lov_display_null_value:
+                        lov_info.append(f"pusta wartość: {item.lov_display_null_value}")
+                    if item.lov_display_extra_values:
+                        lov_info.append("dopuszcza wartości spoza LOV")
+                    lines.append(f"| ↳ | | | | | | {', '.join(lov_info)} |")
             lines.append("")
 
         # Przyciski
@@ -219,6 +236,11 @@ class HumanRenderer(BaseRenderer):
                 hot = " **(primary)**" if btn.is_hot else ""
                 target = f" → strona {btn.target_page}" if btn.target_page else ""
                 lines.append(f"- **{btn.name}**{_bo_suffix(btn.build_option)} — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}")
+                if btn.confirmation_message:
+                    style = f" (styl: {btn.confirmation_style})" if btn.confirmation_style else ""
+                    lines.append(f"  - Potwierdzenie: {btn.confirmation_message}{style}")
+                if btn.server_side_condition:
+                    lines.append(f"  - Warunek serwerowy: `{btn.server_side_condition}`")
             lines.append("")
 
         # Procesy
@@ -232,6 +254,22 @@ class HumanRenderer(BaseRenderer):
                 lines.append(f"**{proc.name}**{_bo_suffix(proc.build_option)} ({proc.point}{lang_info}{btn_info}{err_info})")
                 if proc.condition:
                     lines.append(f"- Warunek: `{proc.condition}`")
+                if proc.target_type:
+                    lines.append(f"- Operacja docelowa: {proc.target_type}")
+                process_flags: list[str] = []
+                if proc.return_primary_key_after_insert:
+                    process_flags.append("zwraca PK po insercie")
+                if proc.prevent_lost_updates:
+                    process_flags.append("zapobiega lost update")
+                if proc.lock_row:
+                    process_flags.append("blokuje wiersz")
+                if process_flags:
+                    lines.append(f"- Ustawienia DML: {', '.join(process_flags)}")
+                if proc.success_message:
+                    lines.append(f"- Komunikat sukcesu: {proc.success_message}")
+                if proc.package or proc.procedure_or_function:
+                    owner = f"{proc.owner}." if proc.owner else ""
+                    lines.append(f"- Wywołanie: `{owner}{proc.package or '?'}.{proc.procedure_or_function or '?'}`")
                 lines.append("")
                 if proc.code and self._should_include_code():
                     lang_hint = (proc.language or "sql").lower().replace("/", "")
@@ -251,11 +289,17 @@ class HumanRenderer(BaseRenderer):
             for da in page.dynamic_actions:
                 trigger_info = f" na {da.selection_type}: {da.trigger_selector}" if da.trigger_selector else ""
                 lines.append(f"- **{da.name}**{_bo_suffix(da.build_option)} — zdarzenie: {da.event}{trigger_info}")
+                if da.client_side_condition:
+                    lines.append(f"  - Warunek JavaScript: `{da.client_side_condition}`")
                 for step in da.actions:
                     init_str = " (on init)" if step.fire_on_initialization else ""
                     lines.append(f"  - Krok: {step.type}{init_str}")
                     if step.affected_elements:
                         lines.append(f"    - Wpływa na: {step.affected_elements}")
+                    if step.maintain_pagination:
+                        lines.append("    - Zachowuje paginację")
+                    if step.items_to_submit:
+                        lines.append(f"    - Przesyła elementy: {step.items_to_submit}")
                     if step.code and self._should_include_code():
                         lines.append(f"    ```")
                         lines.append(f"    {step.code}")
@@ -332,7 +376,14 @@ class HumanRenderer(BaseRenderer):
         if region.slot:
             lines.append(f"- **Slot:** {region.slot}")
         if region.source_table:
-            lines.append(f"- **Źródło:** tabela `{region.source_table}`")
+            owner = f"{region.source_owner}." if region.source_owner else ""
+            lines.append(f"- **Źródło:** tabela `{owner}{region.source_table}`")
+        if region.source_where:
+            lines.append(f"- **Warunek źródła:** `{region.source_where}`")
+        if region.page_items_to_submit:
+            lines.append(f"- **Elementy przekazywane do źródła:** {region.page_items_to_submit}")
+        if region.lost_update_type:
+            lines.append(f"- **Strategia konfliktu aktualizacji:** {region.lost_update_type}")
         if region.server_side_condition:
             lines.append(f"- **Warunek serwerowy:** `{region.server_side_condition}`")
         if region.pagination:
@@ -347,11 +398,18 @@ class HumanRenderer(BaseRenderer):
 
         # Kolumny jako tabela
         if region.columns:
-            lines.append("| Kolumna | Typ | Nagłówek | Źródło | PK | Link | Sortowalne | Wyrównanie |")
-            lines.append("|---------|-----|----------|--------|----|------|------------|------------|")
+            lines.append("| Kolumna | Typ | Nagłówek | Źródło | PK | Link / relacja | Sortowalne | Wyrównanie |")
+            lines.append("|---------|-----|----------|--------|----|----------------|------------|------------|")
             for col in region.columns:
                 pk = "tak" if col.primary_key else "—"
-                link = f"→strona {col.link_target}" if col.link_target else "—"
+                link_parts: list[str] = []
+                if col.link_target:
+                    link_parts.append(f"→strona {col.link_target}")
+                if col.link_text:
+                    link_parts.append(col.link_text)
+                if col.master_region or col.master_column:
+                    link_parts.append(f"master: {col.master_region or '?'}.{col.master_column or '?'}")
+                link = "; ".join(link_parts) or "—"
                 sort = "tak" if col.sortable else "—"
                 align = col.column_alignment or col.heading_alignment or "—"
                 lines.append(
