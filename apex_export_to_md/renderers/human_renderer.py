@@ -88,6 +88,32 @@ class HumanRenderer(BaseRenderer):
             lines.append(f"| PWA | {pwa_info} |")
         lines.append("")
 
+        settings = [
+            ("Tryb zgodności APEX", meta.compatibility_mode),
+            ("Ochrona stron", "Włączona" if meta.page_protection_enabled else ""),
+            ("Algorytm checksum bookmarków", meta.bookmark_checksum_function),
+            ("Wymuszanie dokładnych zmiennych substytucyjnych",
+             "Tak" if meta.exact_substitutions_only else ""),
+            ("Dostęp Runtime API", meta.runtime_api_usage),
+            ("Schemat bezpieczeństwa", meta.security_scheme),
+            ("Ponowne dołączanie do sesji", meta.rejoin_existing_sessions),
+            ("Logowanie odsłon", "Włączone" if meta.page_view_logging else ""),
+            ("Status aplikacji", meta.flow_status),
+            ("Magazyn plików statycznych", meta.file_storage),
+            ("Wersja plików statycznych", str(meta.files_version) if meta.files_version else ""),
+            ("Kopia robocza", meta.working_copy_name),
+            ("Autor kopii roboczej", meta.working_copy_created_by),
+        ]
+        settings = [(label, value) for label, value in settings if value]
+        if settings:
+            lines.append("### Konfiguracja techniczna")
+            lines.append("")
+            lines.append("| Parametr | Wartość |")
+            lines.append("|----------|---------|")
+            for label, value in settings:
+                lines.append(f"| {label} | {value} |")
+            lines.append("")
+
         # Statystyki
         lines.append("### Statystyki eksportu")
         lines.append("")

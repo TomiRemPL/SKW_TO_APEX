@@ -63,6 +63,19 @@ wwv_imp_workspace.create_flow(
 ,p_flow_language=>'pl'
 ,p_flow_version=>'Release 1.0'
 ,p_browser_cache=>'N'
+ ,p_compatibility_mode=>'21.2'
+ ,p_page_protection_enabled_y_n=>'Y'
+ ,p_bookmark_checksum_function=>'SH512'
+ ,p_exact_substitutions_only=>'Y'
+ ,p_runtime_api_usage=>'T'
+ ,p_security_scheme=>'MUST_NOT_BE_PUBLIC_USER'
+ ,p_rejoin_existing_sessions=>'P'
+ ,p_page_view_logging=>'YES'
+ ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
+ ,p_file_storage=>'DB'
+ ,p_files_version=>13
+ ,p_working_copy_created_by=>'TREMBIASZ'
+ ,p_working_copy_name=>'tr_20260731'
 ,p_is_pwa=>'Y'
 ,p_pwa_is_installable=>'Y'
 ,p_pwa_is_push_enabled=>'Y'
@@ -114,6 +127,25 @@ def test_parsuje_create_flow(sample_sql_file: Path):
     assert meta.pwa_installable is True
     assert meta.push_enabled is True
     assert meta.browser_cache is False
+
+
+def test_parsuje_konfiguracje_techniczna(sample_sql_file: Path):
+    """Parsuje ustawienia zgodności, bezpieczeństwa i wdrożenia."""
+    meta = parse_app_sql_file(sample_sql_file)
+    assert meta is not None
+    assert meta.compatibility_mode == "21.2"
+    assert meta.page_protection_enabled is True
+    assert meta.bookmark_checksum_function == "SH512"
+    assert meta.exact_substitutions_only is True
+    assert meta.runtime_api_usage == "T"
+    assert meta.security_scheme == "MUST_NOT_BE_PUBLIC_USER"
+    assert meta.rejoin_existing_sessions == "P"
+    assert meta.page_view_logging is True
+    assert meta.flow_status == "AVAILABLE_W_EDIT_LINK"
+    assert meta.file_storage == "DB"
+    assert meta.files_version == 13
+    assert meta.working_copy_name == "tr_20260731"
+    assert meta.working_copy_created_by == "TREMBIASZ"
 
 
 def test_parsuje_substitutions(sample_sql_file: Path):

@@ -4,6 +4,7 @@ from apex_export_to_md.config import AppConfig
 from apex_export_to_md.models import (
     ApexApp, ApexPage, Region, Column, LOV, Process, Button,
     Authorization, AppItem, BuildOption, AclRole,
+    AppMetadata,
 )
 
 
@@ -102,3 +103,22 @@ def test_render_human_build_option():
     renderer = HumanRenderer(AppConfig())
     output = renderer.render(app)
     assert "**Zapisz** `[ZAKOMENTOWANY]`" in output
+
+
+def test_render_zawiera_konfiguracje_techniczna():
+    """Pokazuje ustawienia z eksportu SQL potrzebne przy rozwoju aplikacji."""
+    app = _make_app_with_page()
+    app.metadata = AppMetadata(
+        compatibility_mode="21.2",
+        page_protection_enabled=True,
+        bookmark_checksum_function="SH512",
+        security_scheme="MUST_NOT_BE_PUBLIC_USER",
+        file_storage="DB",
+        files_version=13,
+    )
+    output = HumanRenderer(AppConfig()).render(app)
+    assert "### Konfiguracja techniczna" in output
+    assert "| Tryb zgodności APEX | 21.2 |" in output
+    assert "| Ochrona stron | Włączona |" in output
+    assert "| Algorytm checksum bookmarków | SH512 |" in output
+    assert "| Magazyn plików statycznych | DB |" in output

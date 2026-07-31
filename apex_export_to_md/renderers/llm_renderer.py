@@ -38,6 +38,30 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"LANG={meta.language}")
             if meta.is_pwa:
                 parts.append("PWA=Y")
+            if meta.compatibility_mode:
+                parts.append(f"COMPAT={meta.compatibility_mode}")
+            if meta.page_protection_enabled:
+                parts.append("PAGE_PROTECTION=Y")
+            if meta.bookmark_checksum_function:
+                parts.append(f"BOOKMARK_CHECKSUM={meta.bookmark_checksum_function}")
+            if meta.exact_substitutions_only:
+                parts.append("EXACT_SUBS=Y")
+            if meta.runtime_api_usage:
+                parts.append(f"RUNTIME_API={meta.runtime_api_usage}")
+            if meta.security_scheme:
+                parts.append(f"SECURITY={meta.security_scheme}")
+            if meta.rejoin_existing_sessions:
+                parts.append(f"SESSION_REJOIN={meta.rejoin_existing_sessions}")
+            if meta.page_view_logging:
+                parts.append("VIEW_LOGGING=Y")
+            if meta.flow_status:
+                parts.append(f"STATUS={meta.flow_status}")
+            if meta.file_storage:
+                parts.append(f"FILE_STORAGE={meta.file_storage}")
+            if meta.files_version:
+                parts.append(f"FILES_VER={meta.files_version}")
+            if meta.working_copy_name:
+                parts.append(f"WORKING_COPY={meta.working_copy_name}")
             if meta.pages_count:
                 parts.append(f"PAGES={meta.pages_count}")
             if meta.regions_count:

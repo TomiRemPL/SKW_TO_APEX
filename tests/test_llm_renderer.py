@@ -4,7 +4,7 @@ from apex_export_to_md.config import AppConfig
 from apex_export_to_md.models import (
     ApexApp, ApexPage, Region, Column, LOV, Process, Button,
     Authorization, AppItem, BuildOption, AclRole, DynamicAction,
-    DynamicActionStep,
+    DynamicActionStep, AppMetadata,
 )
 
 
@@ -87,3 +87,19 @@ def test_render_build_option():
     renderer = LLMRenderer(AppConfig())
     output = renderer.render(app)
     assert "DA:Zmiana|event:Change|sel:Item|trigger:P4_STATUS|build_opt:Commented Out" in output
+
+
+def test_render_zawiera_konfiguracje_techniczna():
+    """Zapisuje konfigurację eksportu SQL w skondensowanym formacie."""
+    app = _make_app()
+    app.metadata = AppMetadata(
+        compatibility_mode="21.2",
+        page_protection_enabled=True,
+        bookmark_checksum_function="SH512",
+        security_scheme="MUST_NOT_BE_PUBLIC_USER",
+        files_version=13,
+    )
+    output = LLMRenderer(AppConfig()).render(app)
+    assert "META:|COMPAT=21.2|PAGE_PROTECTION=Y|BOOKMARK_CHECKSUM=SH512" in output
+    assert "SECURITY=MUST_NOT_BE_PUBLIC_USER" in output
+    assert "FILES_VER=13" in output

@@ -335,6 +335,19 @@ class AppMetadata:
     pwa_installable: bool = False
     push_enabled: bool = False
     browser_cache: bool = False
+    compatibility_mode: str = ""
+    page_protection_enabled: bool = False
+    bookmark_checksum_function: str = ""
+    exact_substitutions_only: bool = False
+    runtime_api_usage: str = ""
+    security_scheme: str = ""
+    rejoin_existing_sessions: str = ""
+    page_view_logging: bool = False
+    flow_status: str = ""
+    file_storage: str = ""
+    files_version: int = 0
+    working_copy_name: str = ""
+    working_copy_created_by: str = ""
     copyright: str = ""
     substitutions: dict[str, str] = field(default_factory=dict)
 

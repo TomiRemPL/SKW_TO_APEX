@@ -140,6 +140,37 @@ def _parse_create_flow(content: str, meta: AppMetadata) -> None:
     if m:
         meta.browser_cache = m.group(1) == "Y"
 
+    # Ustawienia istotne dla zgodności, bezpieczeństwa i wdrożenia aplikacji.
+    string_settings = {
+        "compatibility_mode": "p_compatibility_mode",
+        "bookmark_checksum_function": "p_bookmark_checksum_function",
+        "runtime_api_usage": "p_runtime_api_usage",
+        "security_scheme": "p_security_scheme",
+        "rejoin_existing_sessions": "p_rejoin_existing_sessions",
+        "flow_status": "p_flow_status",
+        "file_storage": "p_file_storage",
+        "working_copy_name": "p_working_copy_name",
+        "working_copy_created_by": "p_working_copy_created_by",
+    }
+    for attr, parameter in string_settings.items():
+        m = re.search(rf"{parameter}\s*=>\s*'([^']+)'", block)
+        if m:
+            setattr(meta, attr, m.group(1))
+
+    bool_settings = {
+        "page_protection_enabled": "p_page_protection_enabled_y_n",
+        "exact_substitutions_only": "p_exact_substitutions_only",
+        "page_view_logging": "p_page_view_logging",
+    }
+    for attr, parameter in bool_settings.items():
+        m = re.search(rf"{parameter}\s*=>\s*'([^']+)'", block)
+        if m:
+            setattr(meta, attr, m.group(1) in {"Y", "YES"})
+
+    m = re.search(r"p_files_version\s*=>\s*(\d+)", block)
+    if m:
+        meta.files_version = int(m.group(1))
+
     # p_is_pwa=>'Y'
     m = re.search(r"p_is_pwa\s*=>\s*'([^']+)'", block)
     if m:
