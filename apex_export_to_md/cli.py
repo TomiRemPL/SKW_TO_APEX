@@ -103,6 +103,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Wygeneruj tylko raport pokrycia mapowania (bez pełnych plików)",
     )
     parser.add_argument(
+        "--coverage-config", default="",
+        help="Ścieżka do niestandardowego pliku reguł pokrycia YAML",
+    )
+    parser.add_argument(
         "--verbose", action="store_true",
         help="Szczegółowe logi",
     )
@@ -144,6 +148,7 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
         ddl_keyword=args.ddl_keyword,
         gui=args.gui,
         coverage=args.coverage,
+        coverage_config=args.coverage_config,
         verbose=args.verbose,
     )
 
@@ -401,7 +406,7 @@ def main() -> None:
     # Tryb raportu pokrycia (bez pełnego pipeline'u)
     if config.coverage:
         from apex_export_to_md.coverage_report import run_coverage
-        run_coverage(config.input_dir, config.output_dir)
+        run_coverage(config.input_dir, config.output_dir, coverage_config=config.coverage_config)
         return
 
     run_pipeline(config)

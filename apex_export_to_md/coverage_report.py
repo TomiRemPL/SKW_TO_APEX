@@ -1,19 +1,18 @@
 """Raport pokrycia mapowania elementów APEX.
 
-Weryfikuje kompletność parsowania: dla zdefiniowanej allow-listy "interesujących"
-ścieżek kluczy YAML (w _data/readable/application/) sprawdza, czy odpowiadające
-pola w modelach (załadowanych przez istniejące parsery) są wypełnione.
+Weryfikuje kompletność parsowania: na podstawie reguł (z pliku coverage_rules.yaml)
+sprawdza obecność kluczy YAML w źródle vs. wypełnienie pól w modelach,
+oraz dynamicznie wykrywa nowe / niezmapowane klucze APEX z nowszych wersji eksportu.
 
 Użycie:
-    python -m apex_export_to_md.coverage_report [input_dir] [--output ścieżka]
+    python -m apex_export_to_md.coverage_report [input_dir] [--coverage-config path]
 """
 from __future__ import annotations
 import json
 import logging
 from collections import Counter
-from dataclasses import asdict
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import yaml
 
@@ -21,45 +20,6 @@ from apex_export_to_md.models import ApexApp
 from apex_export_to_md.parser.yaml_helpers import sanitize_yaml_text
 
 logger = logging.getLogger(__name__)
-
-
-# --- Allow-lista "interesujących" kluczy YAML do weryfikacji pokrycia ---
-# Format: (etykieta kategorii, ścieżka pliku względem application/, ścieżka klucza YAML)
-# Każdy wpis to jeden element do policzenia: ile wystąpień w źródle vs. ile sparsowano.
-
-PAGE_CHECKS: list[tuple[str, str]] = [
-    ("region.server-side-condition", "server-side-condition"),
-    ("region.appearance.template-options", "appearance.template-options"),
-    ("region.attributes.pagination", "attributes.pagination"),
-    ("region.layout.slot", "layout.slot"),
-    ("region.layout.sequence", "layout.sequence"),
-    ("region.source.location", "source.location"),
-    ("column.layout.column-alignment", "layout.column-alignment"),
-    ("column.heading.alignment", "heading.alignment"),
-    ("column.enable-users-to.sort", "enable-users-to.sort"),
-    ("page-item.session-state.data-type", "session-state.data-type"),
-    ("page-item.session-state.storage", "session-state.storage"),
-    ("page-item.security.session-state-protection", "security.session-state-protection"),
-    ("page-item.security.store-value-encrypted", "security.store-value-encrypted-in-session-state"),
-    ("page-item.layout.region", "layout.region"),
-    ("process.error.display-location", "error.display-location"),
-    ("computation.item-name", "identification.item-name"),
-    ("page.dialog.chained", "dialog.chained"),
-    ("page.help.help-text", "help.help-text"),
-    ("page.appearance.template-options", "appearance.template-options"),
-    ("page.javascript.function-and-global-variable-declaration",
-     "javascript.function-and-global-variable-declaration"),
-    ("page.server-cache.caching", "server-cache.caching"),
-]
-
-SHARED_FILES: list[tuple[str, str]] = [
-    ("authentications", "shared_components/authentications.yaml"),
-    ("plugins", "shared_components/plugins.yaml"),
-    ("search_configs", "shared_components/search_configs.yaml"),
-    ("data_load_defs", "shared_components/data_load_definitions.yaml"),
-    ("static_files", "shared_components/app_static_files.yaml"),
-    ("page_groups", "page_groups.yaml"),
-]
 
 
 def _safe_yaml_load(path: Path) -> Any:
@@ -76,6 +36,8 @@ def _safe_yaml_load(path: Path) -> Any:
 
 def _deep_get(data: Any, dotted: str) -> Any:
     """Bezpieczny odczyt zagnieżdżonej ścieżki z kropkami."""
+    if not dotted:
+        return data
     cur = data
     for part in dotted.split("."):
         if isinstance(cur, dict):
@@ -90,57 +52,283 @@ def _deep_get(data: Any, dotted: str) -> Any:
     return cur
 
 
-def _count_yaml_presence(pages_dir: Path) -> dict[str, dict]:
-    """Policz wystąpienia kluczy z allow-listy w plikach stron."""
-    totals: dict[str, dict] = {}
-    for label, _ in PAGE_CHECKS:
-        totals[label] = {"yaml_present": 0, "files": []}
+def load_coverage_rules(custom_path: str | None = None, input_dir: str = "_data") -> dict:
+    """Wczytaj reguły pokrycia mapowania APEX z plików YAML.
+
+    Kolejność priorytetu:
+    1. Wbudowane reguły domyślne: apex_export_to_md/config/coverage_rules.yaml
+    2. Reguły projektu: <input_dir>/coverage_rules.yaml lub _data/coverage_rules.yaml
+    3. Dedykowany plik podany w CLI (custom_path)
+    """
+    builtin_path = Path(__file__).parent / "config" / "coverage_rules.yaml"
+    rules: dict[str, Any] = {
+        "mapped_keys": {},
+        "ignore_keys": [],
+        "shared_files": {},
+    }
+
+    def _merge_rules(source: dict) -> None:
+        if not isinstance(source, dict):
+            return
+        if "mapped_keys" in source and isinstance(source["mapped_keys"], dict):
+            rules["mapped_keys"].update(source["mapped_keys"])
+        if "ignore_keys" in source and isinstance(source["ignore_keys"], list):
+            for item in source["ignore_keys"]:
+                if item not in rules["ignore_keys"]:
+                    rules["ignore_keys"].append(item)
+        if "shared_files" in source and isinstance(source["shared_files"], dict):
+            rules["shared_files"].update(source["shared_files"])
+
+    if builtin_path.exists():
+        data = _safe_yaml_load(builtin_path)
+        if data:
+            _merge_rules(data)
+
+    # Domyślny szum metadanych APEX (podstawowa struktura identyfikacyjna)
+    default_noise = [
+        "identification", "sequence", "id", "name", "alias",
+        "type", "title", "prompt", "slot", "display-sequence",
+    ]
+    for noise in default_noise:
+        if noise not in rules["ignore_keys"]:
+            rules["ignore_keys"].append(noise)
+
+    input_p = Path(input_dir)
+    candidates = [
+        input_p / "coverage_rules.yaml",
+        input_p.parent / "coverage_rules.yaml",
+        Path("_data") / "coverage_rules.yaml",
+    ]
+    try:
+        from apex_export_to_md.cli import find_app_root
+        app_root = find_app_root(input_p)
+        candidates.append(app_root / "coverage_rules.yaml")
+    except Exception:
+        pass
+
+    loaded_paths = {builtin_path.resolve()} if builtin_path.exists() else set()
+    for cand in candidates:
+        if cand.exists():
+            cand_res = cand.resolve()
+            if cand_res not in loaded_paths:
+                data = _safe_yaml_load(cand)
+                if data:
+                    _merge_rules(data)
+                loaded_paths.add(cand_res)
+
+    if custom_path:
+        custom_p = Path(custom_path)
+        if custom_p.exists():
+            cand_res = custom_p.resolve()
+            if cand_res not in loaded_paths:
+                data = _safe_yaml_load(custom_p)
+                if data:
+                    _merge_rules(data)
+                loaded_paths.add(cand_res)
+        else:
+            logger.warning("Plik reguł podany w CLI nie istnieje: %s", custom_path)
+
+    return rules
+
+
+def _extract_paths(val: Any, prefix: str, skip_containers: set[str] | None = None) -> set[str]:
+    """Rekurencyjnie wyciągnij ścieżki kropkowe kluczy z obiektu dict."""
+    if skip_containers is None:
+        skip_containers = set()
+    paths: set[str] = set()
+
+    if isinstance(val, dict):
+        for k, v in val.items():
+            if v is None or k in skip_containers:
+                continue
+            curr_path = f"{prefix}.{k}" if prefix else str(k)
+            if isinstance(v, dict):
+                sub_paths = _extract_paths(v, curr_path, skip_containers)
+                if sub_paths:
+                    paths.update(sub_paths)
+                else:
+                    paths.add(curr_path)
+            elif isinstance(v, list):
+                if not v:
+                    continue
+                has_dict = False
+                for item in v:
+                    if isinstance(item, dict):
+                        has_dict = True
+                        paths.update(_extract_paths(item, curr_path, skip_containers))
+                if not has_dict:
+                    paths.add(curr_path)
+            else:
+                paths.add(curr_path)
+    return paths
+
+
+def crawl_unmapped_keys(pages_dir: Path, rules: dict) -> list[dict]:
+    """Przeszukaj pliki YAML stron i znajdź niezmapowane / nowe klucze APEX."""
+    mapped_keys = rules.get("mapped_keys", {})
+    ignore_keys = rules.get("ignore_keys", [])
+
+    key_counts: Counter = Counter()
+    key_files: dict[str, list[str]] = {}
+
+    def _is_mapped(path: str) -> bool:
+        if path in mapped_keys:
+            return True
+        for mk in mapped_keys:
+            if path.startswith(mk + "."):
+                return True
+        return False
+
+    def _is_ignored(path: str) -> bool:
+        parts = path.split(".")
+        for ign in ignore_keys:
+            if ign in parts:
+                return True
+            if "." in ign and ign in path:
+                return True
+            if path == ign or path.endswith("." + ign) or path.startswith(ign + "."):
+                return True
+        return False
+
+    if not pages_dir.exists():
+        return []
 
     for yaml_file in sorted(pages_dir.glob("p*.yaml")):
         data = _safe_yaml_load(yaml_file)
         if not isinstance(data, dict):
             continue
 
-        # Kontekst: regiony, kolumny, itemy, procesy, komputacje + poziom strony
+        file_paths: set[str] = set()
+
+        file_paths.update(_extract_paths(
+            data, prefix="page",
+            skip_containers={"regions", "page-items", "items", "processes", "computations",
+                             "dynamic-actions", "buttons", "branches", "validations",
+                             "header", "footer"}
+        ))
+
+        for r in data.get("regions") or []:
+            if isinstance(r, dict):
+                file_paths.update(_extract_paths(
+                    r, prefix="region",
+                    skip_containers={"columns", "report-columns", "buttons", "page-items", "items"}
+                ))
+                for c in (r.get("columns") or []) + (r.get("report-columns") or []):
+                    if isinstance(c, dict):
+                        file_paths.update(_extract_paths(c, prefix="column"))
+
+        for item in (data.get("page-items") or []) + (data.get("items") or []):
+            if isinstance(item, dict):
+                file_paths.update(_extract_paths(item, prefix="page-item"))
+
+        for proc in data.get("processes") or []:
+            if isinstance(proc, dict):
+                file_paths.update(_extract_paths(proc, prefix="process"))
+
+        for comp in data.get("computations") or []:
+            if isinstance(comp, dict):
+                file_paths.update(_extract_paths(comp, prefix="computation"))
+
+        for da in data.get("dynamic-actions") or []:
+            if isinstance(da, dict):
+                file_paths.update(_extract_paths(da, prefix="dynamic-action"))
+
+        for btn in data.get("buttons") or []:
+            if isinstance(btn, dict):
+                file_paths.update(_extract_paths(btn, prefix="button"))
+
+        for br in data.get("branches") or []:
+            if isinstance(br, dict):
+                file_paths.update(_extract_paths(br, prefix="branch"))
+
+        for val in data.get("validations") or []:
+            if isinstance(val, dict):
+                file_paths.update(_extract_paths(val, prefix="validation"))
+
+        for path in file_paths:
+            if _is_mapped(path) or _is_ignored(path):
+                continue
+            key_counts[path] += 1
+            if path not in key_files:
+                key_files[path] = []
+            if yaml_file.name not in key_files[path]:
+                key_files[path].append(yaml_file.name)
+
+    unmapped: list[dict] = []
+    for key, count in key_counts.most_common():
+        unmapped.append({
+            "key": key,
+            "count": count,
+            "files": key_files.get(key, []),
+        })
+
+    return unmapped
+
+
+def _count_yaml_presence(pages_dir: Path, mapped_keys: dict[str, str]) -> dict[str, dict]:
+    """Policz wystąpienia kluczy z mapped_keys w plikach stron."""
+    totals: dict[str, dict] = {}
+    for label in mapped_keys:
+        totals[label] = {"yaml_present": 0, "files": []}
+
+    if not pages_dir.exists():
+        return totals
+
+    for yaml_file in sorted(pages_dir.glob("p*.yaml")):
+        data = _safe_yaml_load(yaml_file)
+        if not isinstance(data, dict):
+            continue
+
         regions = data.get("regions", []) or []
-        columns = [c for r in regions if isinstance(r, dict) for c in (r.get("columns") or [])]
-        items = data.get("page-items", []) or []
+        columns = [c for r in regions if isinstance(r, dict) for c in ((r.get("columns") or []) + (r.get("report-columns") or []))]
+        items = (data.get("page-items", []) or []) + (data.get("items", []) or [])
         processes = data.get("processes", []) or []
         computations = data.get("computations") or []
+        dynamic_actions = data.get("dynamic-actions") or []
+        buttons = data.get("buttons") or []
+        branches = data.get("branches") or []
+        validations = data.get("validations") or []
 
-        def _check(label: str, key_path: str, containers: list[Any]) -> None:
-            for c in containers:
-                if isinstance(c, dict) and _deep_get(c, key_path) is not None:
-                    totals[label]["yaml_present"] += 1
-                    totals[label]["files"].append(yaml_file.name)
-                    break  # jeden plik liczymy raz per kategoria
-
-        for label, key_path in PAGE_CHECKS:
-            if label.startswith("region."):
-                containers = regions
-            elif label.startswith("column."):
-                containers = columns
-            elif label.startswith("page-item."):
-                containers = items
-            elif label.startswith("process."):
-                containers = processes
-            elif label.startswith("computation."):
-                containers = computations
-            elif label.startswith("page."):
-                # Poziom całej strony
-                if _deep_get(data, key_path) is not None:
-                    totals[label]["yaml_present"] += 1
-                    totals[label]["files"].append(yaml_file.name)
-                continue
+        for label in mapped_keys:
+            if "." in label:
+                sec, key_path = label.split(".", 1)
             else:
-                continue
-            _check(label, key_path, containers)
+                sec, key_path = label, ""
+
+            if sec == "region":
+                containers = regions
+            elif sec == "column":
+                containers = columns
+            elif sec in ("page-item", "item"):
+                containers = items
+            elif sec == "process":
+                containers = processes
+            elif sec == "computation":
+                containers = computations
+            elif sec in ("dynamic-action", "da"):
+                containers = dynamic_actions
+            elif sec == "button":
+                containers = buttons
+            elif sec == "branch":
+                containers = branches
+            elif sec == "validation":
+                containers = validations
+            elif sec == "page":
+                containers = [data]
+            else:
+                containers = [data]
+
+            for c in containers:
+                if isinstance(c, dict) and (key_path == "" or _deep_get(c, key_path) is not None):
+                    totals[label]["yaml_present"] += 1
+                    totals[label]["files"].append(yaml_file.name)
+                    break
 
     return totals
 
 
 def _model_field_populated(app: ApexApp) -> dict[str, int]:
-    """Policz ile modeli ma wypełnione nowe pola (miara skuteczności parsera)."""
+    """Policz ile modeli ma wypełnione pola zmapowane."""
     counts: Counter = Counter()
 
     for page in app.pages:
@@ -183,41 +371,15 @@ def _model_field_populated(app: ApexApp) -> dict[str, int]:
     return dict(counts)
 
 
-# Mapowanie: kategoria YAML → odpowiadające pole modelu (do % pokrycia)
-YAML_TO_MODEL: dict[str, str] = {
-    "region.server-side-condition": "region.server_side_condition",
-    "region.appearance.template-options": "region.template_options",
-    "region.attributes.pagination": "region.pagination",
-    "region.layout.slot": "region.slot",
-    "region.layout.sequence": "region.sequence",
-    "region.source.location": "region.source_location",
-    "column.layout.column-alignment": "column.column_alignment",
-    "column.heading.alignment": "column.heading_alignment",
-    "column.enable-users-to.sort": "column.sortable",
-    "page-item.session-state.data-type": "page_item.data_type",
-    "page-item.session-state.storage": "page_item.storage",
-    "page-item.security.session-state-protection": "page_item.session_state_protection",
-    "page-item.security.store-value-encrypted": "page_item.store_encrypted",
-    "page-item.layout.region": "page_item.region",
-    "process.error.display-location": "process.error_display_location",
-    "computation.item-name": "page.computations",
-    "page.dialog.chained": "page.dialog",
-    "page.help.help-text": "page.help_text",
-    "page.appearance.template-options": "page.template_options",
-    "page.javascript.function-and-global-variable-declaration": "page.javascript_full",
-    "page.server-cache.caching": "page.server_cache",
-}
-
-
-def generate_coverage_report(input_dir: str = "_data") -> dict:
+def generate_coverage_report(input_dir: str = "_data", coverage_config: str = "") -> dict:
     """Wygeneruj raport pokrycia mapowania.
 
     Args:
-        input_dir: Katalog eksportu APEX (z readable/application/ w środku)
+        input_dir: Katalog eksportu APEX
+        coverage_config: Opcjonalna ścieżka do niestandardowych reguł pokrycia YAML
 
     Returns:
-        Słownik ze statystykami: per-kategoria yaml_present/model_filled/coverage_pct
-        oraz podsumowanie shared files.
+        Słownik ze statystykami mapowania i niezmapowanymi kluczami.
     """
     from apex_export_to_md.cli import find_app_root
     from apex_export_to_md.parser.page_parser import parse_all_pages
@@ -227,10 +389,18 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
     pages_dir = app_root / "pages"
     shared_dir = app_root / "shared_components"
 
-    # 1. Policz wystąpienia kluczy YAML w plikach źródłowych
-    yaml_presence = _count_yaml_presence(pages_dir)
+    # 1. Załaduj reguły pokrycia
+    rules = load_coverage_rules(custom_path=coverage_config, input_dir=input_dir)
+    mapped_keys = rules.get("mapped_keys", {})
+    shared_files_rules = rules.get("shared_files", {})
 
-    # 2. Załaduj modele przez istniejące parsery
+    # 2. Policz wystąpienia zmapowanych kluczy YAML w plikach stron
+    yaml_presence = _count_yaml_presence(pages_dir, mapped_keys)
+
+    # 3. Skanuj pliki pod kątem niezmapowanych kluczy APEX
+    unmapped_keys = crawl_unmapped_keys(pages_dir, rules)
+
+    # 4. Załaduj modele przez parsery
     pages = parse_all_pages(pages_dir)
     shared = parse_shared_components(shared_dir)
     app = ApexApp(
@@ -238,20 +408,15 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
     )
     model_counts = _model_field_populated(app)
 
-    # 3. Zbuduj per-kategoria statystyki pokrycia
+    # 5. Zbuduj per-kategoria statystyki pokrycia
     categories: list[dict] = []
-    for yaml_label, model_field in YAML_TO_MODEL.items():
+    for yaml_label, model_field in mapped_keys.items():
         yaml_count = yaml_presence.get(yaml_label, {}).get("yaml_present", 0)
         model_count = model_counts.get(model_field, 0)
-        # coverage: model nie może być > źródła, ale liczby liczone są różnie
-        # (yaml_present = liczba plików; model_count = liczba elementów).
-        # Dla kategorii "per-element" liczymy po prostu: czy model > 0 gdy yaml > 0.
         if yaml_count == 0:
-            pct = 100.0  # brak źródła = pełne pokrycie (nie ma czego mapować)
+            pct = 100.0
         else:
             pct = round(min(100.0, (model_count / max(yaml_count, 1)) * 100), 1)
-            # Korekta: jeśli model ma więcej elementów niż plików (bo wiele per strona),
-            # traktujemy jako pełne pokrycie, gdy model_count > 0.
             if model_count >= yaml_count:
                 pct = 100.0
         categories.append({
@@ -262,9 +427,9 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
             "coverage_pct": pct,
         })
 
-    # 4. Shared files presence
+    # 6. Shared components status
     shared_status: list[dict] = []
-    for label, rel_path in SHARED_FILES:
+    for label, rel_path in shared_files_rules.items():
         full = app_root / rel_path
         data = _safe_yaml_load(full)
         count = len(app.authentications) if label == "authentications" else \
@@ -272,7 +437,7 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
                 len(app.search_configs) if label == "search_configs" else \
                 len(app.data_load_defs) if label == "data_load_defs" else \
                 len(app.static_files) if label == "static_files" else \
-                len(app.page_groups)
+                len(app.page_groups) if label == "page_groups" else 0
         shared_status.append({
             "component": label,
             "file": rel_path,
@@ -282,10 +447,12 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
             "mapped": count > 0,
         })
 
-    # 5. Podsumowanie
+    # 7. Podsumowanie
     mapped_cats = sum(1 for c in categories if c["yaml_present"] > 0 and c["model_filled"] > 0)
-    source_cats = sum(1 for c in categories if c["yaml_present"] > 0)
-    overall_pct = round((mapped_cats / source_cats * 100), 1) if source_cats else 100.0
+    unmapped_count = len(unmapped_keys)
+    total_evaluated = mapped_cats + unmapped_count
+    overall_pct = round((mapped_cats / total_evaluated * 100), 1) if total_evaluated > 0 else 100.0
+
     mapped_shared = sum(1 for s in shared_status if s["mapped"])
     source_shared = sum(1 for s in shared_status if s["file_exists"])
 
@@ -293,10 +460,12 @@ def generate_coverage_report(input_dir: str = "_data") -> dict:
         "input_dir": str(app_root),
         "pages_count": len(pages),
         "overall_coverage_pct": overall_pct,
-        "categories_mapped": f"{mapped_cats}/{source_cats}",
+        "categories_mapped": f"{mapped_cats}/{total_evaluated}",
         "shared_mapped": f"{mapped_shared}/{source_shared}",
         "categories": categories,
         "shared_components": shared_status,
+        "unmapped_keys": unmapped_keys,
+        "unmapped_count": unmapped_count,
     }
 
 
@@ -326,18 +495,29 @@ def format_report_text(report: dict) -> str:
         flag = "TAK" if s["mapped"] else ("BRAK" if s["file_exists"] else "—")
         lines.append(f"{s['component']:<20} {s['file']:<45} {flag:>9}")
     lines.append("")
+    lines.append("--- UNMAPPED / NEW APEX KEYS ---")
+    unmapped = report.get("unmapped_keys", [])
+    if not unmapped:
+        lines.append("Brak niezmapowanych kluczy APEX.")
+    else:
+        lines.append(f"{'Klucz YAML':<50} {'Wystąpienia':>12} {'Przykłady':<20}")
+        lines.append("-" * 85)
+        for u in unmapped:
+            sample_files = ", ".join(u["files"][:3])
+            lines.append(f"{u['key']:<50} {u['count']:>12} {sample_files:<20}")
+    lines.append("")
     lines.append("=" * 70)
     return "\n".join(lines)
 
 
 def run_coverage(input_dir: str = "_data", output_dir: str = "_out",
-                 as_json: bool = False) -> str:
+                 as_json: bool = False, coverage_config: str = "") -> str:
     """Uruchom raport pokrycia i zapisz wynik.
 
     Returns:
         Ścieżka do zapisanego pliku raportu.
     """
-    report = generate_coverage_report(input_dir)
+    report = generate_coverage_report(input_dir, coverage_config=coverage_config)
 
     out_path_dir = Path(output_dir)
     out_path_dir.mkdir(parents=True, exist_ok=True)
@@ -354,19 +534,19 @@ def run_coverage(input_dir: str = "_data", output_dir: str = "_out",
 
 
 def main() -> None:
-    """Punkt wejścia: python -m apex_export_to_md.coverage_report [input] [--json]."""
+    """Punkt wejścia: python -m apex_export_to_md.coverage_report [input] [--json] [--coverage-config path]."""
     import argparse
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     parser = argparse.ArgumentParser(prog="apex_export_to_md.coverage_report",
                                      description="Raport pokrycia mapowania elementów APEX.")
     parser.add_argument("input_dir", nargs="?", default="_data")
     parser.add_argument("--output-dir", default="_out")
+    parser.add_argument("--coverage-config", default="", help="Ścieżka do niestandardowego pliku reguł pokrycia YAML")
     parser.add_argument("--json", action="store_true", help="Wyjście JSON zamiast tekstu")
     args = parser.parse_args()
-    path = run_coverage(args.input_dir, args.output_dir, as_json=args.json)
+    path = run_coverage(args.input_dir, args.output_dir, as_json=args.json, coverage_config=args.coverage_config)
     print(f"Raport pokrycia zapisany: {path}")
-    # Wydrukuj podsumowanie na konsolę
-    report = generate_coverage_report(args.input_dir)
+    report = generate_coverage_report(args.input_dir, coverage_config=args.coverage_config)
     print(format_report_text(report))
 
 

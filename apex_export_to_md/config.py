@@ -45,6 +45,7 @@ class AppConfig:
 
     # --- Raport pokrycia ---
     coverage: bool = False
+    coverage_config: str = ""
 
     # --- Opcje dodatkowe ---
     include_internal_ids: bool = False

@@ -100,3 +100,44 @@ def test_index_minimal_without_storage(ddl_app: ApexApp):
     renderer = DDLScriptRenderer(AppConfig())
     output = renderer.render(ddl_app)
     assert 'CREATE INDEX "A_PYTANIE_IDX1" ON "A_PYTANIE" ("PYTANIE_TRESC");' in output
+
+
+def test_multiline_comments_empty_lines_and_semicolons_stripped(ddl_app: ApexApp):
+    """Komentarze tabel/kolumn nie powinny zawierać pustych linii ani średników w wygenerowanym DDL."""
+    from apex_export_to_md.models import DDLTable
+
+    table = DDLTable(
+        name="TEST_TABLE",
+        comment="Linia 1; opis z średnikiem;\n  \n\nLinia 2 z tekstem;\n\t\nLinia 3",
+        column_comments={
+            "COL1": "Opis kolumny 1; z średnikiem\n\nOpis kolumny 1 c.d."
+        }
+    )
+    ddl_app.ddl_schema.tables.append(table)
+
+    renderer = DDLScriptRenderer(AppConfig())
+    output = renderer.render(ddl_app)
+
+    # Sprawdzenie komentarza tabeli
+    expected_table_comment = "COMMENT ON TABLE \"TEST_TABLE\" IS 'Linia 1 opis z średnikiem\nLinia 2 z tekstem\nLinia 3';"
+    assert expected_table_comment in output
+
+    # Sprawdzenie komentarza kolumny
+    expected_col_comment = "COMMENT ON COLUMN \"TEST_TABLE\".\"COL1\" IS 'Opis kolumny 1 z średnikiem\nOpis kolumny 1 c.d.';"
+    assert expected_col_comment in output
+
+
+def test_no_consecutive_empty_lines_or_whitespace_lines(ddl_app: ApexApp):
+    """Skrypt DDL nie powinien zawierać kolejnych pustych linii ani linii składających się z samych spacji."""
+    renderer = DDLScriptRenderer(AppConfig())
+    output = renderer.render(ddl_app)
+
+    lines = output.split("\n")
+    for i, line in enumerate(lines):
+        # Brak spacji w pustych liniach
+        if not line.strip():
+            assert line == "", f"Linia {i+1} zawiera same białe znaki: {repr(line)}"
+        # Brak dwóch kolejnych pustych linii
+        if i > 0 and line == "" and lines[i-1] == "":
+            pytest.fail(f"Znaleziono podwójną pustą linię w linii {i+1}")
+

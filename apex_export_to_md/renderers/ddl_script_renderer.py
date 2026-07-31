@@ -138,14 +138,21 @@ class DDLScriptRenderer(BaseRenderer):
         lines.append("-- KONIEC SKRYPTU DDL")
         lines.append("-- ============================================================")
 
-        return "\n".join(lines)
+        # Filtrujemy skumulowane/puste linie, tak aby puste linie (np. same spaccje) nie przenikały do finalnego skryptu
+        cleaned_lines: list[str] = []
+        for line in lines:
+            if line.strip() == "" and (not cleaned_lines or cleaned_lines[-1] == ""):
+                continue
+            cleaned_lines.append(line if line.strip() else "")
+
+        return "\n".join(cleaned_lines)
     def _strip_empty_lines(self, sql: str) -> str:
         """Usuń puste linie z bloku kodu SQL.
 
         APEX SQL Workshop traktuje pustą linię jako koniec kodu,
         dlatego usuwamy linie składające się wyłącznie z whitespace.
         """
-        lines = sql.split('\n')
+        lines = sql.splitlines()
         return '\n'.join(line for line in lines if line.strip())
     def _strip_schema(self, sql: str, schema: str) -> str:
         """Usuń referencje do schematu źródłowego z SQL."""
@@ -211,19 +218,36 @@ class DDLScriptRenderer(BaseRenderer):
         body = ",\n".join(col_defs)
         return f'CREATE TABLE "{table.name}" (\n{body}\n);'
 
+    def _clean_comment_text(self, comment: str) -> str:
+        """Oczyszcza treść komentarza z pustych linii oraz znaków średnika ';'.
+
+        APEX SQL Workshop traktuje pustą linię oraz znak średnika wewnątrz
+        komentarza ujętego w literał tekstowy '...' jako koniec/podział instrukcji SQL.
+        Usuwamy linie zawierające wyłącznie białe znaki oraz usuwamy średniki z treści komentarza.
+        """
+        # Usuwamy średniki z treści komentarza, aby APEX SQL Workshop nie traktował ich jako końca polecenia
+        comment_without_semicolons = comment.replace(";", "")
+        lines = comment_without_semicolons.splitlines()
+        non_empty = [line for line in lines if line.strip()]
+        return "\n".join(non_empty)
+
     def _render_comments(self, ddl: DDLSchema) -> str:
         """Generuj COMMENT ON TABLE/COLUMN."""
         lines: list[str] = []
         for table in ddl.tables:
             if table.comment:
-                escaped = table.comment.replace("'", "''")
+                clean_comment = self._clean_comment_text(table.comment)
+                escaped = clean_comment.replace("'", "''")
                 lines.append(f"COMMENT ON TABLE \"{table.name}\" IS '{escaped}';")
             for col_name, comment in table.column_comments.items():
-                escaped = comment.replace("'", "''")
-                lines.append(f"COMMENT ON COLUMN \"{table.name}\".\"{col_name}\" IS '{escaped}';")
+                if comment:
+                    clean_comment = self._clean_comment_text(comment)
+                    escaped = clean_comment.replace("'", "''")
+                    lines.append(f"COMMENT ON COLUMN \"{table.name}\".\"{col_name}\" IS '{escaped}';")
         for view in ddl.views:
             if view.comment:
-                escaped = view.comment.replace("'", "''")
+                clean_comment = self._clean_comment_text(view.comment)
+                escaped = clean_comment.replace("'", "''")
                 lines.append(f"COMMENT ON TABLE \"{view.name}\" IS '{escaped}';")
         return "\n".join(lines)
 

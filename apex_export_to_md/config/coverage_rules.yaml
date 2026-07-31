@@ -1,0 +1,55 @@
+mapped_keys:
+  region.server-side-condition: region.server_side_condition
+  region.appearance.template-options: region.template_options
+  region.attributes.pagination: region.pagination
+  region.layout.slot: region.slot
+  region.layout.sequence: region.sequence
+  region.source.location: region.source_location
+  column.layout.column-alignment: column.column_alignment
+  column.heading.alignment: column.heading_alignment
+  column.enable-users-to.sort: column.sortable
+  page-item.session-state.data-type: page_item.data_type
+  page-item.session-state.storage: page_item.storage
+  page-item.security.session-state-protection: page_item.session_state_protection
+  page-item.security.store-value-encrypted: page_item.store_encrypted
+  page-item.layout.region: page_item.region
+  process.error.display-location: process.error_display_location
+  computation.item-name: page.computations
+  page.dialog.chained: page.dialog
+  page.help.help-text: page.help_text
+  page.appearance.template-options: page.template_options
+  page.javascript.function-and-global-variable-declaration: page.javascript_full
+  page.server-cache.caching: page.server_cache
+
+ignore_keys:
+  - accessibility
+  - customization
+  - server-cache
+  - session-management
+  - subscription
+  - export-/-printing
+  - column-filter
+  - toolbar
+  - icon-view
+  - detail-view
+  - saved-reports
+  - download
+  - advanced
+  - heading
+  - layout
+  - appearance
+  - security
+  - navigation
+  - navigation-menu
+  - behavior
+  - execution-options
+  - execution
+  - grid
+
+shared_files:
+  authentications: shared_components/authentications.yaml
+  plugins: shared_components/plugins.yaml
+  search_configs: shared_components/search_configs.yaml
+  data_load_defs: shared_components/data_load_definitions.yaml
+  static_files: shared_components/app_static_files.yaml
+  page_groups: page_groups.yaml

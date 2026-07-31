@@ -109,7 +109,13 @@ class MigrationRenderer(DDLScriptRenderer):
         lines.append("-- KONIEC SKRYPTU MIGRACYJNEGO")
         lines.append("-- ============================================================")
 
-        return "\n".join(lines)
+        cleaned_lines: list[str] = []
+        for line in lines:
+            if line.strip() == "" and (not cleaned_lines or cleaned_lines[-1] == ""):
+                continue
+            cleaned_lines.append(line if line.strip() else "")
+
+        return "\n".join(cleaned_lines)
 
     def _render_create_objects(self, ddl: DDLSchema) -> str:
         """Generuj DDL tworzenia obiektów (sekwencje + tabele z FK, widoki, pakiety, procedury)."""
