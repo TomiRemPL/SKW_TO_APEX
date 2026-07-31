@@ -20,4 +20,5 @@ venv/
 
 # Wygenerowane artefakty i backupy
 _out/
+_data/
 CLAUDE.md.bak
