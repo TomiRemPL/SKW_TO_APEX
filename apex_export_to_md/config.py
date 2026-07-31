@@ -43,6 +43,9 @@ class AppConfig:
     # --- GUI ---
     gui: bool = False
 
+    # --- Raport pokrycia ---
+    coverage: bool = False
+
     # --- Opcje dodatkowe ---
     include_internal_ids: bool = False
     include_layout: bool = False

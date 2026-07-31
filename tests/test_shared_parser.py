@@ -90,3 +90,82 @@ def test_parse_acl_roles(sample_acl_roles_yaml):
     assert roles[0].static_id == "ADMINISTRATOR"
     assert roles[1].name == "Contributor"
     assert roles[1].static_id == "CONTRIBUTOR"
+
+
+def test_parse_authentications():
+    """Parser wyciąga schematy autentykacji (LDAP/ADFS)."""
+    from apex_export_to_md.parser.shared_parser import parse_authentications
+    data = [
+        {
+            "identification": {"name": "LDAP Auth"},
+            "settings": {
+                "type": "LDAP Directory",
+                "host": "adldap.test",
+                "port": 636,
+                "use-ssl": "SSL",
+                "distinguished-name-(dn)-string": "cn=%USER%",
+            },
+        }
+    ]
+    auths = parse_authentications(data)
+    assert len(auths) == 1
+    assert auths[0].name == "LDAP Auth"
+    assert auths[0].host == "adldap.test"
+    assert auths[0].port == "636"
+
+
+def test_parse_plugins():
+    """Parser wyciąga pluginy APEX."""
+    from apex_export_to_md.parser.shared_parser import parse_plugins
+    data = [
+        {
+            "identification": {
+                "name": "Avatar",
+                "internal-name": "THEME_555$AVATAR",
+                "theme": "Universal Theme # 555",
+                "type": "Template Component",
+            },
+            "templates": {"available-as": ["Single (Partial)"]},
+        }
+    ]
+    plugins = parse_plugins(data)
+    assert len(plugins) == 1
+    assert plugins[0].name == "Avatar"
+    assert plugins[0].theme == "Universal Theme"
+    assert "Single (Partial)" in plugins[0].available_as
+
+
+def test_parse_search_configs():
+    """Parser wyciąga konfiguracje wyszukiwania."""
+    from apex_export_to_md.parser.shared_parser import parse_search_configs
+    data = [
+        {
+            "identification": {"name": "Search1"},
+            "source": {
+                "search-type": "Simple",
+                "location": "Local Database",
+                "sql-query": "SELECT * FROM T",
+            },
+        }
+    ]
+    configs = parse_search_configs(data)
+    assert len(configs) == 1
+    assert configs[0].name == "Search1"
+    assert configs[0].sql_query == "SELECT * FROM T"
+
+
+def test_parse_data_load_defs():
+    """Parser wyciąga definicje ładowania danych."""
+    from apex_export_to_md.parser.shared_parser import parse_data_load_defs
+    data = [
+        {
+            "identification": {"name": "DL1"},
+            "target": {"type": "Table", "table-name": "STG_TBL", "loading-method": "Append"},
+            "advanced": {"commit-interval": 200},
+        }
+    ]
+    defs = parse_data_load_defs(data)
+    assert len(defs) == 1
+    assert defs[0].name == "DL1"
+    assert defs[0].table_name == "STG_TBL"
+    assert defs[0].commit_interval == "200"

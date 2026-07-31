@@ -11,8 +11,11 @@ import yaml
 
 from apex_export_to_md.models import (
     LOV, Authorization, NavList, AppItem, BuildOption, Breadcrumb, AclRole,
+    Authentication, Plugin, SearchConfig, DataLoadDef, StaticFile, PageGroup,
 )
-from apex_export_to_md.parser.yaml_helpers import safe_get, safe_get_str, sanitize_yaml_text
+from apex_export_to_md.parser.yaml_helpers import (
+    safe_get, safe_get_str, safe_get_bool, sanitize_yaml_text, strip_apex_id,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -194,6 +197,128 @@ def parse_acl_roles(data: list[dict] | None) -> list[AclRole]:
     return roles
 
 
+def parse_authentications(data: list[dict] | None) -> list[Authentication]:
+    """Parsuj schematy autentykacji (LDAP, OpenID/ADFS, APEX Accounts)."""
+    if not data:
+        return []
+    auths: list[Authentication] = []
+    for item in data:
+        ident = item.get("identification", {})
+        settings = item.get("settings", {})
+        session_not_valid = item.get("session-not-valid", {})
+        login_processing = item.get("login-processing", {})
+
+        # port może być liczbą lub stringiem — trzymaj jako string
+        port = safe_get(settings, "port")
+        port_str = str(port) if port is not None else None
+
+        auths.append(Authentication(
+            name=safe_get_str(ident, "name", "") or "",
+            type=safe_get_str(settings, "type"),
+            host=safe_get_str(settings, "host"),
+            port=port_str,
+            use_ssl=safe_get_str(settings, "use-ssl"),
+            dn_string=safe_get_str(settings, "distinguished-name-(dn)-string"),
+            session_not_valid_redirect=safe_get_str(session_not_valid, "redirect-to")
+            if isinstance(session_not_valid, dict) else None,
+            switch_in_session=safe_get_bool(login_processing, "switch-in-session")
+            if isinstance(login_processing, dict) else None,
+        ))
+    return auths
+
+
+def parse_plugins(data: list[dict] | None) -> list[Plugin]:
+    """Parsuj pluginy APEX (template components, item types, DA types)."""
+    if not data:
+        return []
+    plugins: list[Plugin] = []
+    for item in data:
+        ident = item.get("identification", {})
+        templates = item.get("templates", {})
+        available_as: list[str] = []
+        if isinstance(templates, dict):
+            raw = templates.get("available-as")
+            if isinstance(raw, list):
+                available_as = [str(a) for a in raw if a]
+        plugins.append(Plugin(
+            name=safe_get_str(ident, "name", "") or "",
+            internal_name=safe_get_str(ident, "internal-name"),
+            theme=safe_get_str(ident, "theme", strip_id=True),
+            plugin_type=safe_get_str(ident, "type"),
+            available_as=available_as,
+        ))
+    return plugins
+
+
+def parse_search_configs(data: list[dict] | None) -> list[SearchConfig]:
+    """Parsuj konfiguracje wyszukiwania aplikacji (App Search)."""
+    if not data:
+        return []
+    configs: list[SearchConfig] = []
+    for item in data:
+        ident = item.get("identification", {})
+        source = item.get("source", {})
+        column_mapping = item.get("column-mapping", {})
+        configs.append(SearchConfig(
+            name=safe_get_str(ident, "name", "") or "",
+            search_type=safe_get_str(source, "search-type"),
+            location=safe_get_str(source, "location"),
+            sql_query=safe_get(source, "sql-query"),
+            searchable_columns=safe_get_str(source, "searchable-columns"),
+            column_mapping=column_mapping if isinstance(column_mapping, dict) else {},
+        ))
+    return configs
+
+
+def parse_data_load_defs(data: list[dict] | None) -> list[DataLoadDef]:
+    """Parsuj definicje ładowania danych (Data Load Definitions)."""
+    if not data:
+        return []
+    defs: list[DataLoadDef] = []
+    for item in data:
+        ident = item.get("identification", {})
+        target = item.get("target", {})
+        advanced = item.get("advanced", {})
+        defs.append(DataLoadDef(
+            name=safe_get_str(ident, "name", "") or "",
+            target_type=safe_get_str(target, "type") if isinstance(target, dict) else None,
+            table_name=safe_get_str(target, "table-name") if isinstance(target, dict) else None,
+            loading_method=safe_get_str(target, "loading-method") if isinstance(target, dict) else None,
+            commit_interval=str(safe_get(advanced, "commit-interval"))
+            if safe_get(advanced, "commit-interval") is not None else None,
+            static_id=safe_get_str(item, "advanced.static-id"),
+        ))
+    return defs
+
+
+def parse_static_files(data: list[dict] | None) -> list[StaticFile]:
+    """Parsuj pliki statyczne aplikacji (Static Application Files)."""
+    if not data:
+        return []
+    files: list[StaticFile] = []
+    for item in data:
+        ident = item.get("identification", {})
+        attrs = item.get("attributes", {})
+        files.append(StaticFile(
+            file_name=safe_get_str(ident, "file-name", "") or "",
+            mime_type=safe_get_str(attrs, "mime-type") if isinstance(attrs, dict) else None,
+        ))
+    return files
+
+
+def parse_page_groups(data: list[dict] | None) -> list[PageGroup]:
+    """Parsuj grupy stron aplikacji."""
+    if not data:
+        return []
+    groups: list[PageGroup] = []
+    for item in data:
+        ident = item.get("identification", {})
+        groups.append(PageGroup(
+            name=safe_get_str(ident, "name", "") or "",
+        ))
+    return groups
+
+
 def parse_shared_components(shared_dir: Path) -> dict:
     """Parsuj wszystkie shared components z katalogu.
 
@@ -209,6 +334,12 @@ def parse_shared_components(shared_dir: Path) -> dict:
         "build_options": [],
         "breadcrumbs": [],
         "acl_roles": [],
+        "authentications": [],
+        "plugins": [],
+        "search_configs": [],
+        "data_load_defs": [],
+        "static_files": [],
+        "page_groups": [],
     }
 
     if not shared_dir.exists():
@@ -224,6 +355,11 @@ def parse_shared_components(shared_dir: Path) -> dict:
         "build_options.yaml": (parse_build_options, "build_options"),
         "breadcrumbs.yaml": (parse_breadcrumbs, "breadcrumbs"),
         "acl_roles.yaml": (parse_acl_roles, "acl_roles"),
+        "authentications.yaml": (parse_authentications, "authentications"),
+        "plugins.yaml": (parse_plugins, "plugins"),
+        "search_configs.yaml": (parse_search_configs, "search_configs"),
+        "data_load_definitions.yaml": (parse_data_load_defs, "data_load_defs"),
+        "app_static_files.yaml": (parse_static_files, "static_files"),
     }
 
     for filename, (parser_fn, result_key) in parsers.items():
@@ -231,5 +367,12 @@ def parse_shared_components(shared_dir: Path) -> dict:
         if data:
             result[result_key] = parser_fn(data)
             logger.debug("Sparsowano %s: %d elementów", filename, len(result[result_key]))
+
+    # page_groups.yaml leży jeden poziom wyżej (w application/), nie w shared_components/
+    app_dir = shared_dir.parent
+    page_groups_data = load_yaml_file(app_dir / "page_groups.yaml")
+    if page_groups_data:
+        result["page_groups"] = parse_page_groups(page_groups_data)
+        logger.debug("Sparsowano page_groups.yaml: %d elementów", len(result["page_groups"]))
 
     return result

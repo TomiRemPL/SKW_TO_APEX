@@ -11,15 +11,33 @@ from typing import Any
 import yaml
 
 from apex_export_to_md.models import (
-    ApexPage, Region, Column, PageItem, Process,
+    ApexPage, Region, Column, PageItem, Process, Computation,
     DynamicAction, DynamicActionStep, Button, Branch, Validation,
 )
 from apex_export_to_md.parser.yaml_helpers import (
     safe_get, safe_get_str, safe_get_int, safe_get_bool, safe_get_list,
-    collect_build_options, sanitize_yaml_text,
+    collect_build_options, sanitize_yaml_text, strip_apex_id,
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _compress_condition(ssc: Any) -> str | None:
+    """Skondensuj blok server-side-condition do jednego stringa.
+
+    Wzorzec zgodny z _parse_processes/_parse_branches: iteracja po kluczach
+    (type, value, expression) plus when-button-pressed.
+    """
+    if not isinstance(ssc, dict) or not ssc:
+        return None
+    cond_parts: list[str] = []
+    for key in ("type", "value", "expression"):
+        val = ssc.get(key)
+        if val:
+            cond_parts.append(f"{key}={val}")
+    if cond_parts:
+        return ", ".join(cond_parts)
+    return None
 
 
 def parse_all_pages(pages_dir: Path) -> list[ApexPage]:
@@ -64,6 +82,47 @@ def parse_page(data: dict) -> ApexPage:
     # Parsowanie page-group — może być w identification lub na poziomie top-level
     page_group = safe_get_str(ident, "page-group", strip_id=True)
 
+    # Wygląd strony: template + template-options
+    appearance = data.get("appearance", {}) or {}
+    page_template = (
+        safe_get_str(appearance, "page-template", strip_id=True)
+        or safe_get_str(appearance, "dialog-template", strip_id=True)
+    )
+    template_options_raw = safe_get_list(appearance, "template-options")
+    template_options: list[str] = []
+    for opt in template_options_raw:
+        if isinstance(opt, str):
+            template_options.append(strip_apex_id(opt) or opt)
+
+    # Dialog — osobny blok top-level (chained, resizable, max-width...) dla stron modalnych
+    dialog = data.get("dialog", {}) or {}
+    if isinstance(dialog, dict):
+        dialog = {k: v for k, v in dialog.items()}
+
+    # Tekst pomocy strony
+    help_text = safe_get_str(data, "help.help-text")
+
+    # Navigation / Advanced / Session-management
+    navigation = data.get("navigation", {}) or {}
+    advanced = data.get("advanced", {}) or {}
+    session_management = data.get("session-management", {}) or {}
+
+    # Server cache (poziom strony)
+    server_cache = safe_get_str(data, "server-cache.caching")
+
+    # JavaScript: Function & Global Variable Declaration (pełny) + inline
+    javascript_full = safe_get(data, "javascript.function-and-global-variable-declaration")
+    js_inline = (
+        safe_get(data, "javascript.execute-when-page-loads")
+        or safe_get(data, "javascript.inline")
+    )
+
+    # Szczegóły security (poza authentication)
+    security = data.get("security", {}) or {}
+    security_detail: dict = {
+        k: v for k, v in security.items() if k != "authentication"
+    } if isinstance(security, dict) else {}
+
     return ApexPage(
         id=safe_get_int(data, "id"),
         name=safe_get_str(ident, "name", "") or "",
@@ -71,7 +130,8 @@ def parse_page(data: dict) -> ApexPage:
         title=safe_get_str(ident, "title", "") or "",
         page_group=page_group,
         page_mode=safe_get_str(data, "appearance.page-mode", "Normal") or "Normal",
-        security=data.get("security", {}),
+        security=security,
+        security_detail=security_detail,
         build_options=collect_build_options(data),
         regions=_parse_regions(data.get("regions", [])),
         items=_parse_items(data.get("page-items", [])),
@@ -80,11 +140,18 @@ def parse_page(data: dict) -> ApexPage:
         dynamic_actions=_parse_dynamic_actions(data.get("dynamic-actions", [])),
         branches=_parse_branches(data.get("branches", [])),
         validations=_parse_validations(data.get("validations", [])),
+        computations=_parse_computations(data.get("computations")),
+        dialog=dialog,
+        help_text=help_text,
+        page_template=page_template,
+        template_options=template_options,
+        navigation=navigation,
+        advanced=advanced,
+        server_cache=server_cache,
+        session_management=session_management,
+        javascript_full=javascript_full,
         css_inline=safe_get(data, "css.inline"),
-        js_inline=(
-            safe_get(data, "javascript.execute-when-page-loads")
-            or safe_get(data, "javascript.inline")
-        ),
+        js_inline=js_inline,
     )
 
 
@@ -99,6 +166,30 @@ def _parse_regions(regions_data: list[dict]) -> list[Region]:
         source = r.get("source", {})
         attrs = r.get("attributes", {})
         edit = attrs.get("edit", {})
+        layout = r.get("layout", {})
+        appearance = r.get("appearance", {})
+
+        # template + template-options
+        template = safe_get_str(appearance, "template", strip_id=True) if isinstance(appearance, dict) else None
+        tpl_opts_raw = safe_get_list(appearance, "template-options") if isinstance(appearance, dict) else []
+        template_options = [strip_apex_id(o) or o for o in tpl_opts_raw if isinstance(o, str)]
+
+        # Skondensowany summary atrybutów (toolbar/download/heading/saved-reports/pagination)
+        attributes_summary: dict = {}
+        if isinstance(attrs, dict):
+            for key in ("toolbar", "download", "heading", "saved-reports",
+                        "performance", "appearance", "enable-users-to"):
+                sub = attrs.get(key)
+                if isinstance(sub, dict) and sub:
+                    attributes_summary[key] = sub
+
+        # Paginacja — skondensowana
+        pagination = None
+        pag = attrs.get("pagination") if isinstance(attrs, dict) else None
+        if isinstance(pag, dict) and pag:
+            parts = [f"{k}={v}" for k, v in pag.items() if v]
+            if parts:
+                pagination = ", ".join(parts)
 
         region = Region(
             name=safe_get_str(ident, "name", "") or "",
@@ -110,6 +201,19 @@ def _parse_regions(regions_data: list[dict]) -> list[Region]:
             columns=_parse_columns(r.get("columns", [])),
             editable=safe_get_bool(edit, "enabled") if isinstance(edit, dict) else False,
             allowed_operations=safe_get_list(edit, "allowed-operations") if isinstance(edit, dict) else [],
+            template=template,
+            template_options=template_options,
+            slot=safe_get_str(layout, "slot") if isinstance(layout, dict) else None,
+            sequence=safe_get_int(layout, "sequence") if isinstance(layout, dict) else None,
+            column_span=safe_get_str(layout, "column-span") if isinstance(layout, dict) else None,
+            start_new_row=safe_get_bool(layout, "start-new-row") if isinstance(layout, dict) else None,
+            order_by=safe_get_str(attrs, "order-by") if isinstance(attrs, dict) else None,
+            source_location=safe_get_str(source, "location"),
+            server_side_condition=_compress_condition(r.get("server-side-condition")),
+            server_cache=safe_get_str(r, "server-cache.caching"),
+            pagination=pagination,
+            attributes_summary=attributes_summary,
+            build_option=safe_get_str(r, "configuration.build-option", strip_id=True),
         )
         regions.append(region)
     return regions
@@ -140,6 +244,13 @@ def _parse_columns(columns_data: list[dict]) -> list[Column]:
             except ValueError:
                 link_target = link_str
 
+        # Sortable — z layout lub enable-users-to.sort
+        sortable = safe_get_bool(c, "layout.sortable")
+        if not sortable:
+            enable = c.get("enable-users-to", {})
+            if isinstance(enable, dict) and "sort" in enable:
+                sortable = bool(enable.get("sort"))
+
         column = Column(
             name=safe_get_str(ident, "column-name", "") or "",
             type=safe_get_str(ident, "type", "") or "",
@@ -149,6 +260,13 @@ def _parse_columns(columns_data: list[dict]) -> list[Column]:
             link_target=link_target,
             lov=safe_get_str(c, "list-of-values.list-of-values", strip_id=True),
             primary_key=safe_get_bool(source, "primary-key"),
+            sortable=sortable,
+            column_alignment=safe_get_str(c, "layout.column-alignment"),
+            heading_alignment=safe_get_str(c, "heading.alignment"),
+            escape_special_chars=safe_get_bool(c, "security.escape-special-characters") or None,
+            compute_sum=safe_get_bool(c, "advanced.compute-sum") or None,
+            sequence=safe_get_int(c, "layout.sequence") or None,
+            build_option=safe_get_str(c, "configuration.build-option", strip_id=True),
         )
         columns.append(column)
     return columns
@@ -160,6 +278,10 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
     for item_data in items_data or []:
         ident = item_data.get("identification", {})
         source = item_data.get("source", {})
+        layout = item_data.get("layout", {})
+        session_state = item_data.get("session-state", {})
+        security = item_data.get("security", {})
+        settings = item_data.get("settings", {})
 
         # source_column tylko gdy typ źródła = Database Column
         source_type = safe_get_str(source, "type", "")
@@ -174,6 +296,19 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
             source_column=source_column,
             lov=safe_get_str(item_data, "list-of-values.list-of-values", strip_id=True),
             default_value=safe_get_str(item_data, "default.static-value"),
+            data_type=safe_get_str(session_state, "data-type") if isinstance(session_state, dict) else None,
+            storage=safe_get_str(session_state, "storage") if isinstance(session_state, dict) else None,
+            session_state_protection=safe_get_str(security, "session-state-protection") if isinstance(security, dict) else None,
+            store_encrypted=safe_get_bool(security, "store-value-encrypted-in-session-state") or None if isinstance(security, dict) else None,
+            restricted_chars=safe_get_str(security, "restricted-characters") if isinstance(security, dict) else None,
+            value_protected=safe_get_bool(settings, "value-protected") or None if isinstance(settings, dict) else None,
+            region=safe_get_str(layout, "region", strip_id=True) if isinstance(layout, dict) else None,
+            slot=safe_get_str(layout, "slot") if isinstance(layout, dict) else None,
+            sequence=safe_get_int(layout, "sequence") or None if isinstance(layout, dict) else None,
+            source_type=source_type or None,
+            source_used=safe_get_str(source, "used"),
+            warn_on_unsaved=safe_get_str(item_data, "advanced.warn-on-unsaved-changes"),
+            build_option=safe_get_str(item_data, "configuration.build-option", strip_id=True),
         )
         items.append(item)
     return items
@@ -203,6 +338,7 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
             action=safe_get_str(behavior, "action") if isinstance(behavior, dict) else None,
             target_page=target_page,
             is_hot=safe_get_bool(b, "appearance.hot"),
+            build_option=safe_get_str(b, "configuration.build-option", strip_id=True),
         )
         buttons.append(button)
     return buttons
@@ -236,14 +372,15 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
         btn_pressed = None
         if isinstance(ssc, dict):
             btn_pressed = safe_get_str(ssc, "when-button-pressed", strip_id=True)
-            # Zbuduj opis warunku z pozostałych kluczy
-            cond_parts = []
-            for key in ("type", "value", "expression"):
-                val = ssc.get(key)
-                if val:
-                    cond_parts.append(f"{key}={val}")
-            if cond_parts:
-                condition = ", ".join(cond_parts)
+            condition = _compress_condition(ssc)
+
+        # Obsługa błędu
+        error_block = p.get("error", {})
+        error_display_location = None
+        error_message = None
+        if isinstance(error_block, dict):
+            error_display_location = safe_get_str(error_block, "display-location")
+            error_message = safe_get_str(error_block, "message")
 
         process = Process(
             name=safe_get_str(ident, "name", "") or "",
@@ -253,6 +390,9 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
             code=code,
             condition=condition,
             when_button_pressed=btn_pressed,
+            error_display_location=error_display_location,
+            error_message=error_message,
+            build_option=safe_get_str(p, "configuration.build-option", strip_id=True),
         )
         processes.append(process)
     return processes
@@ -281,6 +421,7 @@ def _parse_dynamic_actions(da_data: list[dict]) -> list[DynamicAction]:
             event_scope=safe_get_str(da, "execution.event-scope"),
             static_container=safe_get(da, "execution.static-container-(jquery-selector)"),
             actions=_parse_da_steps(da.get("actions", [])),
+            build_option=safe_get_str(da, "configuration.build-option", strip_id=True),
         )
         dynamic_actions.append(action)
     return dynamic_actions
@@ -343,15 +484,7 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
 
         # Condition — filtruj kluczowe pola (analogicznie do procesów)
         ssc = b.get("server-side-condition", {})
-        condition = None
-        if isinstance(ssc, dict) and ssc:
-            cond_parts = []
-            for key in ("type", "value", "expression"):
-                val = ssc.get(key)
-                if val:
-                    cond_parts.append(f"{key}={val}")
-            if cond_parts:
-                condition = ", ".join(cond_parts)
+        condition = _compress_condition(ssc)
 
         branch = Branch(
             name=safe_get_str(ident, "name"),
@@ -360,6 +493,7 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
             target_url=safe_get(target, "url") if isinstance(target, dict) else None,
             point=safe_get_str(b, "execution.point", "") or "",
             condition=condition,
+            build_option=safe_get_str(b, "configuration.build-option", strip_id=True),
         )
         branches.append(branch)
     return branches
@@ -385,6 +519,34 @@ def _parse_validations(validations_data: list[dict]) -> list[Validation]:
             type=safe_get_str(val_block, "type", "") or "",
             code=safe_get(val_block, "pl/sql-function-body"),
             condition=condition,
+            build_option=safe_get_str(v, "configuration.build-option", strip_id=True),
         )
         validations.append(validation)
     return validations
+
+
+def _parse_computations(computations_data: list[dict] | None) -> list[Computation]:
+    """Parsuj komputacje strony (wartości itemów liczone serwerowo)."""
+    computations: list[Computation] = []
+    for c in computations_data or []:
+        ident = c.get("identification", {})
+        computation = c.get("computation", {})
+
+        # Kod — może być w polach pl/sql-expression, pl/sql-code lub sql-expression
+        code = (
+            safe_get(computation, "pl/sql-expression")
+            or safe_get(computation, "pl/sql-code")
+            or safe_get(computation, "sql-expression")
+            or safe_get(computation, "expression")
+        )
+
+        comp = Computation(
+            item_name=safe_get_str(ident, "item-name", "") or "",
+            point=safe_get_str(c, "execution.point", "") or "",
+            type=safe_get_str(computation, "type", "") or "",
+            language=safe_get_str(computation, "language"),
+            code=code,
+            build_option=safe_get_str(c, "configuration.build-option", strip_id=True),
+        )
+        computations.append(comp)
+    return computations

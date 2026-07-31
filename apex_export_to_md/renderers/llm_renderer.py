@@ -7,9 +7,10 @@ oddzielonymi znakiem |.
 from __future__ import annotations
 from apex_export_to_md.renderers.base_renderer import BaseRenderer
 from apex_export_to_md.models import (
-    ApexApp, ApexPage, Region, Column, Process, DynamicAction,
+    ApexApp, ApexPage, Region, Column, Process, Computation, DynamicAction,
     Button, Branch, PageItem, Validation, LOV, Authorization,
     NavList, AppItem, BuildOption, Breadcrumb, AclRole,
+    Authentication, Plugin, SearchConfig, DataLoadDef, StaticFile, PageGroup,
 )
 
 
@@ -64,8 +65,17 @@ class LLMRenderer(BaseRenderer):
         # Nagłówek strony
         auth = "auth:required" if page.security.get("authentication") else ""
         parts = [f"===PAGE:{page.id}", page.name, page.page_mode]
+        if page.page_template:
+            parts.append(f"tpl:{page.page_template}")
+        if page.page_group:
+            parts.append(f"grp:{page.page_group}")
         if auth:
             parts.append(auth)
+        if page.help_text:
+            parts.append(f"help:{page.help_text}")
+        if page.dialog:
+            dialog_str = ",".join(f"{k}={v}" for k, v in page.dialog.items())
+            parts.append(f"dialog:{dialog_str}")
         lines.append("|".join(parts))
 
         # CSS/JS
@@ -73,10 +83,29 @@ class LLMRenderer(BaseRenderer):
             lines.append("CSS:inline")
             lines.append(page.css_inline)
             lines.append("---")
+        if page.javascript_full:
+            lines.append("JS:func_and_global")
+            lines.append(page.javascript_full)
+            lines.append("---")
         if page.js_inline:
             lines.append("JS:inline")
             lines.append(page.js_inline)
             lines.append("---")
+
+        # Komputacje strony
+        for comp in page.computations:
+            comp_parts = [f"COMPUTATION:{comp.item_name}"]
+            if comp.point:
+                comp_parts.append(f"point:{comp.point}")
+            if comp.type:
+                comp_parts.append(f"type:{comp.type}")
+            if comp.language:
+                comp_parts.append(f"lang:{comp.language}")
+            if comp.build_option:
+                comp_parts.append(f"build_opt:{comp.build_option}")
+            lines.append("|".join(comp_parts))
+            if comp.code:
+                lines.extend(self._render_code_or_summary(comp.code, "plsql"))
 
         # Regiony
         for region in page.regions:
@@ -89,8 +118,28 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"label:{item.label}")
             if item.source_column:
                 parts.append(f"col:{item.source_column}")
+            if item.data_type:
+                parts.append(f"dtype:{item.data_type}")
+            if item.storage:
+                parts.append(f"storage:{item.storage}")
+            if item.session_state_protection:
+                parts.append(f"protection:{item.session_state_protection}")
+            if item.store_encrypted:
+                parts.append("encrypted:true")
+            if item.region:
+                parts.append(f"region:{item.region}")
+            if item.slot:
+                parts.append(f"slot:{item.slot}")
+            if item.sequence is not None:
+                parts.append(f"seq:{item.sequence}")
+            if item.source_type:
+                parts.append(f"src_type:{item.source_type}")
             if item.lov:
                 parts.append(f"lov:{item.lov}")
+            if item.default_value:
+                parts.append(f"default:{item.default_value}")
+            if item.build_option:
+                parts.append(f"build_opt:{item.build_option}")
             lines.append("|".join(parts))
 
         # Przyciski
@@ -104,6 +153,8 @@ class LLMRenderer(BaseRenderer):
                 parts.append("hot:true")
             if btn.target_page:
                 parts.append(f"target:page{btn.target_page}")
+            if btn.build_option:
+                parts.append(f"build_opt:{btn.build_option}")
             lines.append("|".join(parts))
 
         # Procesy
@@ -114,6 +165,14 @@ class LLMRenderer(BaseRenderer):
             parts.append(f"point:{proc.point}")
             if proc.when_button_pressed:
                 parts.append(f"btn:{proc.when_button_pressed}")
+            if proc.condition:
+                parts.append(f"cond:{proc.condition}")
+            if proc.error_display_location:
+                parts.append(f"err_loc:{proc.error_display_location}")
+            if proc.error_message:
+                parts.append(f"err_msg:{proc.error_message}")
+            if proc.build_option:
+                parts.append(f"build_opt:{proc.build_option}")
             lines.append("|".join(parts))
             if proc.code:
                 lang = (proc.language or "sql").lower().replace("/", "")
@@ -128,11 +187,15 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"trigger:{da.trigger_selector}")
             if da.event_scope:
                 parts.append(f"scope:{da.event_scope}")
+            if da.build_option:
+                parts.append(f"build_opt:{da.build_option}")
             lines.append("|".join(parts))
             for step in da.actions:
                 step_parts = [f"DA_STEP:{step.type}"]
                 if step.affected_elements:
                     step_parts.append(f"affects:{step.affected_elements}")
+                if step.fire_on_initialization:
+                    step_parts.append("init:true")
                 lines.append("|".join(step_parts))
                 if step.code:
                     lines.extend(self._render_code_or_summary(step.code, "plsql"))
@@ -141,13 +204,21 @@ class LLMRenderer(BaseRenderer):
         for branch in page.branches:
             target = f"page:{branch.target_page}" if branch.target_page else branch.target_url or "?"
             parts = [f"BRANCH:{branch.type}->{target}"]
+            if branch.point:
+                parts.append(f"point:{branch.point}")
             if branch.condition:
                 parts.append(f"cond:{branch.condition}")
+            if branch.build_option:
+                parts.append(f"build_opt:{branch.build_option}")
             lines.append("|".join(parts))
 
         # Walidacje
         for val in page.validations:
             parts = [f"VAL:{val.name}", f"type:{val.type}"]
+            if val.condition:
+                parts.append(f"cond:{val.condition}")
+            if val.build_option:
+                parts.append(f"build_opt:{val.build_option}")
             lines.append("|".join(parts))
             if val.code:
                 lines.extend(self._render_code_or_summary(val.code, "plsql"))
@@ -161,6 +232,16 @@ class LLMRenderer(BaseRenderer):
         if region.title:
             parts.append(f"title:{region.title}")
         parts.append(region.type)
+        if region.template:
+            parts.append(f"tpl:{region.template}")
+        if region.template_options:
+            parts.append(f"tpl_opts:{','.join(region.template_options)}")
+        if region.slot:
+            parts.append(f"slot:{region.slot}")
+        if region.sequence is not None:
+            parts.append(f"seq:{region.sequence}")
+        if region.source_location:
+            parts.append(f"src_loc:{region.source_location}")
         if region.source_table:
             parts.append(f"src:{region.source_table}")
         if region.source_sql and self._should_include_code():
@@ -170,6 +251,16 @@ class LLMRenderer(BaseRenderer):
             if region.allowed_operations:
                 ops = ",".join(o.split(" ")[0] for o in region.allowed_operations)
                 parts.append(f"ops:{ops}")
+        if region.server_side_condition:
+            parts.append(f"ssc:{region.server_side_condition}")
+        if region.server_cache:
+            parts.append(f"cache:{region.server_cache}")
+        if region.pagination:
+            parts.append(f"pagination:{region.pagination}")
+        if region.order_by:
+            parts.append(f"order:{region.order_by}")
+        if region.build_option:
+            parts.append(f"build_opt:{region.build_option}")
         lines.append("|".join(parts))
 
         # SQL źródłowy
@@ -185,10 +276,24 @@ class LLMRenderer(BaseRenderer):
                 col_parts.append(f"heading:{col.heading}")
             if col.primary_key:
                 col_parts.append("pk:true")
+            if col.sortable:
+                col_parts.append("sort:true")
+            if col.column_alignment:
+                col_parts.append(f"align:{col.column_alignment}")
+            if col.heading_alignment:
+                col_parts.append(f"head_align:{col.heading_alignment}")
+            if col.escape_special_chars is not None:
+                col_parts.append(f"escape:{col.escape_special_chars}")
+            if col.compute_sum:
+                col_parts.append("sum:true")
+            if col.sequence is not None:
+                col_parts.append(f"seq:{col.sequence}")
             if col.link_target:
                 col_parts.append(f"link:page{col.link_target}")
             if col.lov:
                 col_parts.append(f"lov:{col.lov}")
+            if col.build_option:
+                col_parts.append(f"build_opt:{col.build_option}")
             lines.append("|".join(col_parts))
 
         return lines
@@ -229,6 +334,61 @@ class LLMRenderer(BaseRenderer):
                 lines.append("```plsql")
                 lines.append(auth.code)
                 lines.append("```")
+
+        for auth_s in app.authentications:
+            parts = [f"===AUTH_SCHEME:{auth_s.name}"]
+            if auth_s.type:
+                parts.append(f"type:{auth_s.type}")
+            if auth_s.host:
+                parts.append(f"host:{auth_s.host}")
+            if auth_s.port:
+                parts.append(f"port:{auth_s.port}")
+            if auth_s.use_ssl:
+                parts.append(f"ssl:{auth_s.use_ssl}")
+            if auth_s.dn_string:
+                parts.append(f"dn:{auth_s.dn_string}")
+            lines.append("|".join(parts))
+
+        for p in app.plugins:
+            parts = [f"===PLUGIN:{p.name}"]
+            if p.internal_name:
+                parts.append(f"int:{p.internal_name}")
+            if p.theme:
+                parts.append(f"theme:{p.theme}")
+            if p.plugin_type:
+                parts.append(f"type:{p.plugin_type}")
+            lines.append("|".join(parts))
+
+        for s in app.search_configs:
+            parts = [f"===SEARCH_CFG:{s.name}"]
+            if s.search_type:
+                parts.append(f"type:{s.search_type}")
+            if s.location:
+                parts.append(f"loc:{s.location}")
+            lines.append("|".join(parts))
+            if s.sql_query and self._should_include_code():
+                lines.append("```sql")
+                lines.append(s.sql_query)
+                lines.append("```")
+
+        for d in app.data_load_defs:
+            parts = [f"===DATA_LOAD:{d.name}"]
+            if d.table_name:
+                parts.append(f"tbl:{d.table_name}")
+            if d.loading_method:
+                parts.append(f"method:{d.loading_method}")
+            if d.commit_interval:
+                parts.append(f"commit:{d.commit_interval}")
+            lines.append("|".join(parts))
+
+        for f in app.static_files:
+            parts = [f"===STATIC_FILE:{f.file_name}"]
+            if f.mime_type:
+                parts.append(f"mime:{f.mime_type}")
+            lines.append("|".join(parts))
+
+        for g in app.page_groups:
+            lines.append(f"===PAGE_GROUP:{g.name}")
 
         for nav in app.nav_lists:
             entries_str = "|".join(

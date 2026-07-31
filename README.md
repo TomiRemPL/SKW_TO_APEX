@@ -38,7 +38,8 @@ Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Orac
 
 - Parsuje strukturę katalogu eksportu APEX (`pages/`, `shared_components/`)
 - Automatycznie wykrywa i parsuje pliki DDL (`*DDL*.sql`) w katalogu wejściowym
-- Wyodrębnia strony, regiony, kolumny, elementy formularza, przyciski, procesy PL/SQL, akcje dynamiczne, rozgałęzienia, walidacje, LOV-y, schematy autoryzacji, nawigację i role ACL
+- Wyodrębnia strony, regiony, kolumny, elementy formularza, przyciski, procesy PL/SQL, akcje dynamiczne, rozgałęzienia, walidacje, komputacje, LOV-y, schematy autoryzacji/autentykacji, nawigację, role ACL i wyłączone/zakomentowane komponenty (Build Options)
+- Oznacza zakomentowane/wyłączone komponenty (`Commented Out`, `Exclude`) we wszystkich formatach (`[ZAKOMENTOWANY]`, `build_opt:`, odznaki ostrzegawcze w HTML)
 - Filtruje strony standardowe APEX (administracyjne, logowanie), pozostawiając strony użytkownika
 - Generuje do 5 plików wyjściowych:
   - `*_human.md` — APEX w formacie czytelnym dla człowieka
@@ -331,6 +332,15 @@ Flaga (bez wartości). Włącza szczegółowe logi (poziom DEBUG) — pokazuje m
 
 - **Domyślnie:** wyłączone (poziom INFO)
 - **Przykład:** `--verbose`
+
+---
+
+#### `--coverage`
+
+Flaga (bez wartości). Generuje szczegółowy raport pokrycia parsurowania (procent znanych/obsługiwanych kluczy YAML w plikach eksportu APEX) i wypisuje go na konsoli.
+
+- **Domyślnie:** wyłączone
+- **Przykład:** `--coverage`
 
 ---
 

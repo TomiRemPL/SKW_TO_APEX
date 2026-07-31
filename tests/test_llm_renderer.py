@@ -79,3 +79,11 @@ def test_render_bez_kodu():
     renderer = LLMRenderer(AppConfig(include_code="none"))
     output = renderer.render(_make_app())
     assert "BEGIN SAVE; END;" not in output
+
+
+def test_render_build_option():
+    app = _make_app()
+    app.pages[0].dynamic_actions[0].build_option = "Commented Out"
+    renderer = LLMRenderer(AppConfig())
+    output = renderer.render(app)
+    assert "DA:Zmiana|event:Change|sel:Item|trigger:P4_STATUS|build_opt:Commented Out" in output

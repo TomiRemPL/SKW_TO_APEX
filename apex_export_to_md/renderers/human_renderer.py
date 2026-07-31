@@ -5,12 +5,21 @@ Format wyjściowy: nagłówki, tabele, bloki kodu — czytelny dla człowieka.
 from __future__ import annotations
 from apex_export_to_md.renderers.base_renderer import BaseRenderer
 from apex_export_to_md.models import (
-    ApexApp, ApexPage, Region, Column, Process, DynamicAction,
+    ApexApp, ApexPage, Region, Column, Process, Computation, DynamicAction,
     Button, Branch, PageItem, Validation, LOV, Authorization,
     NavList, AppItem, BuildOption, Breadcrumb, AclRole,
+    Authentication, Plugin, SearchConfig, DataLoadDef, StaticFile, PageGroup,
     DDLSchema, DDLTable, DDLView, DDLPackage, DDLProcedure, DDLSequence,
     AppMetadata,
 )
+
+
+def _bo_suffix(bo: str | None) -> str:
+    if not bo:
+        return ""
+    if bo == "Commented Out":
+        return " `[ZAKOMENTOWANY]`"
+    return f" `[Wyłączony: {bo}]`"
 
 
 class HumanRenderer(BaseRenderer):
@@ -127,11 +136,34 @@ class HumanRenderer(BaseRenderer):
         if page.title and page.title != page.name:
             lines.append(f"- **Tytuł:** {page.title}")
         lines.append(f"- **Tryb:** {page.page_mode}")
+        if page.page_template:
+            lines.append(f"- **Szablon:** {page.page_template}")
+        if page.page_group:
+            lines.append(f"- **Grupa stron:** {page.page_group}")
+        if page.help_text:
+            lines.append(f"- **Pomoc:** {page.help_text}")
+        if page.dialog:
+            dialog_info = ", ".join(f"{k}: {v}" for k, v in page.dialog.items())
+            lines.append(f"- **Ustawienia dialogu:** {dialog_info}")
         if page.security:
             auth = page.security.get("authentication", "")
             if auth:
                 lines.append(f"- **Uwierzytelnianie:** {auth}")
         lines.append("")
+
+        # Komputacje strony
+        if page.computations:
+            lines.append("#### Komputacje strony")
+            lines.append("")
+            for comp in page.computations:
+                point_info = f" ({comp.point})" if comp.point else ""
+                type_info = f" [{comp.type}]" if comp.type else ""
+                lines.append(f"- **{comp.item_name}**{_bo_suffix(comp.build_option)}{point_info}{type_info}")
+                if comp.code and self._should_include_code():
+                    lines.append("  ```plsql")
+                    lines.append(f"  {comp.code}")
+                    lines.append("  ```")
+            lines.append("")
 
         # Regiony
         for region in page.regions:
@@ -141,13 +173,15 @@ class HumanRenderer(BaseRenderer):
         if page.items:
             lines.append("#### Elementy formularza")
             lines.append("")
-            lines.append("| Nazwa | Typ | Etykieta | Kolumna | LOV |")
-            lines.append("|-------|-----|----------|---------|-----|")
+            lines.append("| Nazwa | Typ | Etykieta | Kolumna | LOV | Typ danych | Ochrona stanu |")
+            lines.append("|-------|-----|----------|---------|-----|------------|---------------|")
             for item in page.items:
+                dtype = item.data_type or "—"
+                prot = item.session_state_protection or "—"
                 lines.append(
-                    f"| {item.name} | {item.type} "
+                    f"| {item.name}{_bo_suffix(item.build_option)} | {item.type} "
                     f"| {item.label or '—'} | {item.source_column or '—'} "
-                    f"| {item.lov or '—'} |"
+                    f"| {item.lov or '—'} | {dtype} | {prot} |"
                 )
             lines.append("")
 
@@ -158,7 +192,7 @@ class HumanRenderer(BaseRenderer):
             for btn in page.buttons:
                 hot = " **(primary)**" if btn.is_hot else ""
                 target = f" → strona {btn.target_page}" if btn.target_page else ""
-                lines.append(f"- **{btn.name}** — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}")
+                lines.append(f"- **{btn.name}**{_bo_suffix(btn.build_option)} — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}")
             lines.append("")
 
         # Procesy
@@ -168,7 +202,10 @@ class HumanRenderer(BaseRenderer):
             for proc in page.processes:
                 btn_info = f", przycisk: {proc.when_button_pressed}" if proc.when_button_pressed else ""
                 lang_info = f", język: {proc.language}" if proc.language else ""
-                lines.append(f"**{proc.name}** ({proc.point}{lang_info}{btn_info})")
+                err_info = f", błąd: {proc.error_display_location}" if proc.error_display_location else ""
+                lines.append(f"**{proc.name}**{_bo_suffix(proc.build_option)} ({proc.point}{lang_info}{btn_info}{err_info})")
+                if proc.condition:
+                    lines.append(f"- Warunek: `{proc.condition}`")
                 lines.append("")
                 if proc.code and self._should_include_code():
                     lang_hint = (proc.language or "sql").lower().replace("/", "")
@@ -187,9 +224,10 @@ class HumanRenderer(BaseRenderer):
             lines.append("")
             for da in page.dynamic_actions:
                 trigger_info = f" na {da.selection_type}: {da.trigger_selector}" if da.trigger_selector else ""
-                lines.append(f"- **{da.name}** — zdarzenie: {da.event}{trigger_info}")
+                lines.append(f"- **{da.name}**{_bo_suffix(da.build_option)} — zdarzenie: {da.event}{trigger_info}")
                 for step in da.actions:
-                    lines.append(f"  - Krok: {step.type}")
+                    init_str = " (on init)" if step.fire_on_initialization else ""
+                    lines.append(f"  - Krok: {step.type}{init_str}")
                     if step.affected_elements:
                         lines.append(f"    - Wpływa na: {step.affected_elements}")
                     if step.code and self._should_include_code():
@@ -205,7 +243,7 @@ class HumanRenderer(BaseRenderer):
             for branch in page.branches:
                 target = f"strona {branch.target_page}" if branch.target_page else branch.target_url or "?"
                 cond = f" (warunek: {branch.condition})" if branch.condition else ""
-                lines.append(f"- {branch.name or '?'} → {target}{cond}")
+                lines.append(f"- {branch.name or '?'}{_bo_suffix(branch.build_option)} → {target}{cond}")
             lines.append("")
 
         # Walidacje
@@ -213,7 +251,8 @@ class HumanRenderer(BaseRenderer):
             lines.append("#### Walidacje")
             lines.append("")
             for val in page.validations:
-                lines.append(f"- **{val.name}** — typ: {val.type}")
+                cond = f" (warunek: {val.condition})" if val.condition else ""
+                lines.append(f"- **{val.name}**{_bo_suffix(val.build_option)} — typ: {val.type}{cond}")
                 if val.code and self._should_include_code():
                     lines.append(f"  ```plsql")
                     lines.append(f"  {val.code}")
@@ -229,8 +268,16 @@ class HumanRenderer(BaseRenderer):
             lines.append("```")
             lines.append("")
 
+        if page.javascript_full:
+            lines.append("#### JavaScript — deklaracje funkcji/zmiennych")
+            lines.append("")
+            lines.append("```javascript")
+            lines.append(page.javascript_full)
+            lines.append("```")
+            lines.append("")
+
         if page.js_inline:
-            lines.append("#### JavaScript strony")
+            lines.append("#### JavaScript strony (execute on load)")
             lines.append("")
             lines.append("```javascript")
             lines.append(page.js_inline)
@@ -245,7 +292,7 @@ class HumanRenderer(BaseRenderer):
         """Renderuj region z kolumnami."""
         lines: list[str] = []
         title_part = f' — "{region.title}"' if region.title else ""
-        lines.append(f"#### Region: {region.name}{title_part}")
+        lines.append(f"#### Region: {region.name}{_bo_suffix(region.build_option)}{title_part}")
 
         # Typ i źródło
         type_info = region.type
@@ -254,8 +301,16 @@ class HumanRenderer(BaseRenderer):
             type_info += f" (edytowalny: {ops})"
 
         lines.append(f"- **Typ:** {type_info}")
+        if region.template:
+            lines.append(f"- **Szablon:** {region.template}")
+        if region.slot:
+            lines.append(f"- **Slot:** {region.slot}")
         if region.source_table:
             lines.append(f"- **Źródło:** tabela `{region.source_table}`")
+        if region.server_side_condition:
+            lines.append(f"- **Warunek serwerowy:** `{region.server_side_condition}`")
+        if region.pagination:
+            lines.append(f"- **Paginacja:** {region.pagination}")
         if region.source_sql:
             lines.append(f"- **Źródło SQL:**")
             if self._should_include_code():
@@ -266,14 +321,16 @@ class HumanRenderer(BaseRenderer):
 
         # Kolumny jako tabela
         if region.columns:
-            lines.append("| Kolumna | Typ | Nagłówek | Źródło | PK | Link |")
-            lines.append("|---------|-----|----------|--------|----|------|")
+            lines.append("| Kolumna | Typ | Nagłówek | Źródło | PK | Link | Sortowalne | Wyrównanie |")
+            lines.append("|---------|-----|----------|--------|----|------|------------|------------|")
             for col in region.columns:
                 pk = "tak" if col.primary_key else "—"
                 link = f"→strona {col.link_target}" if col.link_target else "—"
+                sort = "tak" if col.sortable else "—"
+                align = col.column_alignment or col.heading_alignment or "—"
                 lines.append(
-                    f"| {col.name} | {col.type} | {col.heading or '—'} "
-                    f"| {col.source_column or '—'} | {pk} | {link} |"
+                    f"| {col.name}{_bo_suffix(col.build_option)} | {col.type} | {col.heading or '—'} "
+                    f"| {col.source_column or '—'} | {pk} | {link} | {sort} | {align} |"
                 )
             lines.append("")
 
@@ -306,6 +363,20 @@ class HumanRenderer(BaseRenderer):
                     lines.append(f"- Wartości: {vals}")
                 lines.append("")
 
+        # Schematy autentykacji (LDAP/ADFS/APEX)
+        if app.authentications:
+            lines.append("### Schematy autentykacji")
+            lines.append("")
+            for auth_s in app.authentications:
+                lines.append(f"**{auth_s.name}** — typ: {auth_s.type or '?'}")
+                if auth_s.host:
+                    lines.append(f"- Host: `{auth_s.host}`:{auth_s.port or 389}")
+                if auth_s.use_ssl:
+                    lines.append(f"- SSL: {auth_s.use_ssl}")
+                if auth_s.dn_string:
+                    lines.append(f"- DN string: `{auth_s.dn_string}`")
+                lines.append("")
+
         # Autoryzacje
         if app.authorizations:
             lines.append("### Schematy autoryzacji")
@@ -319,6 +390,51 @@ class HumanRenderer(BaseRenderer):
                     lines.append(auth.code)
                     lines.append(f"```")
                 lines.append("")
+
+        # Plugini
+        if app.plugins:
+            lines.append("### Pluginy")
+            lines.append("")
+            for p in app.plugins:
+                avail = f" [{', '.join(p.available_as)}]" if p.available_as else ""
+                lines.append(f"- **{p.name}** ({p.plugin_type or '?'}{avail})")
+            lines.append("")
+
+        # Search Configurations
+        if app.search_configs:
+            lines.append("### Wyszukiwanie (Search Configurations)")
+            lines.append("")
+            for s in app.search_configs:
+                lines.append(f"**{s.name}** — typ: {s.search_type or '?'}")
+                if s.sql_query and self._should_include_code():
+                    lines.append(f"```sql")
+                    lines.append(s.sql_query)
+                    lines.append(f"```")
+                lines.append("")
+
+        # Data Load Definitions
+        if app.data_load_defs:
+            lines.append("### Definicje ładowania danych")
+            lines.append("")
+            for d in app.data_load_defs:
+                lines.append(f"- **{d.name}** → tabela `{d.table_name or '?'}` (metoda: {d.loading_method or '?'})")
+            lines.append("")
+
+        # Pliki statyczne
+        if app.static_files:
+            lines.append("### Pliki statyczne aplikacji")
+            lines.append("")
+            for sf in app.static_files:
+                lines.append(f"- `{sf.file_name}` ({sf.mime_type or '?'})")
+            lines.append("")
+
+        # Grupy stron
+        if app.page_groups:
+            lines.append("### Grupy stron")
+            lines.append("")
+            for g in app.page_groups:
+                lines.append(f"- {g.name}")
+            lines.append("")
 
         # Nawigacja
         if app.nav_lists:

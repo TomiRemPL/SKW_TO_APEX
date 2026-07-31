@@ -99,6 +99,10 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         help="Uruchom interfejs webowy (FastAPI) w przeglądarce",
     )
     parser.add_argument(
+        "--coverage", action="store_true",
+        help="Wygeneruj tylko raport pokrycia mapowania (bez pełnych plików)",
+    )
+    parser.add_argument(
         "--verbose", action="store_true",
         help="Szczegółowe logi",
     )
@@ -139,6 +143,7 @@ def args_to_config(args: argparse.Namespace) -> AppConfig:
         fetch_ddl_from_db=args.fetch_ddl_from_db,
         ddl_keyword=args.ddl_keyword,
         gui=args.gui,
+        coverage=args.coverage,
         verbose=args.verbose,
     )
 
@@ -391,6 +396,12 @@ def main() -> None:
     if config.gui:
         from apex_export_to_md.gui.app import start_gui
         start_gui(config)
+        return
+
+    # Tryb raportu pokrycia (bez pełnego pipeline'u)
+    if config.coverage:
+        from apex_export_to_md.coverage_report import run_coverage
+        run_coverage(config.input_dir, config.output_dir)
         return
 
     run_pipeline(config)

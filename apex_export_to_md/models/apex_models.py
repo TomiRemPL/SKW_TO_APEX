@@ -19,6 +19,13 @@ class Column:
     link_target: str | None = None      # numer strony docelowej
     lov: str | None = None
     primary_key: bool = False
+    sortable: bool = False
+    column_alignment: str | None = None
+    heading_alignment: str | None = None
+    escape_special_chars: bool | None = None
+    compute_sum: bool | None = None
+    sequence: int | None = None
+    build_option: str | None = None
 
 
 @dataclass
@@ -33,6 +40,19 @@ class Region:
     columns: list[Column] = field(default_factory=list)
     editable: bool = False
     allowed_operations: list[str] = field(default_factory=list)
+    template: str | None = None
+    template_options: list[str] = field(default_factory=list)
+    slot: str | None = None
+    sequence: int | None = None
+    column_span: str | None = None
+    start_new_row: bool | None = None
+    order_by: str | None = None
+    source_location: str | None = None
+    server_side_condition: str | None = None
+    server_cache: str | None = None
+    pagination: str | None = None
+    attributes_summary: dict = field(default_factory=dict)
+    build_option: str | None = None
 
 
 @dataclass
@@ -44,6 +64,19 @@ class PageItem:
     source_column: str | None = None
     lov: str | None = None
     default_value: str | None = None
+    data_type: str | None = None
+    storage: str | None = None
+    session_state_protection: str | None = None
+    store_encrypted: bool | None = None
+    restricted_chars: str | None = None
+    value_protected: bool | None = None
+    region: str | None = None
+    slot: str | None = None
+    sequence: int | None = None
+    source_type: str | None = None
+    source_used: str | None = None
+    warn_on_unsaved: str | None = None
+    build_option: str | None = None
 
 
 @dataclass
@@ -56,6 +89,20 @@ class Process:
     code: str | None = None
     condition: str | None = None
     when_button_pressed: str | None = None
+    error_display_location: str | None = None
+    error_message: str | None = None
+    build_option: str | None = None
+
+
+@dataclass
+class Computation:
+    """Komputacja strony (wartość itemu liczona serwerowo)."""
+    item_name: str
+    point: str = ""
+    type: str = ""
+    language: str | None = None
+    code: str | None = None
+    build_option: str | None = None
 
 
 @dataclass
@@ -77,6 +124,7 @@ class DynamicAction:
     event_scope: str | None = None      # Dynamic, Static
     static_container: str | None = None
     actions: list[DynamicActionStep] = field(default_factory=list)
+    build_option: str | None = None
 
 
 @dataclass
@@ -87,6 +135,7 @@ class Button:
     action: str | None = None           # Submit Page, Redirect...
     target_page: int | None = None
     is_hot: bool = False                # przycisk główny (primary)
+    build_option: str | None = None
 
 
 @dataclass
@@ -98,6 +147,7 @@ class Branch:
     target_url: str | None = None
     point: str = ""                     # After Processing
     condition: str | None = None
+    build_option: str | None = None
 
 
 @dataclass
@@ -107,6 +157,7 @@ class Validation:
     type: str                           # PL/SQL Function Body, Item is NOT NULL...
     code: str | None = None
     condition: str | None = None
+    build_option: str | None = None
 
 
 @dataclass
@@ -127,6 +178,17 @@ class ApexPage:
     dynamic_actions: list[DynamicAction] = field(default_factory=list)
     branches: list[Branch] = field(default_factory=list)
     validations: list[Validation] = field(default_factory=list)
+    computations: list[Computation] = field(default_factory=list)
+    dialog: dict = field(default_factory=dict)
+    help_text: str | None = None
+    page_template: str | None = None
+    template_options: list[str] = field(default_factory=list)
+    navigation: dict = field(default_factory=dict)
+    advanced: dict = field(default_factory=dict)
+    server_cache: str | None = None
+    session_management: dict = field(default_factory=dict)
+    javascript_full: str | None = None
+    security_detail: dict = field(default_factory=dict)
     css_inline: str | None = None
     js_inline: str | None = None
 
@@ -185,6 +247,64 @@ class AclRole:
     """Rola ACL."""
     name: str
     static_id: str | None = None
+
+
+@dataclass
+class Authentication:
+    """Schemat autentykacji (LDAP, OpenID/ADFS, APEX Accounts)."""
+    name: str
+    type: str | None = None
+    host: str | None = None
+    port: str | None = None
+    use_ssl: str | None = None
+    dn_string: str | None = None
+    session_not_valid_redirect: str | None = None
+    switch_in_session: bool | None = None
+
+
+@dataclass
+class Plugin:
+    """Plugin APEX (template component, item type, dynamic action)."""
+    name: str
+    internal_name: str | None = None
+    theme: str | None = None
+    plugin_type: str | None = None
+    available_as: list[str] = field(default_factory=list)
+
+
+@dataclass
+class SearchConfig:
+    """Konfiguracja wyszukiwania aplikacji (App Search)."""
+    name: str
+    search_type: str | None = None
+    location: str | None = None
+    sql_query: str | None = None
+    searchable_columns: str | None = None
+    column_mapping: dict = field(default_factory=dict)
+
+
+@dataclass
+class DataLoadDef:
+    """Definicja ładowania danych (Data Load Definition)."""
+    name: str
+    target_type: str | None = None
+    table_name: str | None = None
+    loading_method: str | None = None
+    commit_interval: str | None = None
+    static_id: str | None = None
+
+
+@dataclass
+class StaticFile:
+    """Plik statyczny aplikacji (Static Application/File)."""
+    file_name: str
+    mime_type: str | None = None
+
+
+@dataclass
+class PageGroup:
+    """Grupa stron aplikacji."""
+    name: str
 
 
 @dataclass
@@ -336,5 +456,11 @@ class ApexApp:
     build_options: list[BuildOption] = field(default_factory=list)
     breadcrumbs: list[Breadcrumb] = field(default_factory=list)
     acl_roles: list[AclRole] = field(default_factory=list)
+    authentications: list[Authentication] = field(default_factory=list)
+    plugins: list[Plugin] = field(default_factory=list)
+    search_configs: list[SearchConfig] = field(default_factory=list)
+    data_load_defs: list[DataLoadDef] = field(default_factory=list)
+    static_files: list[StaticFile] = field(default_factory=list)
+    page_groups: list[PageGroup] = field(default_factory=list)
     ddl_schema: DDLSchema | None = None
     metadata: AppMetadata | None = None

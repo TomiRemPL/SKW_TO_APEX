@@ -113,3 +113,147 @@ def test_parse_page_admin(sample_admin_page_yaml):
     page = parse_page(sample_admin_page_yaml)
     assert page.page_group == "Administration"
     assert page.id == 10000
+
+
+def test_parse_page_nowe_pola_rozszerzone():
+    """Parser wyciąga nowe pola stron, regionów, itemów, procesów, komputacji."""
+    yaml_data = {
+        "id": 31,
+        "identification": {"name": "TestPage"},
+        "appearance": {
+            "page-mode": "Modal Dialog",
+            "page-template": "Theme Default # 1",
+            "template-options": ["#DEFAULT#", "t-Dialog--noUI"],
+        },
+        "help": {"help-text": "Opis pomocy strony"},
+        "dialog": {"chained": False, "resizable": True},
+        "server-cache": {"caching": "Disabled"},
+        "computations": [
+            {
+                "identification": {"item-name": "P31_BATCH"},
+                "execution": {"point": "Before Header"},
+                "computation": {
+                    "type": "Expression",
+                    "language": "PL/SQL",
+                    "pl/sql-expression": "SYSDATE",
+                },
+            }
+        ],
+        "regions": [
+            {
+                "identification": {"name": "Reg1", "type": "Interactive Grid"},
+                "source": {"location": "Local Database", "table-name": "T1"},
+                "layout": {"slot": "BODY", "sequence": 10},
+                "appearance": {"template": "Standard", "template-options": ["#DEFAULT#"]},
+                "server-side-condition": {"type": "Item is NOT NULL", "value": "P31_X"},
+                "attributes": {"pagination": {"type": "Scroll"}},
+                "columns": [
+                    {
+                        "identification": {"column-name": "COL1", "type": "Text"},
+                        "layout": {"sequence": 10, "column-alignment": "start"},
+                        "heading": {"heading": "Nagłówek", "alignment": "center"},
+                        "enable-users-to": {"sort": True},
+                    }
+                ],
+            }
+        ],
+        "page-items": [
+            {
+                "identification": {"name": "P31_ITEM1", "type": "Text"},
+                "session-state": {"data-type": "VARCHAR2", "storage": "Per Session"},
+                "security": {
+                    "session-state-protection": "Unrestricted",
+                    "store-value-encrypted-in-session-state": True,
+                },
+                "layout": {"region": "Reg1", "sequence": 10},
+            }
+        ],
+        "processes": [
+            {
+                "identification": {"name": "Proc1", "type": "Execute Code"},
+                "source": {"language": "PL/SQL", "pl/sql-code": "NULL;"},
+                "execution": {"point": "After Submit"},
+                "error": {
+                    "display-location": "Inline in Notification",
+                    "message": "Blad",
+                },
+            }
+        ],
+    }
+    page = parse_page(yaml_data)
+
+    # Strona
+    assert page.page_mode == "Modal Dialog"
+    assert page.page_template == "Theme Default"
+    assert "t-Dialog--noUI" in page.template_options
+    assert page.help_text == "Opis pomocy strony"
+    assert page.dialog == {"chained": False, "resizable": True}
+    assert page.server_cache == "Disabled"
+
+    # Komputacje
+    assert len(page.computations) == 1
+    assert page.computations[0].item_name == "P31_BATCH"
+    assert page.computations[0].code == "SYSDATE"
+
+    # Region
+    r = page.regions[0]
+    assert r.template == "Standard"
+    assert r.slot == "BODY"
+    assert r.sequence == 10
+    assert r.server_side_condition == "type=Item is NOT NULL, value=P31_X"
+    assert r.pagination == "type=Scroll"
+
+    # Kolumna
+    c = r.columns[0]
+    assert c.sortable is True
+    assert c.column_alignment == "start"
+    assert c.heading_alignment == "center"
+
+    # Item
+    it = page.items[0]
+    assert it.data_type == "VARCHAR2"
+    assert it.storage == "Per Session"
+    assert it.session_state_protection == "Unrestricted"
+    assert it.store_encrypted is True
+    assert it.region == "Reg1"
+
+    # Proces
+    pr = page.processes[0]
+    assert pr.error_display_location == "Inline in Notification"
+
+
+def test_parse_page_build_option():
+    """Parser wyciąga configuration.build-option ze wszystkich komponentów."""
+    yaml_data = {
+        "identification": {"id": 43, "name": "P43"},
+        "dynamic-actions": [
+            {
+                "identification": {"name": "DA_COMMENTED"},
+                "when": {"event": "Page Load"},
+                "configuration": {"build-option": "Commented Out # 12345"},
+            }
+        ],
+        "regions": [
+            {
+                "identification": {"name": "RGN_DISABLED"},
+                "configuration": {"build-option": "Exclude"},
+                "columns": [
+                    {
+                        "identification": {"column-name": "COL_COMMENTED"},
+                        "configuration": {"build-option": "Commented Out"},
+                    }
+                ],
+            }
+        ],
+        "page-items": [
+            {
+                "identification": {"name": "P43_ITEM_COMMENTED"},
+                "configuration": {"build-option": "Commented Out"},
+            }
+        ],
+    }
+    page = parse_page(yaml_data)
+    assert page.dynamic_actions[0].build_option == "Commented Out"
+    assert page.regions[0].build_option == "Exclude"
+    assert page.regions[0].columns[0].build_option == "Commented Out"
+    assert page.items[0].build_option == "Commented Out"

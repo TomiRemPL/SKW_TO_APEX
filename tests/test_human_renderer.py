@@ -94,3 +94,11 @@ def test_render_bez_shared():
     renderer = HumanRenderer(AppConfig(include_shared_components=False))
     output = renderer.render(_make_app_with_page())
     assert "LOV1" not in output
+
+
+def test_render_human_build_option():
+    app = _make_app_with_page()
+    app.pages[0].processes[0].build_option = "Commented Out"
+    renderer = HumanRenderer(AppConfig())
+    output = renderer.render(app)
+    assert "**Zapisz** `[ZAKOMENTOWANY]`" in output

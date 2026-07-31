@@ -327,6 +327,35 @@ class HTMLRenderer(BaseRenderer):
 
         data["links"] = self._build_links(app)
 
+        # Top-level shared components
+        data["authentications"] = [{
+            "name": a.name, "type": a.type or "", "host": a.host or "",
+            "port": a.port or "", "use_ssl": a.use_ssl or "", "dn": a.dn_string or "",
+        } for a in app.authentications]
+
+        data["plugins"] = [{
+            "name": p.name, "internal_name": p.internal_name or "",
+            "theme": p.theme or "", "plugin_type": p.plugin_type or "",
+            "available_as": p.available_as,
+        } for p in app.plugins]
+
+        data["search_configs"] = [{
+            "name": s.name, "search_type": s.search_type or "",
+            "location": s.location or "", "sql_query": s.sql_query or "",
+        } for s in app.search_configs]
+
+        data["data_load_defs"] = [{
+            "name": d.name, "target_type": d.target_type or "",
+            "table_name": d.table_name or "", "loading_method": d.loading_method or "",
+            "commit_interval": d.commit_interval or "",
+        } for d in app.data_load_defs]
+
+        data["static_files"] = [{
+            "file_name": f.file_name, "mime_type": f.mime_type or "",
+        } for f in app.static_files]
+
+        data["page_groups"] = [{"name": g.name} for g in app.page_groups]
+
         return json.dumps(data, ensure_ascii=False, indent=2)
 
     def _serialize_page(self, page) -> dict:
@@ -335,7 +364,24 @@ class HTMLRenderer(BaseRenderer):
             "name": page.name,
             "title": page.title or page.name,
             "page_mode": page.page_mode,
-            "raw_attributes": {},
+            "page_template": page.page_template or "",
+            "page_group": page.page_group or "",
+            "help_text": page.help_text or "",
+            "dialog": page.dialog or {},
+            "raw_attributes": {
+                "template": page.page_template,
+                "template_options": page.template_options,
+                "help_text": page.help_text,
+                "dialog": page.dialog,
+            },
+            "computations": [{
+                "item_name": comp.item_name,
+                "point": comp.point,
+                "type": comp.type,
+                "language": comp.language or "",
+                "code": comp.code or "",
+                "build_option": comp.build_option or "",
+            } for comp in page.computations],
             "regions": [],
             "items": [],
             "buttons": [],
@@ -345,6 +391,7 @@ class HTMLRenderer(BaseRenderer):
             "branches": [],
             "css_inline": page.css_inline or "",
             "js_inline": page.js_inline or "",
+            "javascript_full": page.javascript_full or "",
         }
 
         for r in page.regions:
@@ -357,6 +404,14 @@ class HTMLRenderer(BaseRenderer):
                 "parent_region": r.parent_region or "",
                 "editable": r.editable,
                 "allowed_operations": r.allowed_operations,
+                "template": r.template or "",
+                "slot": r.slot or "",
+                "sequence": r.sequence,
+                "server_side_condition": r.server_side_condition or "",
+                "pagination": r.pagination or "",
+                "order_by": r.order_by or "",
+                "source_location": r.source_location or "",
+                "build_option": r.build_option or "",
                 "columns": [{
                     "name": col.name,
                     "type": col.type,
@@ -365,8 +420,19 @@ class HTMLRenderer(BaseRenderer):
                     "primary_key": col.primary_key,
                     "link_target": col.link_target or "",
                     "lov": col.lov or "",
+                    "sortable": col.sortable,
+                    "column_alignment": col.column_alignment or "",
+                    "heading_alignment": col.heading_alignment or "",
+                    "sequence": col.sequence,
+                    "build_option": col.build_option or "",
                 } for col in r.columns],
-                "raw_attributes": {},
+                "raw_attributes": {
+                    "template": r.template,
+                    "template_options": r.template_options,
+                    "server_side_condition": r.server_side_condition,
+                    "pagination": r.pagination,
+                    "server_cache": r.server_cache,
+                },
             }
             page_obj["regions"].append(region_obj)
 
@@ -378,7 +444,22 @@ class HTMLRenderer(BaseRenderer):
                 "source_column": item.source_column or "",
                 "lov": item.lov or "",
                 "default_value": item.default_value or "",
-                "raw_attributes": {},
+                "data_type": item.data_type or "",
+                "storage": item.storage or "",
+                "session_state_protection": item.session_state_protection or "",
+                "store_encrypted": item.store_encrypted or False,
+                "region": item.region or "",
+                "slot": item.slot or "",
+                "sequence": item.sequence,
+                "source_type": item.source_type or "",
+                "build_option": item.build_option or "",
+                "raw_attributes": {
+                    "data_type": item.data_type,
+                    "storage": item.storage,
+                    "session_state_protection": item.session_state_protection,
+                    "store_encrypted": item.store_encrypted,
+                    "value_protected": item.value_protected,
+                },
             })
 
         for btn in page.buttons:
@@ -388,7 +469,11 @@ class HTMLRenderer(BaseRenderer):
                 "action": btn.action or "",
                 "target_page": btn.target_page or "",
                 "is_hot": btn.is_hot,
-                "raw_attributes": {},
+                "build_option": btn.build_option or "",
+                "raw_attributes": {
+                    "is_hot": btn.is_hot,
+                    "action": btn.action,
+                },
             })
 
         for proc in page.processes:
@@ -400,7 +485,14 @@ class HTMLRenderer(BaseRenderer):
                 "code": proc.code or "",
                 "condition": proc.condition or "",
                 "when_button_pressed": proc.when_button_pressed or "",
-                "raw_attributes": {},
+                "error_display_location": proc.error_display_location or "",
+                "error_message": proc.error_message or "",
+                "build_option": proc.build_option or "",
+                "raw_attributes": {
+                    "error_display_location": proc.error_display_location,
+                    "error_message": proc.error_message,
+                    "when_button_pressed": proc.when_button_pressed,
+                },
             })
 
         for da in page.dynamic_actions:
@@ -409,6 +501,7 @@ class HTMLRenderer(BaseRenderer):
                 "event": da.event,
                 "selection_type": da.selection_type or "",
                 "trigger_selector": da.trigger_selector or "",
+                "build_option": da.build_option or "",
                 "actions": [{
                     "type": step.type,
                     "code": step.code or "",
@@ -426,6 +519,7 @@ class HTMLRenderer(BaseRenderer):
                 "type": v.type,
                 "code": v.code or "",
                 "condition": v.condition or "",
+                "build_option": v.build_option or "",
                 "raw_attributes": {},
             })
 
@@ -436,6 +530,7 @@ class HTMLRenderer(BaseRenderer):
                 "target_page": b.target_page or "",
                 "target_url": b.target_url or "",
                 "point": b.point,
+                "build_option": b.build_option or "",
                 "condition": b.condition or "",
             })
 
@@ -903,7 +998,12 @@ function showPageDetail(pageId) {
   html += '<div class="page-meta">';
   if (page.title && page.title !== page.name) html += "Tytu\u0142: " + escapeHtml(page.title) + " | ";
   html += "Tryb: " + page.page_mode;
+  if (page.page_template) html += " | Szablon: " + escapeHtml(page.page_template);
+  if (page.page_group) html += " | Grupa: " + escapeHtml(page.page_group);
   html += "</div>";
+  if (page.help_text) {
+    html += '<div style="background:#f7fafc;border-left:3px solid #1a365d;padding:8px 12px;margin-bottom:12px;font-size:13px"><strong>Pomoc:</strong> ' + escapeHtml(page.help_text) + '</div>';
+  }
 
   var linked = DATA.links.filter(function(l) { return l.page_id === pageId; });
   if (linked.length) {
@@ -914,6 +1014,8 @@ function showPageDetail(pageId) {
     html += "</div>";
   }
 
+  if (page.computations && page.computations.length)
+    html += section("Komputacje strony", page.computations.length, renderComputations(page.computations));
   if (page.regions.length)
     html += section("Regiony", page.regions.length, renderRegions(page.regions), true);
   if (page.items.length)
@@ -930,6 +1032,8 @@ function showPageDetail(pageId) {
     html += section("Branching", page.branches.length, renderBranches(page.branches));
   if (page.css_inline)
     html += section("Inline CSS", null, codeBlock(page.css_inline, "css"));
+  if (page.javascript_full)
+    html += section("JS (Deklaracje)", null, codeBlock(page.javascript_full, "javascript"));
   if (page.js_inline)
     html += section("Inline JavaScript", null, codeBlock(page.js_inline, "javascript"));
 
@@ -949,17 +1053,40 @@ function section(title, count, bodyHtml, openByDefault) {
     '<div class="section-body">' + bodyHtml + '</div></div>';
 }
 
+function boBadge(bo) {
+  if (!bo) return '';
+  return ' <span class="badge badge-hot">\u26a0 ' + escapeHtml(bo) + '</span>';
+}
+
+function renderComputations(comps) {
+  var html = "";
+  comps.forEach(function(c) {
+    html += '<div class="subsection">';
+    html += '<div class="subsection-title">' + escapeHtml(c.item_name) + boBadge(c.build_option) + '</div>';
+    html += '<div class="subsection-meta">';
+    if (c.point) html += '<span class="badge badge-point">' + escapeHtml(c.point) + '</span>';
+    if (c.type) html += ' <span class="badge badge-type">' + escapeHtml(c.type) + '</span>';
+    if (c.language) html += ' <span class="badge badge-lang">' + escapeHtml(c.language) + '</span>';
+    html += '</div>';
+    if (c.code) html += codeBlock(c.code, detectLang(c.code, c.language));
+    html += '</div>';
+  });
+  return html;
+}
+
 function renderRegions(regions) {
   var html = "";
   regions.forEach(function(r) {
     html += '<div class="subsection">';
-    html += '<div class="subsection-title">' + escapeHtml(r.title || r.name) + '</div>';
+    html += '<div class="subsection-title">' + escapeHtml(r.title || r.name) + boBadge(r.build_option) + '</div>';
     html += '<div class="subsection-meta">';
     html += '<span class="badge badge-type">' + r.type + '</span>';
     if (r.source_table) html += ' \u2190 tabela: <strong>' + r.source_table + '</strong>';
     if (r.editable) html += ' <span class="badge badge-hot">edytowalny</span>';
-    if (r.allowed_operations.length) html += ' [' + r.allowed_operations.join(', ') + ']';
+    if (r.allowed_operations && r.allowed_operations.length) html += ' [' + r.allowed_operations.join(', ') + ']';
     if (r.parent_region) html += ' | region nadrz\u0119dny: ' + r.parent_region;
+    if (r.server_side_condition) html += ' | warunek: <code>' + escapeHtml(r.server_side_condition) + '</code>';
+    if (r.pagination) html += ' | paginacja: ' + escapeHtml(r.pagination);
     html += '</div>';
     if (r.source_sql) html += codeBlock(r.source_sql, "sql");
     if (r.columns.length) {
@@ -967,11 +1094,14 @@ function renderRegions(regions) {
       r.columns.forEach(function(c) {
         var info = "";
         if (c.primary_key) info += '<span class="badge badge-pk">PK</span> ';
+        if (c.sortable) info += '<span class="badge badge-type">sort</span> ';
+        if (c.column_alignment) info += '<span class="badge badge-type">' + escapeHtml(c.column_alignment) + '</span> ';
         if (c.link_target) info += '<span class="badge badge-link">\u2192 str.' + c.link_target + '</span> ';
-        if (c.lov) info += "LOV: " + c.lov;
-        html += "<tr><td>" + c.name + "</td><td>" + c.type + "</td>" +
-          "<td>" + (c.heading || "\u2014") + "</td>" +
-          "<td>" + (c.source_column || "\u2014") + "</td>" +
+        if (c.lov) info += "LOV: " + c.lov + " ";
+        if (c.build_option) info += boBadge(c.build_option);
+        html += "<tr><td>" + escapeHtml(c.name) + "</td><td>" + escapeHtml(c.type) + "</td>" +
+          "<td>" + (escapeHtml(c.heading) || "\u2014") + "</td>" +
+          "<td>" + (escapeHtml(c.source_column) || "\u2014") + "</td>" +
           "<td>" + (info || "\u2014") + "</td></tr>";
       });
       html += "</table>";
@@ -982,13 +1112,18 @@ function renderRegions(regions) {
 }
 
 function renderItems(items) {
-  var html = '<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Domy\u015blnie</th></tr>';
+  var html = '<table><tr><th>Nazwa</th><th>Typ</th><th>Label</th><th>Kolumna</th><th>LOV</th><th>Ochrona / Storage</th></tr>';
   items.forEach(function(it) {
-    html += "<tr><td>" + it.name + "</td><td>" + it.type + "</td>" +
-      "<td>" + (it.label || "\u2014") + "</td>" +
-      "<td>" + (it.source_column || "\u2014") + "</td>" +
-      "<td>" + (it.lov || "\u2014") + "</td>" +
-      "<td>" + (it.default_value || "\u2014") + "</td></tr>";
+    var info = [];
+    if (it.data_type) info.push(escapeHtml(it.data_type));
+    if (it.session_state_protection) info.push(escapeHtml(it.session_state_protection));
+    if (it.storage) info.push(escapeHtml(it.storage));
+    var nameCol = escapeHtml(it.name) + boBadge(it.build_option);
+    html += "<tr><td>" + nameCol + "</td><td>" + escapeHtml(it.type) + "</td>" +
+      "<td>" + (escapeHtml(it.label) || "\u2014") + "</td>" +
+      "<td>" + (escapeHtml(it.source_column) || "\u2014") + "</td>" +
+      "<td>" + (escapeHtml(it.lov) || "\u2014") + "</td>" +
+      "<td>" + (info.join(" | ") || "\u2014") + "</td></tr>";
   });
   return html + "</table>";
 }
@@ -997,11 +1132,11 @@ function renderButtons(buttons) {
   var html = "";
   buttons.forEach(function(b) {
     html += '<div class="subsection">';
-    html += '<span class="subsection-title">' + escapeHtml(b.name) + '</span>';
+    html += '<span class="subsection-title">' + escapeHtml(b.name) + boBadge(b.build_option) + '</span>';
     if (b.is_hot) html += ' <span class="badge badge-hot">PRIMARY</span>';
     html += '<div class="subsection-meta">';
-    html += 'Label: <strong>' + (b.label || b.name) + '</strong>';
-    if (b.action) html += ' | Akcja: ' + b.action;
+    html += 'Label: <strong>' + escapeHtml(b.label || b.name) + '</strong>';
+    if (b.action) html += ' | Akcja: ' + escapeHtml(b.action);
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
     html += '</div></div>';
   });
@@ -1012,13 +1147,14 @@ function renderProcesses(processes) {
   var html = "";
   processes.forEach(function(pr) {
     html += '<div class="subsection">';
-    html += '<div class="subsection-title">' + escapeHtml(pr.name) + '</div>';
+    html += '<div class="subsection-title">' + escapeHtml(pr.name) + boBadge(pr.build_option) + '</div>';
     html += '<div class="subsection-meta">';
-    html += '<span class="badge badge-type">' + pr.type + '</span>';
-    if (pr.language) html += ' <span class="badge badge-lang">' + pr.language + '</span>';
-    html += ' <span class="badge badge-point">' + pr.point + '</span>';
-    if (pr.when_button_pressed) html += ' | przycisk: <strong>' + pr.when_button_pressed + '</strong>';
-    if (pr.condition) html += ' | warunek: ' + escapeHtml(pr.condition);
+    html += '<span class="badge badge-type">' + escapeHtml(pr.type) + '</span>';
+    if (pr.language) html += ' <span class="badge badge-lang">' + escapeHtml(pr.language) + '</span>';
+    html += ' <span class="badge badge-point">' + escapeHtml(pr.point) + '</span>';
+    if (pr.when_button_pressed) html += ' | przycisk: <strong>' + escapeHtml(pr.when_button_pressed) + '</strong>';
+    if (pr.condition) html += ' | warunek: <code>' + escapeHtml(pr.condition) + '</code>';
+    if (pr.error_display_location) html += ' | b\u0142\u0105d: ' + escapeHtml(pr.error_display_location);
     html += '</div>';
     if (pr.code) {
       var lang = detectLang(pr.code, pr.language);
@@ -1033,16 +1169,16 @@ function renderDynamicActions(das) {
   var html = "";
   das.forEach(function(da) {
     html += '<div class="subsection">';
-    html += '<div class="subsection-title">' + escapeHtml(da.name) + '</div>';
+    html += '<div class="subsection-title">' + escapeHtml(da.name) + boBadge(da.build_option) + '</div>';
     html += '<div class="subsection-meta">';
-    html += '<span class="badge badge-event">' + da.event + '</span>';
-    if (da.selection_type) html += ' <span class="badge badge-trigger">' + da.selection_type + '</span>';
+    html += '<span class="badge badge-event">' + escapeHtml(da.event) + '</span>';
+    if (da.selection_type) html += ' <span class="badge badge-trigger">' + escapeHtml(da.selection_type) + '</span>';
     if (da.trigger_selector) html += ' \u2192 ' + escapeHtml(da.trigger_selector);
     html += '</div>';
     if (da.actions.length) {
       da.actions.forEach(function(step, i) {
         html += '<div style="margin-left:16px;margin-top:6px">';
-        html += '<strong>Krok ' + (i+1) + ':</strong> ' + step.type;
+        html += '<strong>Krok ' + (i+1) + ':</strong> ' + escapeHtml(step.type);
         if (step.affected_elements) html += ' \u2192 ' + escapeHtml(step.affected_elements);
         if (step.fire_on_initialization) html += ' <span class="badge badge-point">init</span>';
         if (step.code) {
@@ -1061,9 +1197,9 @@ function renderValidations(validations) {
   var html = "";
   validations.forEach(function(v) {
     html += '<div class="subsection">';
-    html += '<div class="subsection-title">' + escapeHtml(v.name) + '</div>';
+    html += '<div class="subsection-title">' + escapeHtml(v.name) + boBadge(v.build_option) + '</div>';
     html += '<div class="subsection-meta">';
-    html += '<span class="badge badge-type">' + v.type + '</span>';
+    html += '<span class="badge badge-type">' + escapeHtml(v.type) + '</span>';
     if (v.condition) html += ' | warunek: ' + escapeHtml(v.condition);
     html += '</div>';
     if (v.code) html += codeBlock(v.code, detectLang(v.code));
@@ -1076,13 +1212,17 @@ function renderBranches(branches) {
   var html = "";
   branches.forEach(function(b) {
     html += '<div class="subsection">';
-    html += '<div class="subsection-title">' + escapeHtml(b.name || "Branch") + '</div>';
+    html += '<div class="subsection-title">' + escapeHtml(b.name || "Branch") + boBadge(b.build_option) + '</div>';
     html += '<div class="subsection-meta">';
-    html += '<span class="badge badge-type">' + b.type + '</span>';
-    html += ' <span class="badge badge-point">' + b.point + '</span>';
+    html += '<span class="badge badge-type">' + escapeHtml(b.type) + '</span>';
+    html += ' <span class="badge badge-point">' + escapeHtml(b.point) + '</span>';
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
     if (b.target_url) html += ' | URL: ' + escapeHtml(b.target_url);
     if (b.condition) html += ' | warunek: ' + escapeHtml(b.condition);
+    html += '</div></div>';
+  });
+  return html;
+}
     html += '</div></div>';
   });
   return html;
