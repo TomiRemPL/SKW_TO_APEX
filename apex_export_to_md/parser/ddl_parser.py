@@ -275,8 +275,14 @@ def _parse_packages(content: str) -> list[DDLPackage]:
         re.DOTALL | re.IGNORECASE,
     )
     pkg_map = {p.name.upper(): p for p in packages}
+    seen_bodies: set[str] = set()
     for match in body_pattern.finditer(content):
         name = match.group(1)
+        name_upper = name.upper()
+        if name_upper in seen_bodies:
+            logger.warning("DDL: zduplikowany PACKAGE BODY '%s' — pomijam duplikat.", name)
+            continue
+        seen_bodies.add(name_upper)
         body_code = match.group(2).strip()
         existing = pkg_map.get(name.upper())
         if existing:

@@ -428,9 +428,9 @@ def fetch_ddl_from_database(connection_string: str, keyword: str, output_dir: Pa
                         f.write(ddl)
                         f.write("\n\n")
 
-                        # Dla pakietów: pobierz również PACKAGE BODY
-                        # (DBMS_METADATA.GET_DDL wymaga typu 'PACKAGE_BODY' z podkreślnikiem)
-                        if obj_type == 'PACKAGE':
+                        # Dla pakietów: pobierz PACKAGE BODY tylko jeśli GET_DDL('PACKAGE')
+                        # go nie zawiera (Oracle 12c+ zwraca spec+body razem w jednym wywołaniu)
+                        if obj_type == 'PACKAGE' and 'PACKAGE BODY' not in ddl.upper():
                             body_ddl = _get_ddl(conn, 'PACKAGE_BODY', obj_name, owner)
                             if body_ddl:
                                 f.write(f"-- PACKAGE BODY: {obj_name}\n")

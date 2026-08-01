@@ -6,12 +6,15 @@ Kolejność: sekwencje → tabele (bez FK) → indeksy → widoki → pakiety �
 Usuwa referencje do schematu źródłowego (np. "DAW".).
 """
 from __future__ import annotations
+import logging
 import re
 from apex_export_to_md.renderers.base_renderer import BaseRenderer
 from apex_export_to_md.models import (
-    ApexApp, DDLSchema, DDLTable, DDLSequence, DDLView, DDLPackage, DDLProcedure,
+    ApexApp, DDLSchema, DDLTable, DDLColumn, DDLSequence, DDLView, DDLPackage, DDLProcedure,
     DDLIndex, DDLTrigger,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class DDLScriptRenderer(BaseRenderer):
@@ -164,6 +167,49 @@ class DDLScriptRenderer(BaseRenderer):
         result = re.sub(rf'\b{re.escape(schema)}\s*\.\s*', '', result, flags=re.IGNORECASE)
         return result
 
+    def _render_default(self, col: DDLColumn, schema: str, table_name: str = "") -> str:
+        """Zbuduj klauzulę DEFAULT dla kolumny, otaczając literały dat funkcją TO_DATE/TO_TIMESTAMP.
+
+        Konwersja dotyczy wyłącznie kolumn typu DATE/TIMESTAMP, których domyślna
+        wartość jest czystym literałem tekstowym (otoczonym apostrofami). Wartości
+        funkcyjne (SYSDATE, seq.NEXTVAL, ANSI DATE '...', TO_DATE(...)) zostają bez zmian.
+        Gdy format daty jest nierozpoznany — DEFAULT pozostaje bez zmian + WARNING.
+        """
+        default = self._strip_schema(col.default or "", schema)
+
+        dtype_upper = col.data_type.upper()
+        if not (dtype_upper.startswith("DATE") or dtype_upper.startswith("TIMESTAMP")):
+            return default
+
+        # Tylko czyste literały tekstowe — bez zagnieżdżonych funkcji/cudzysłowów.
+        if not re.match(r"^'[^']*'$", default):
+            return default
+
+        inner = default[1:-1]
+        is_timestamp = dtype_upper.startswith("TIMESTAMP")
+        func = "TO_TIMESTAMP" if is_timestamp else "TO_DATE"
+
+        # Kolejność: od najbardziej specyficznego (z czasem/ulamkiem) do najprostszego.
+        if re.match(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}[.,]\d+$", inner):
+            return f"{func}('{inner}', 'YYYY-MM-DD HH24:MI:SS.FF')"
+        if re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$", inner):
+            return f"{func}('{inner}', 'YYYY-MM-DD\"T\"HH24:MI:SS')"
+        if re.match(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$", inner):
+            return f"{func}('{inner}', 'YYYY-MM-DD HH24:MI:SS')"
+        if re.match(r"^\d{4}-\d{2}-\d{2}$", inner):
+            return f"{func}('{inner}', 'YYYY-MM-DD')"
+        if re.match(r"^\d{2}-[A-Z]{3,9}-\d{4}$", inner):
+            return f"TO_DATE('{inner}', 'DD-MON-YYYY', 'NLS_DATE_LANGUAGE=ENGLISH')"
+        if re.match(r"^\d{2}-[A-Z]{3,9}-\d{2}$", inner):
+            return f"TO_DATE('{inner}', 'DD-MON-RR', 'NLS_DATE_LANGUAGE=ENGLISH')"
+
+        logger.warning(
+            "Nierozpoznany format daty w DEFAULT: tabela=%s kolumna=%s typ=%s wartość=%s — "
+            "pozostawiono bez konwersji.",
+            table_name, col.name, col.data_type, default,
+        )
+        return default
+
     def _render_sequence(self, seq: DDLSequence, schema: str) -> str:
         """Generuj minimalny CREATE SEQUENCE (bez klauzul storage)."""
         parts = [f'CREATE SEQUENCE "{seq.name}"']
@@ -193,7 +239,7 @@ class DDLScriptRenderer(BaseRenderer):
             if col.identity and col.identity_def:
                 col_def += f" {self._strip_schema(col.identity_def, schema)}"
             elif col.default:
-                col_def += f" DEFAULT {self._strip_schema(col.default, schema)}"
+                col_def += f" DEFAULT {self._render_default(col, schema, table.name)}"
             if not col.nullable or col.identity:
                 col_def += " NOT NULL ENABLE"
             col_defs.append(col_def)
@@ -258,10 +304,25 @@ class DDLScriptRenderer(BaseRenderer):
         return f'CREATE OR REPLACE VIEW "{view.name}" AS\n{sql};'
 
     def _render_package(self, pkg: DDLPackage, schema: str) -> str:
-        """Generuj CREATE OR REPLACE PACKAGE."""
+        """Generuj CREATE OR REPLACE PACKAGE (spec) i opcjonalnie PACKAGE BODY (osobno)."""
+        BODY_MARKER = "\n\n-- PACKAGE BODY --\n\n"
         code = self._strip_schema(pkg.code, schema)
-        code = self._strip_empty_lines(code)
-        return f"CREATE OR REPLACE PACKAGE {pkg.name} AS\n{code}\nEND {pkg.name};\n/"
+
+        if BODY_MARKER not in code:
+            code = self._strip_empty_lines(code)
+            return f"CREATE OR REPLACE PACKAGE {pkg.name} AS\n{code}\nEND {pkg.name};\n/"
+
+        spec_code, body_code = code.split(BODY_MARKER, maxsplit=1)
+        # Defensywnie: usuń zduplikowane body jeśli parser przepuścił duplikat
+        if BODY_MARKER in body_code:
+            logger.warning("DDL: pakiet '%s' zawierał zduplikowane PACKAGE BODY — użyto pierwszego.", pkg.name)
+            body_code = body_code.split(BODY_MARKER, maxsplit=1)[0]
+        spec_code = self._strip_empty_lines(spec_code)
+        body_code = self._strip_empty_lines(body_code)
+        return (
+            f"CREATE OR REPLACE PACKAGE {pkg.name} AS\n{spec_code}\nEND {pkg.name};\n/\n\n"
+            f"CREATE OR REPLACE PACKAGE BODY {pkg.name} AS\n{body_code}\nEND {pkg.name};\n/"
+        )
 
     def _render_procedure(self, proc: DDLProcedure, schema: str) -> str:
         """Generuj CREATE OR REPLACE PROCEDURE/FUNCTION."""
