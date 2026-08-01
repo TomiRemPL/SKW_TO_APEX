@@ -21,6 +21,10 @@ class LLMRenderer(BaseRenderer):
         """Generuj skondensowany tekst."""
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append(f"<!-- Generated: {self._timestamp} -->")
+
         # Nagłówek aplikacji
         lines.append(f"APP:{app.id}|{app.alias}|{app.name}")
 

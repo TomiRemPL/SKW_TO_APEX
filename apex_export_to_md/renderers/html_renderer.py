@@ -38,12 +38,14 @@ class HTMLRenderer(BaseRenderer):
     # HTML skeleton
     # ------------------------------------------------------------------
     def _html_head(self, title: str) -> str:
+        generation_meta = f'<meta name="generation-date" content="{self._timestamp}">' if self._timestamp else ''
         return f"""<!DOCTYPE html>
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
+{generation_meta}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
 {self._css()}
 </head>

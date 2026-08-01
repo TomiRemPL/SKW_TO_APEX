@@ -19,6 +19,11 @@ class DDLHumanRenderer(BaseRenderer):
         ddl = app.ddl_schema
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append(f"<!-- Generated: {self._timestamp} -->")
+            lines.append("")
+
         lines.append(f"# Struktura bazy danych — {app.name} (ID: {app.id})")
         lines.append("")
 

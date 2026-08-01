@@ -290,18 +290,19 @@ def run_pipeline(config: AppConfig) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    timestamp_readable = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     prefix = config.output_prefix
 
     # Pliki APEX (human + LLM)
     if config.output_format in ("both", "human"):
-        renderer = HumanRenderer(config)
+        renderer = HumanRenderer(config, timestamp=timestamp_readable)
         content = renderer.render(app)
         out_path = output_dir / f"{timestamp}_{prefix}_human.md"
         out_path.write_text(content, encoding="utf-8")
         logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
 
     if config.output_format in ("both", "llm"):
-        renderer = LLMRenderer(config)
+        renderer = LLMRenderer(config, timestamp=timestamp_readable)
         content = renderer.render(app)
         out_path = output_dir / f"{timestamp}_{prefix}_llm.md"
         out_path.write_text(content, encoding="utf-8")
@@ -310,21 +311,21 @@ def run_pipeline(config: AppConfig) -> None:
     # Pliki DDL (human + LLM) — tylko gdy wykryto plik DDL
     if ddl_schema:
         if config.output_format in ("both", "human"):
-            renderer = DDLHumanRenderer(config)
+            renderer = DDLHumanRenderer(config, timestamp=timestamp_readable)
             content = renderer.render(app)
             out_path = output_dir / f"{timestamp}_{prefix}_ddl_human.md"
             out_path.write_text(content, encoding="utf-8")
             logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
 
         if config.output_format in ("both", "llm"):
-            renderer = DDLLLMRenderer(config)
+            renderer = DDLLLMRenderer(config, timestamp=timestamp_readable)
             content = renderer.render(app)
             out_path = output_dir / f"{timestamp}_{prefix}_ddl_llm.md"
             out_path.write_text(content, encoding="utf-8")
             logging.info("Zapisano: %s (%d znaków)", out_path, len(content))
 
     # Plik HTML — interaktywna dokumentacja
-    html_renderer = HTMLRenderer(config)
+    html_renderer = HTMLRenderer(config, timestamp=timestamp_readable)
     html_content = html_renderer.render(app)
     html_path = output_dir / f"{timestamp}_{prefix}_dokumentacja.html"
     html_path.write_text(html_content, encoding="utf-8")
@@ -332,7 +333,7 @@ def run_pipeline(config: AppConfig) -> None:
 
     # Skrypt DDL (--generate-ddl)
     if config.generate_ddl and ddl_schema:
-        ddl_renderer = DDLScriptRenderer(config)
+        ddl_renderer = DDLScriptRenderer(config, timestamp=timestamp_readable)
         ddl_content = ddl_renderer.render(app)
         ddl_path = output_dir / f"{timestamp}_{prefix}_migration_ddl.sql"
         ddl_path.write_text(ddl_content, encoding="utf-8")
@@ -340,7 +341,7 @@ def run_pipeline(config: AppConfig) -> None:
 
         # Skrypt rollback (wycofanie)
         from apex_export_to_md.renderers.rollback_renderer import RollbackRenderer
-        rollback_renderer = RollbackRenderer(config)
+        rollback_renderer = RollbackRenderer(config, timestamp=timestamp_readable)
         rollback_content = rollback_renderer.render(app)
         rollback_path = output_dir / f"{timestamp}_{prefix}_rollback.sql"
         rollback_path.write_text(rollback_content, encoding="utf-8")
@@ -375,7 +376,7 @@ def run_pipeline(config: AppConfig) -> None:
         logging.info("  Kolumny identity: %d", len(db_data.identity_max_values))
         logging.info("")
 
-        migration_renderer = MigrationRenderer(config, db_data)
+        migration_renderer = MigrationRenderer(config, db_data, timestamp=timestamp_readable)
         migration_content = migration_renderer.render(app)
         migration_path = output_dir / f"{timestamp}_{prefix}_migration_full.sql"
         migration_path.write_text(migration_content, encoding="utf-8")

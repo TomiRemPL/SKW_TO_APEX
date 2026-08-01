@@ -41,12 +41,15 @@ Narzędzie wiersza poleceń w Pythonie, które konwertuje eksport aplikacji Orac
 - Wyodrębnia strony, regiony, kolumny, elementy formularza, przyciski, procesy PL/SQL, akcje dynamiczne, rozgałęzienia, walidacje, komputacje, LOV-y, schematy autoryzacji/autentykacji, nawigację, role ACL i wyłączone/zakomentowane komponenty (Build Options)
 - Oznacza zakomentowane/wyłączone komponenty (`Commented Out`, `Exclude`) we wszystkich formatach (`[ZAKOMENTOWANY]`, `build_opt:`, odznaki ostrzegawcze w HTML)
 - Filtruje strony standardowe APEX (administracyjne, logowanie), pozostawiając strony użytkownika
-- Generuje do 5 plików wyjściowych:
+- Generuje do 8 plików wyjściowych:
   - `*_human.md` — APEX w formacie czytelnym dla człowieka
   - `*_llm.md` — APEX w formacie skondensowanym dla LLM
   - `*_ddl_human.md` — DDL (tabele, widoki, pakiety) w formacie czytelnym
   - `*_ddl_llm.md` — DDL w formacie LLM
   - `*_dokumentacja.html` — interaktywna dokumentacja HTML (diagram ER vis-network.js, przeglądarka obiektów, mapowanie APEX↔DB)
+  - `*_migration_ddl.sql` — wykonywalny skrypt SQL tworzący obiekty DB (z `--generate-ddl`)
+  - `*_rollback.sql` — skrypt cofający zmiany DDL (DROP objects, z `--generate-ddl`)
+  - `*_migration_full.sql` — pełna migracja z danymi (z `--generate-migration`)
 - Nazwy plików wyjściowych mają prefiks z timestampem: `YYYYMMDD_HHMMSS_*`
 
 **Dla kogo?** Dla programistów Oracle APEX, którzy chcą przeglądać strukturę aplikacji lub przekazywać ją do analiz przez AI.
@@ -113,7 +116,8 @@ usage: apex_export_to_md [-h] [--output-dir OUTPUT_DIR] [--output-prefix OUTPUT_
                          [--no-shared-components] [--generate-ddl]
                          [--generate-migration] [--db-connection DB_CONNECTION]
                          [--fetch-ddl-from-db] [--ddl-keyword DDL_KEYWORD]
-                         [--gui] [--verbose]
+                         [--gui] [--coverage] [--coverage-config COVERAGE_CONFIG]
+                         [--verbose]
                          [input_dir]
 
 Konwertuje eksport Oracle APEX (readable YAML) na Markdown.
@@ -344,7 +348,14 @@ Flaga (bez wartości). Generuje szczegółowy raport pokrycia parsurowania (proc
 
 ---
 
-## Przypadki użycia
+#### `--coverage-config ŚCIEŻKA`
+
+Opcjonalny plik reguł pokrycia YAML (nadpisuje wbudowane reguły domyślne z `apex_export_to_md/config/coverage_rules.yaml`).
+
+- **Domyślnie:** wbudowany plik reguł z pakietu; opcjonalnie `<input_dir>/coverage_rules.yaml` jest wczytywany automatycznie jeśli istnieje
+- **Przykład:** `--coverage --coverage-config ./moje_reguly.yaml`
+
+---
 
 ### 1. Podstawowe użycie — oba formaty
 
@@ -526,9 +537,11 @@ Generuje czysty skrypt SQL tworzący obiekty bazy w nowym schemacie. Prefiksy sc
 python -m apex_export_to_md _data --generate-ddl
 ```
 
-Wynikowy plik: `_out/YYYYMMDD_HHMMSS_apex_export_migration_ddl.sql`
+Wynikowe pliki:
+- `_out/YYYYMMDD_HHMMSS_apex_export_migration_ddl.sql` — skrypt tworzący obiekty
+- `_out/YYYYMMDD_HHMMSS_apex_export_rollback.sql` — skrypt wycofujący zmiany (DROP objects w odwrotnej kolejności)
 
-Kolejność obiektów w skrypcie:
+Kolejność obiektów w skrypcie DDL:
 1. `CREATE SEQUENCE` — sekwencje
 2. `CREATE TABLE` — tabele (bez FOREIGN KEY)
 3. `COMMENT ON` — komentarze do tabel i kolumn
@@ -773,17 +786,20 @@ _data/
   [parse_ddl_file]        -- parsuje *DDL*.sql → DDLSchema (auto-wykrycie)
          |
          v
-  [ApexApp]              -- agregat wszystkich danych (+ ddl_schema)
+  [parse_app_sql_file]    -- parsuje f*.sql → AppMetadata (statystyki, wersja APEX)
          |
-    _____|_____________________________
-   |     |        |         |         |
-   v     v        v         v         v
-Human  LLM    DDLHuman  DDLLLM    HTML
-Rndr   Rndr    Rndr      Rndr    Rndr
-   |     |        |         |         |
-   v     v        v         v         v
-*_human *_llm *_ddl_human *_ddl_llm *_dokumentacja
-  .md    .md      .md       .md       .html
+         v
+  [ApexApp]              -- agregat wszystkich danych (+ ddl_schema, + metadata)
+         |
+    _____|_____________________________________________
+   |     |        |         |         |       |       |
+   v     v        v         v         v       v       v
+Human  LLM    DDLHuman  DDLLLM    HTML   DDLScript  Migration
+Rndr   Rndr    Rndr      Rndr    Rndr     Rndr       Rndr
+   |     |        |         |         |       |       |
+   v     v        v         v         v       v       v
+*_human *_llm *_ddl_human *_ddl_llm *_dok. *_migration_ddl *_migration_full
+  .md    .md      .md       .md      .html    .sql + _rollback.sql  .sql
 ```
 
 ### Moduły
@@ -804,9 +820,14 @@ Rndr   Rndr    Rndr      Rndr    Rndr
 | `renderers/ddl_human_renderer.py` | `renderers/` | DDL Markdown czytelny dla człowieka |
 | `renderers/ddl_llm_renderer.py` | `renderers/` | DDL format liniowy dla LLM |
 | `renderers/html_renderer.py` | `renderers/` | Interaktywny HTML (vis-network.js, Prism.js, 3 zakładki) |
-| `renderers/ddl_script_renderer.py` | `renderers/` | Skrypt SQL tworzący obiekty DB w nowym schemacie |
+| `renderers/ddl_script_renderer.py` | `renderers/` | Skrypt SQL tworzący obiekty DB w nowym schemacie (bez prefiksu schematu) |
 | `renderers/migration_renderer.py` | `renderers/` | Pełny skrypt migracyjny z danymi (DDL + INSERT + sekwencje) |
+| `renderers/rollback_renderer.py` | `renderers/` | Skrypt wycofania DDL — DROP objects w odwrotnej kolejności |
+| `parser/app_sql_parser.py` | `parser/` | Parsowanie `f*.sql` (eksport SQL APEX) → `AppMetadata` (statystyki, wersja APEX, owner) |
 | `db_exporter.py` | `apex_export_to_md/` | Eksport danych z Oracle (oracledb), topologiczne sortowanie tabel |
+| `ddl_fetcher.py` | `apex_export_to_md/` | Pobieranie DDL z bazy Oracle (`DBMS_METADATA`) na podstawie keyword w komentarzach |
+| `coverage_report.py` | `apex_export_to_md/` | Raport pokrycia mapowania YAML — weryfikacja kompletności parsowania |
+| `app_logger.py` | `apex_export_to_md/` | Konfiguracja logowania do pliku (append mode, katalog `output_dir`) |
 | `settings_manager.py` | `apex_export_to_md/` | Zapis/odczyt ustawień JSON (`~/.apex_export_to_md/settings.json`) |
 | `gui/app.py` | `apex_export_to_md/gui/` | Serwer FastAPI z endpointami: settings, test-connection, run |
 | `gui/templates/index.html` | `apex_export_to_md/gui/` | Interfejs HTML (formularz, tooltips, dark theme) |
@@ -989,9 +1010,16 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 | `test_yaml_helpers.py` | Funkcje pomocnicze parsera YAML |
 | `test_page_parser.py` | Parsowanie plików `pages/p*.yaml` |
 | `test_shared_parser.py` | Parsowanie `shared_components/` |
+| `test_app_sql_parser.py` | Parser pliku `f*.sql` — metadane aplikacji |
 | `test_page_filter.py` | Wszystkie tryby `PageFilter` |
 | `test_human_renderer.py` | Format human Markdown (APEX) |
 | `test_llm_renderer.py` | Format LLM liniowy (APEX) |
+| `test_html_renderer.py` | Interaktywny renderer HTML |
+| `test_ddl_human_renderer.py` | DDL Markdown czytelny dla człowieka |
+| `test_ddl_llm_renderer.py` | DDL format liniowy dla LLM (identity, UNIQUE) |
+| `test_ddl_script_renderer.py` | Skrypt SQL DDL (brak prefiksu schematu, brak STORAGE) |
+| `test_ddl_fetcher.py` | Pobieranie DDL z Oracle przez `DBMS_METADATA` |
+| `test_coverage_report.py` | Raport pokrycia mapowania YAML |
 | `test_cli.py` | Parsowanie argumentów CLI |
 | `test_integration.py` | Integracyjny end-to-end pipeline |
 
@@ -1005,15 +1033,13 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 
 3. **Częściowe parsowanie procesów API** — procesy typu "Invoke API" (np. wywołania REST) mają ograniczone parsowanie — wyciągany jest tylko typ i punkt wywołania, bez szczegółów parametrów.
 
-4. **Brak parsowania Computations** — elementy APEX Computation (obliczenia wartości itemów) nie są aktualnie wyciągane.
+4. **Brak parsowania Application Computations** — komputacje zdefiniowane bezpośrednio na poziomie aplikacji (Application Computations) nie są obsługiwane. Komputacje na poziomie strony (Page Computations) są parsowane i renderowane poprawnie.
 
-5. **Brak parsowania Page Computations i Application Computations** — podobnie jak Computations na poziomie strony.
+5. **LOV-y zagnieżdżone w kolumnach** — LOV przypisany bezpośrednio do kolumny Interactive Grid jest wyciągany tylko przez nazwę; jego definicja SQL nie jest inline rozwijana.
 
-6. **LOV-y zagnieżdżone w kolumnach** — LOV przypisany bezpośrednio do kolumny Interactive Grid jest wyciągany tylko przez nazwę; jego definicja SQL nie jest inline rozwijana.
+6. **Flaga `--include-internal-ids` nie ma efektu** — parametr jest akceptowany przez CLI i GUI, ale funkcja `strip_apex_id` jest wywoływana bezwarunkowo w parserach. Flaga nie zmienia danych wyjściowych — wewnętrzne ID APEX są zawsze usuwane z nazw.
 
-7. **Wewnętrzne ID APEX** — domyślnie są usuwane przez `strip_apex_id`. Opcja `--include-internal-ids` zachowuje je, ale nie jest jeszcze w pełni zaimplementowana we wszystkich parserach.
-
-8. **Duże aplikacje** — przy aplikacjach z setkami stron i pełnym kodem (`--include-code full`) plik `*_human.md` może mieć kilka MB. Dla LLM zalecane jest `--include-code summary` lub `none`.
+7. **Duże aplikacje** — przy aplikacjach z setkami stron i pełnym kodem (`--include-code full`) plik `*_human.md` może mieć kilka MB. Dla LLM zalecane jest `--include-code summary` lub `none`.
 
 ---
 
@@ -1021,7 +1047,8 @@ pytest tests/ --cov=apex_export_to_md --cov-report=term-missing
 
 MIT License
 
-Copyright (c) 2024 DAW
+Copyright (c) 2026 Departament Audytu Wewnętrznego (DAW)
+Autor: Tomasz Rembiasz <trembiasz@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

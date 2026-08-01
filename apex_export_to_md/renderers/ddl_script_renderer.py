@@ -27,6 +27,13 @@ class DDLScriptRenderer(BaseRenderer):
         ddl = app.ddl_schema
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append("/*")
+            lines.append(f" * Generated: {self._timestamp}")
+            lines.append(" */")
+            lines.append("")
+
         lines.append("-- ============================================================")
         lines.append(f"-- Skrypt DDL wygenerowany z aplikacji {app.name} (ID: {app.id})")
         lines.append("-- Uruchom na użytkowniku zalogowanym do docelowego schematu.")

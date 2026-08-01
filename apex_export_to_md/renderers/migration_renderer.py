@@ -24,8 +24,8 @@ logger = logging.getLogger(__name__)
 class MigrationRenderer(DDLScriptRenderer):
     """Renderer generujący pełny skrypt migracyjny (DDL + dane)."""
 
-    def __init__(self, config: AppConfig, db_data: ExportedData):
-        super().__init__(config)
+    def __init__(self, config: AppConfig, db_data: ExportedData, timestamp: str = ""):
+        super().__init__(config, timestamp)
         self._db_data = db_data
 
     def render(self, app: ApexApp) -> str:
@@ -34,6 +34,13 @@ class MigrationRenderer(DDLScriptRenderer):
             return ""
         ddl = app.ddl_schema
         lines: list[str] = []
+
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append("/*")
+            lines.append(f" * Generated: {self._timestamp}")
+            lines.append(" */")
+            lines.append("")
 
         lines.append("-- ============================================================")
         lines.append(f"-- SKRYPT MIGRACYJNY — {app.name} (ID: {app.id})")

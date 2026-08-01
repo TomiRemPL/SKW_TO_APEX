@@ -23,6 +23,13 @@ class RollbackRenderer(BaseRenderer):
         ddl = app.ddl_schema
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append("/*")
+            lines.append(f" * Generated: {self._timestamp}")
+            lines.append(" */")
+            lines.append("")
+
         lines.append("-- ============================================================")
         lines.append(f"-- SKRYPT WYCOFANIA (ROLLBACK) — {app.name} (ID: {app.id})")
         lines.append("-- Usuwa WSZYSTKIE obiekty utworzone przez skrypt migracyjny.")

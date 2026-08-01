@@ -12,8 +12,9 @@ from apex_export_to_md.config import AppConfig
 class BaseRenderer(ABC):
     """Bazowy renderer — generuje tekst z modelu ApexApp."""
 
-    def __init__(self, config: AppConfig):
+    def __init__(self, config: AppConfig, timestamp: str = ""):
         self._config = config
+        self._timestamp = timestamp
 
     @abstractmethod
     def render(self, app: ApexApp) -> str:

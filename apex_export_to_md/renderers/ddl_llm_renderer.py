@@ -17,6 +17,10 @@ class DDLLLMRenderer(BaseRenderer):
         ddl = app.ddl_schema
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append(f"<!-- Generated: {self._timestamp} -->")
+
         lines.append(f"DDL_SCHEMA:{app.id}|{app.name}")
 
         for table in ddl.tables:

@@ -29,6 +29,11 @@ class HumanRenderer(BaseRenderer):
         """Generuj pełny dokument Markdown."""
         lines: list[str] = []
 
+        # Timestamp generowania
+        if self._timestamp:
+            lines.append(f"<!-- Generated: {self._timestamp} -->")
+            lines.append("")
+
         # Nagłówek aplikacji
         lines.append(f"# Aplikacja {app.name} (ID: {app.id}, alias: {app.alias})")
         lines.append("")
