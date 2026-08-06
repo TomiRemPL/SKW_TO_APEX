@@ -198,7 +198,9 @@ def _parse_regions(regions_data: list[dict]) -> list[Region]:
             source_table=safe_get_str(source, "table-name"),
             source_owner=safe_get_str(source, "table-owner"),
             source_sql=safe_get(source, "sql-query"),
+            source_type=safe_get_str(source, "type"),
             source_where=safe_get_str(source, "where-clause"),
+            html_code=safe_get(source, "html-code"),
             page_items_to_submit=safe_get_str(source, "page-items-to-submit"),
             parent_region=_clean_parent_region(safe_get_str(r, "layout.parent-region")),
             columns=_parse_columns(r.get("columns", [])),
@@ -297,12 +299,20 @@ def _parse_items(items_data: list[dict]) -> list[PageItem]:
         if source_type and "database" in source_type.lower():
             source_column = safe_get_str(source, "database-column")
 
+        # Szerokość/wysokość elementu (jako string) — pobierz raz
+        width_val = safe_get(item_data, "appearance.width")
+        height_val = safe_get(item_data, "appearance.height")
+
         item = PageItem(
             name=safe_get_str(ident, "name", "") or "",
             type=safe_get_str(ident, "type", "") or "",
             label=safe_get_str(item_data, "label.label"),
             label_alignment=safe_get_str(item_data, "label.alignment"),
             source_column=source_column,
+            source_sql=safe_get(source, "sql-query"),
+            template=safe_get_str(item_data, "appearance.template", strip_id=True),
+            width=str(width_val) if width_val is not None else None,
+            height=str(height_val) if height_val is not None else None,
             lov=safe_get_str(item_data, "list-of-values.list-of-values", strip_id=True),
             lov_display_null_value=safe_get_str(item_data, "list-of-values.display-null-value"),
             lov_display_extra_values=safe_get_bool(item_data, "list-of-values.display-extra-values") or None,
@@ -336,6 +346,7 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
     for b in buttons_data or []:
         ident = b.get("identification", {})
         behavior = b.get("behavior", {})
+        layout = b.get("layout", {})
 
         # Wyciągnij target page z behavior.target (jeśli redirect)
         target_page = None
@@ -357,6 +368,11 @@ def _parse_buttons(buttons_data: list[dict]) -> list[Button]:
             confirmation_message=safe_get_str(b, "confirmation.message"),
             confirmation_style=safe_get_str(b, "confirmation.style"),
             server_side_condition=_compress_condition(b.get("server-side-condition")),
+            region=safe_get_str(layout, "region", strip_id=True) if isinstance(layout, dict) else None,
+            slot=safe_get_str(layout, "slot") if isinstance(layout, dict) else None,
+            sequence=safe_get_int(layout, "sequence") or None if isinstance(layout, dict) else None,
+            database_action=safe_get_str(behavior, "database-action") if isinstance(behavior, dict) else None,
+            target_clear_cache=safe_get_str(behavior, "target.clear-cache") if isinstance(behavior, dict) else None,
             build_option=safe_get_str(b, "configuration.build-option", strip_id=True),
         )
         buttons.append(button)
@@ -399,7 +415,7 @@ def _parse_processes(processes_data: list[dict]) -> list[Process]:
         error_message = None
         if isinstance(error_block, dict):
             error_display_location = safe_get_str(error_block, "display-location")
-            error_message = safe_get_str(error_block, "message")
+            error_message = safe_get_str(error_block, "error-message") or safe_get_str(error_block, "message")
 
         process = Process(
             name=safe_get_str(ident, "name", "") or "",
@@ -492,6 +508,7 @@ def _parse_da_steps(steps_data: list[dict]) -> list[DynamicActionStep]:
             maintain_pagination=safe_get_bool(settings, "maintain-pagination") or None if isinstance(settings, dict) else None,
             show_processing=safe_get_bool(settings, "show-processing") or None if isinstance(settings, dict) else None,
             items_to_submit=safe_get_str(settings, "items-to-submit") if isinstance(settings, dict) else None,
+            items_to_return=safe_get_str(settings, "items-to-return") if isinstance(settings, dict) else None,
         )
         steps.append(step)
     return steps
@@ -516,15 +533,28 @@ def _parse_branches(branches_data: list[dict]) -> list[Branch]:
 
         # Condition — filtruj kluczowe pola (analogicznie do procesów)
         ssc = b.get("server-side-condition", {})
-        condition = _compress_condition(ssc)
+        condition = None
+        btn_pressed = None
+        if isinstance(ssc, dict):
+            btn_pressed = safe_get_str(ssc, "when-button-pressed", strip_id=True)
+            condition = _compress_condition(ssc)
+
+        # Parametry przekazywane w URL (item → wartość)
+        target_values = None
+        if isinstance(target, dict):
+            values = target.get("values")
+            if isinstance(values, dict) and values:
+                target_values = {k: v for k, v in values.items() if v}
 
         branch = Branch(
             name=safe_get_str(ident, "name"),
             type=safe_get_str(behavior, "type", "") or "" if isinstance(behavior, dict) else "",
             target_page=target_page,
             target_url=safe_get(target, "url") if isinstance(target, dict) else None,
+            target_values=target_values,
             point=safe_get_str(b, "execution.point", "") or "",
             condition=condition,
+            when_button_pressed=btn_pressed,
             build_option=safe_get_str(b, "configuration.build-option", strip_id=True),
         )
         branches.append(branch)
@@ -537,6 +567,7 @@ def _parse_validations(validations_data: list[dict]) -> list[Validation]:
     for v in validations_data or []:
         ident = v.get("identification", {})
         val_block = v.get("validation", {})
+        error_block = v.get("error", {})
 
         # Condition
         ssc = v.get("server-side-condition", {})
@@ -546,11 +577,20 @@ def _parse_validations(validations_data: list[dict]) -> list[Validation]:
             if cond_parts:
                 condition = ", ".join(cond_parts)
 
+        # Kod — może być function-body, expression lub sql-expression
+        code = (
+            safe_get(val_block, "pl/sql-function-body")
+            or safe_get(val_block, "pl/sql-expression")
+            or safe_get(val_block, "expression")
+        )
+
         validation = Validation(
             name=safe_get_str(ident, "name", "") or "",
             type=safe_get_str(val_block, "type", "") or "",
-            code=safe_get(val_block, "pl/sql-function-body"),
+            code=code,
             condition=condition,
+            error_message=safe_get_str(error_block, "error-message") if isinstance(error_block, dict) else None,
+            associated_item=safe_get_str(val_block, "associated-item"),
             build_option=safe_get_str(v, "configuration.build-option", strip_id=True),
         )
         validations.append(validation)

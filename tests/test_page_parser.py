@@ -175,7 +175,7 @@ def test_parse_page_nowe_pola_rozszerzone():
                 "execution": {"point": "After Submit"},
                 "error": {
                     "display-location": "Inline in Notification",
-                    "message": "Blad",
+                    "error-message": "Blad",
                 },
             }
         ],
@@ -220,6 +220,7 @@ def test_parse_page_nowe_pola_rozszerzone():
     # Proces
     pr = page.processes[0]
     assert pr.error_display_location == "Inline in Notification"
+    assert pr.error_message == "Blad"
 
 
 def test_parse_page_build_option():
@@ -331,3 +332,99 @@ def test_parse_page_dane_semantyczne_dokumentacji():
     assert process.package == "PKG_AUDYT"
     assert action.client_side_condition == "$v('P50_STATUS') === 'O'"
     assert action.actions[0].maintain_pagination is True
+
+
+def test_parse_page_nowe_pola_krytyczne():
+    """Parser wyciąga krytyczne nowe pola: html-code regionów, layout przycisków,
+    parametry branch, błędy walidacji, SQL itemów, items-to-return DA."""
+    yaml_data = {
+        "identification": {"id": 60, "name": "P60"},
+        "regions": [{
+            "identification": {"name": "StaticInfo", "type": "Static Content"},
+            "source": {
+                "type": "Static Content",
+                "html-code": "<p>Witaj w systemie</p>",
+            },
+        }],
+        "page-items": [{
+            "identification": {"name": "P60_INFO", "type": "Display Only"},
+            "appearance": {"template": "Optional - Floating", "width": 30, "height": 5},
+            "source": {
+                "type": "SQL Query",
+                "sql-query": "SELECT info FROM A_INFO WHERE id = :P60_ID",
+            },
+        }],
+        "buttons": [{
+            "identification": {"button-name": "ZAPISZ"},
+            "behavior": {"action": "Submit Page", "database-action": "SQL UPDATE action"},
+            "layout": {"region": "FormRegion", "slot": "NEXT", "sequence": 20},
+        }],
+        "dynamic-actions": [{
+            "identification": {"name": "Odswiez"},
+            "when": {"event": "Change", "selection-type": "Item", "item": "P60_X"},
+            "actions": [{
+                "identification": {"action": "Execute PL/SQL Code"},
+                "settings": {
+                    "pl/sql-code": "NULL;",
+                    "items-to-submit": "P60_X",
+                    "items-to-return": "P60_Y,P60_Z",
+                },
+            }],
+        }],
+        "branches": [{
+            "identification": {"name": "Go After Save"},
+            "behavior": {
+                "type": "Page or URL (Redirect)",
+                "target": {
+                    "page": "61",
+                    "values": {"p61_id": "&P60_ID."},
+                },
+            },
+            "execution": {"point": "After Processing"},
+            "server-side-condition": {"when-button-pressed": "ZAPISZ # 123"},
+        }],
+        "validations": [{
+            "identification": {"name": "Sprawdz_Dostep"},
+            "validation": {
+                "type": "Expression",
+                "pl/sql-expression": ":P60_LEVEL >= 5",
+                "associated-item": "P60_LEVEL",
+            },
+            "error": {"error-message": "Brak uprawnień do tej operacji"},
+        }],
+    }
+    page = parse_page(yaml_data)
+
+    # Region statyczny — html-code i source.type
+    r = page.regions[0]
+    assert r.html_code == "<p>Witaj w systemie</p>"
+    assert r.source_type == "Static Content"
+
+    # Item — template/width/height + source.sql-query
+    it = page.items[0]
+    assert it.template == "Optional - Floating"
+    assert it.width == "30"
+    assert it.height == "5"
+    assert "SELECT info" in it.source_sql
+
+    # Przycisk — layout (region/slot/sequence) + database-action
+    btn = page.buttons[0]
+    assert btn.region == "FormRegion"
+    assert btn.slot == "NEXT"
+    assert btn.sequence == 20
+    assert btn.database_action == "SQL UPDATE action"
+
+    # DA step — items-to-return
+    step = page.dynamic_actions[0].actions[0]
+    assert step.items_to_return == "P60_Y,P60_Z"
+
+    # Branch — when-button-pressed + target.values
+    br = page.branches[0]
+    assert br.when_button_pressed == "ZAPISZ"
+    assert br.target_values == {"p61_id": "&P60_ID."}
+
+    # Walidacja — error-message + pl/sql-expression + associated-item
+    val = page.validations[0]
+    assert val.error_message == "Brak uprawnień do tej operacji"
+    assert val.associated_item == "P60_LEVEL"
+    assert ":P60_LEVEL >= 5" in val.code

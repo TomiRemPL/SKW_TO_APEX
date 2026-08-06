@@ -253,18 +253,25 @@ def sample_authorizations_yaml() -> list[dict]:
 
 @pytest.fixture
 def sample_nav_lists_yaml() -> list[dict]:
-    """Lista nawigacyjna z dwoma wpisami (wzór: Navigation Menu)."""
+    """Lista nawigacyjna z wpisami i hierarchią parent-entry (wzór: Navigation Menu)."""
     return [
         {
             "identification": {"name": "Navigation Menu"},
             "entries": [
                 {
+                    "label": {"label": "Słowniki"},
+                    "link": {"target": {"page": 3}},
+                    "layout": {"parent-entry": None, "sequence": 10},
+                },
+                {
                     "label": {"label": "DAW_LISTA_AUDYTOW"},
                     "link": {"target": {"page": 4}},
+                    "layout": {"parent-entry": "Słowniki # 70100001795001919", "sequence": 20},
                 },
                 {
                     "label": {"label": "DAW_IMPORT_KONTROLI"},
                     "link": {"target": {"page": 5}},
+                    "layout": {"parent-entry": None, "sequence": 30},
                 },
             ],
         }

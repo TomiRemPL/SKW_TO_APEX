@@ -164,6 +164,14 @@ class LLMRenderer(BaseRenderer):
                 parts.append(f"src_type:{item.source_type}")
             if item.form_region:
                 parts.append(f"form_region:{item.form_region}")
+            if item.template:
+                parts.append(f"tpl:{item.template}")
+            if item.width:
+                parts.append(f"w:{item.width}")
+            if item.height:
+                parts.append(f"h:{item.height}")
+            if item.source_sql:
+                parts.append("src:SQL")
             if item.source_primary_key:
                 parts.append("src_pk:true")
             if item.source_query_only:
@@ -195,6 +203,16 @@ class LLMRenderer(BaseRenderer):
                 parts.append("hot:true")
             if btn.target_page:
                 parts.append(f"target:page{btn.target_page}")
+            if btn.region:
+                parts.append(f"region:{btn.region}")
+            if btn.slot:
+                parts.append(f"slot:{btn.slot}")
+            if btn.database_action:
+                parts.append(f"dml:{btn.database_action}")
+            if btn.sequence is not None:
+                parts.append(f"seq:{btn.sequence}")
+            if btn.target_clear_cache:
+                parts.append(f"clear_cache:{btn.target_clear_cache}")
             if btn.confirmation_message:
                 parts.append(f"confirm:{btn.confirmation_message}")
             if btn.server_side_condition:
@@ -260,6 +278,8 @@ class LLMRenderer(BaseRenderer):
                     step_parts.append("keep_page:true")
                 if step.items_to_submit:
                     step_parts.append(f"submit:{step.items_to_submit}")
+                if step.items_to_return:
+                    step_parts.append(f"return:{step.items_to_return}")
                 lines.append("|".join(step_parts))
                 if step.code:
                     lines.extend(self._render_code_or_summary(step.code, "plsql"))
@@ -270,8 +290,13 @@ class LLMRenderer(BaseRenderer):
             parts = [f"BRANCH:{branch.type}->{target}"]
             if branch.point:
                 parts.append(f"point:{branch.point}")
+            if branch.when_button_pressed:
+                parts.append(f"btn:{branch.when_button_pressed}")
             if branch.condition:
                 parts.append(f"cond:{branch.condition}")
+            if branch.target_values:
+                vals = ",".join(f"{k}={v}" for k, v in branch.target_values.items())
+                parts.append(f"params:{vals}")
             if branch.build_option:
                 parts.append(f"build_opt:{branch.build_option}")
             lines.append("|".join(parts))
@@ -279,6 +304,10 @@ class LLMRenderer(BaseRenderer):
         # Walidacje
         for val in page.validations:
             parts = [f"VAL:{val.name}", f"type:{val.type}"]
+            if val.associated_item:
+                parts.append(f"item:{val.associated_item}")
+            if val.error_message:
+                parts.append(f"err:{val.error_message}")
             if val.condition:
                 parts.append(f"cond:{val.condition}")
             if val.build_option:
@@ -306,6 +335,8 @@ class LLMRenderer(BaseRenderer):
             parts.append(f"seq:{region.sequence}")
         if region.source_location:
             parts.append(f"src_loc:{region.source_location}")
+        if region.source_type:
+            parts.append(f"src_type:{region.source_type}")
         if region.source_table:
             source = f"{region.source_owner}." if region.source_owner else ""
             parts.append(f"src:{source}{region.source_table}")
@@ -317,6 +348,8 @@ class LLMRenderer(BaseRenderer):
             parts.append(f"lost_update:{region.lost_update_type}")
         if region.source_sql and self._should_include_code():
             parts.append("src:SQL")
+        if region.html_code and self._should_include_code():
+            parts.append("html:present")
         if region.editable:
             parts.append("edit:true")
             if region.allowed_operations:
@@ -338,6 +371,12 @@ class LLMRenderer(BaseRenderer):
         if region.source_sql and self._should_include_code():
             lines.append("```sql")
             lines.append(region.source_sql)
+            lines.append("```")
+
+        # Zawartość HTML regionów statycznych
+        if region.html_code and self._should_include_code():
+            lines.append("```html")
+            lines.append(region.html_code)
             lines.append("```")
 
         # Kolumny
@@ -468,6 +507,7 @@ class LLMRenderer(BaseRenderer):
         for nav in app.nav_lists:
             entries_str = "|".join(
                 f"{e.get('label', '?')}->page:{e.get('target_page', '?')}"
+                + (f"<parent:{e.get('parent')}" if e.get("parent") else "")
                 for e in nav.entries
             )
             lines.append(f"===NAV:{nav.name}|{entries_str}")

@@ -433,7 +433,9 @@ class HTMLRenderer(BaseRenderer):
                 "source_table": r.source_table or "",
                 "source_owner": r.source_owner or "",
                 "source_sql": r.source_sql or "",
+                "source_type": r.source_type or "",
                 "source_where": r.source_where or "",
+                "html_code": r.html_code or "",
                 "page_items_to_submit": r.page_items_to_submit or "",
                 "parent_region": r.parent_region or "",
                 "editable": r.editable,
@@ -482,6 +484,10 @@ class HTMLRenderer(BaseRenderer):
                 "label": item.label or "",
                 "label_alignment": item.label_alignment or "",
                 "source_column": item.source_column or "",
+                "source_sql": item.source_sql or "",
+                "template": item.template or "",
+                "width": item.width or "",
+                "height": item.height or "",
                 "lov": item.lov or "",
                 "lov_display_null_value": item.lov_display_null_value or "",
                 "lov_display_extra_values": item.lov_display_extra_values or False,
@@ -516,6 +522,11 @@ class HTMLRenderer(BaseRenderer):
                 "action": btn.action or "",
                 "target_page": btn.target_page or "",
                 "is_hot": btn.is_hot,
+                "region": btn.region or "",
+                "slot": btn.slot or "",
+                "sequence": btn.sequence,
+                "database_action": btn.database_action or "",
+                "target_clear_cache": btn.target_clear_cache or "",
                 "confirmation_message": btn.confirmation_message or "",
                 "confirmation_style": btn.confirmation_style or "",
                 "server_side_condition": btn.server_side_condition or "",
@@ -569,6 +580,7 @@ class HTMLRenderer(BaseRenderer):
                     "maintain_pagination": step.maintain_pagination or False,
                     "show_processing": step.show_processing or False,
                     "items_to_submit": step.items_to_submit or "",
+                    "items_to_return": step.items_to_return or "",
                     "raw_attributes": {},
                 } for step in da.actions],
                 "raw_attributes": {},
@@ -581,6 +593,8 @@ class HTMLRenderer(BaseRenderer):
                 "type": v.type,
                 "code": v.code or "",
                 "condition": v.condition or "",
+                "error_message": v.error_message or "",
+                "associated_item": v.associated_item or "",
                 "build_option": v.build_option or "",
                 "raw_attributes": {},
             })
@@ -591,9 +605,11 @@ class HTMLRenderer(BaseRenderer):
                 "type": b.type,
                 "target_page": b.target_page or "",
                 "target_url": b.target_url or "",
+                "target_values": b.target_values or {},
                 "point": b.point,
                 "build_option": b.build_option or "",
                 "condition": b.condition or "",
+                "when_button_pressed": b.when_button_pressed or "",
             })
 
         return page_obj
@@ -1154,6 +1170,7 @@ function renderRegions(regions) {
     if (r.pagination) html += ' | paginacja: ' + escapeHtml(r.pagination);
     html += '</div>';
     if (r.source_sql) html += codeBlock(r.source_sql, "sql");
+    if (r.html_code) html += codeBlock(r.html_code, "html");
     if (r.columns.length) {
       html += '<table><tr><th>Kolumna</th><th>Typ</th><th>Nag\u0142\u00f3wek</th><th>\u0179r\u00f3d\u0142o</th><th>Info</th></tr>';
       r.columns.forEach(function(c) {
@@ -1212,6 +1229,10 @@ function renderButtons(buttons) {
     html += 'Label: <strong>' + escapeHtml(b.label || b.name) + '</strong>';
     if (b.action) html += ' | Akcja: ' + escapeHtml(b.action);
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
+    if (b.database_action) html += ' | DML: ' + escapeHtml(b.database_action);
+    if (b.region) html += ' | region: ' + escapeHtml(b.region);
+    if (b.slot) html += ' | slot: ' + escapeHtml(b.slot);
+    if (b.target_clear_cache) html += ' | czyści cache: <code>' + escapeHtml(b.target_clear_cache) + '</code>';
     if (b.confirmation_message) html += ' | Potwierdzenie: ' + escapeHtml(b.confirmation_message);
     if (b.server_side_condition) html += ' | warunek: <code>' + escapeHtml(b.server_side_condition) + '</code>';
     html += '</div></div>';
@@ -1266,6 +1287,7 @@ function renderDynamicActions(das) {
         if (step.fire_on_initialization) html += ' <span class="badge badge-point">init</span>';
         if (step.maintain_pagination) html += ' | zachowuje paginację';
         if (step.items_to_submit) html += ' | przesyła: ' + escapeHtml(step.items_to_submit);
+        if (step.items_to_return) html += ' | odbiera: ' + escapeHtml(step.items_to_return);
         if (step.code) {
           var lang = detectLang(step.code, step.type);
           html += codeBlock(step.code, lang);
@@ -1285,6 +1307,8 @@ function renderValidations(validations) {
     html += '<div class="subsection-title">' + escapeHtml(v.name) + boBadge(v.build_option) + '</div>';
     html += '<div class="subsection-meta">';
     html += '<span class="badge badge-type">' + escapeHtml(v.type) + '</span>';
+    if (v.associated_item) html += ' | item: ' + escapeHtml(v.associated_item);
+    if (v.error_message) html += ' | błąd: ' + escapeHtml(v.error_message);
     if (v.condition) html += ' | warunek: ' + escapeHtml(v.condition);
     html += '</div>';
     if (v.code) html += codeBlock(v.code, detectLang(v.code));
@@ -1303,6 +1327,11 @@ function renderBranches(branches) {
     html += ' <span class="badge badge-point">' + escapeHtml(b.point) + '</span>';
     if (b.target_page) html += ' | \u2192 Strona ' + b.target_page;
     if (b.target_url) html += ' | URL: ' + escapeHtml(b.target_url);
+    if (b.when_button_pressed) html += ' | przycisk: <strong>' + escapeHtml(b.when_button_pressed) + '</strong>';
+    if (b.target_values && Object.keys(b.target_values).length) {
+      var vals = Object.keys(b.target_values).map(function(k){ return k + "=" + b.target_values[k]; }).join(", ");
+      html += ' | parametry: ' + escapeHtml(vals);
+    }
     if (b.condition) html += ' | warunek: ' + escapeHtml(b.condition);
     html += '</div></div>';
   });

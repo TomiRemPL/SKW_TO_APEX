@@ -47,11 +47,25 @@ def test_parse_nav_lists(sample_nav_lists_yaml):
     nav_lists = parse_nav_lists(sample_nav_lists_yaml)
     assert len(nav_lists) == 1
     assert nav_lists[0].name == "Navigation Menu"
-    assert len(nav_lists[0].entries) == 2
-    assert nav_lists[0].entries[0]["label"] == "DAW_LISTA_AUDYTOW"
-    assert nav_lists[0].entries[0]["target_page"] == 4
-    assert nav_lists[0].entries[1]["label"] == "DAW_IMPORT_KONTROLI"
-    assert nav_lists[0].entries[1]["target_page"] == 5
+    assert len(nav_lists[0].entries) == 3
+    assert nav_lists[0].entries[0]["label"] == "Słowniki"
+    assert nav_lists[0].entries[0]["target_page"] == 3
+    assert nav_lists[0].entries[1]["label"] == "DAW_LISTA_AUDYTOW"
+    assert nav_lists[0].entries[1]["target_page"] == 4
+    assert nav_lists[0].entries[2]["label"] == "DAW_IMPORT_KONTROLI"
+    assert nav_lists[0].entries[2]["target_page"] == 5
+
+
+def test_parse_nav_lists_parent_hierarchia(sample_nav_lists_yaml):
+    """Bugfix: parent-entry pobierane z layout (nie identification)."""
+    nav_lists = parse_nav_lists(sample_nav_lists_yaml)
+    entries = nav_lists[0].entries
+    # Wpis nadrzędny nie ma parent
+    assert entries[0]["parent"] is None
+    # Wpis podrzędny ma parent wskazujący na wpis nadrzędny (z obciętym ID APEX)
+    assert entries[1]["parent"] == "Słowniki"
+    # Trzeci wpis jest na poziomie głównym
+    assert entries[2]["parent"] is None
 
 
 def test_parse_app_items(sample_app_items_yaml):

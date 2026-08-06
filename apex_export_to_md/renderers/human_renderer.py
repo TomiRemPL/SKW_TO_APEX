@@ -231,6 +231,21 @@ class HumanRenderer(BaseRenderer):
                     if item.lov_display_extra_values:
                         lov_info.append("dopuszcza wartości spoza LOV")
                     lines.append(f"| ↳ | | | | | | {', '.join(lov_info)} |")
+                if item.template or item.width or item.height or item.source_sql:
+                    extra: list[str] = []
+                    if item.template:
+                        extra.append(f"sablon: {item.template}")
+                    if item.width:
+                        extra.append(f"szer: {item.width}")
+                    if item.height:
+                        extra.append(f"wys: {item.height}")
+                    if item.source_sql:
+                        extra.append("SQL")
+                    lines.append(f"| ↳ | | | | | | {', '.join(extra)} |")
+                    if item.source_sql and self._should_include_code():
+                        lines.append("  ```sql")
+                        lines.append(f"  {item.source_sql}")
+                        lines.append("  ```")
             lines.append("")
 
         # Przyciski
@@ -240,7 +255,19 @@ class HumanRenderer(BaseRenderer):
             for btn in page.buttons:
                 hot = " **(primary)**" if btn.is_hot else ""
                 target = f" → strona {btn.target_page}" if btn.target_page else ""
-                lines.append(f"- **{btn.name}**{_bo_suffix(btn.build_option)} — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}")
+                db_act = f" [DML: {btn.database_action}]" if btn.database_action else ""
+                lines.append(f"- **{btn.name}**{_bo_suffix(btn.build_option)} — {btn.label or '?'} [{btn.action or '?'}]{hot}{target}{db_act}")
+                if btn.region or btn.slot or btn.sequence is not None:
+                    loc_parts: list[str] = []
+                    if btn.region:
+                        loc_parts.append(f"region: {btn.region}")
+                    if btn.slot:
+                        loc_parts.append(f"slot: {btn.slot}")
+                    if btn.sequence is not None:
+                        loc_parts.append(f"kolejność: {btn.sequence}")
+                    lines.append(f"  - Lokalizacja: {', '.join(loc_parts)}")
+                if btn.target_clear_cache:
+                    lines.append(f"  - Czyści cache: `{btn.target_clear_cache}`")
                 if btn.confirmation_message:
                     style = f" (styl: {btn.confirmation_style})" if btn.confirmation_style else ""
                     lines.append(f"  - Potwierdzenie: {btn.confirmation_message}{style}")
@@ -272,6 +299,8 @@ class HumanRenderer(BaseRenderer):
                     lines.append(f"- Ustawienia DML: {', '.join(process_flags)}")
                 if proc.success_message:
                     lines.append(f"- Komunikat sukcesu: {proc.success_message}")
+                if proc.error_message:
+                    lines.append(f"- Komunikat błędu: {proc.error_message}")
                 if proc.package or proc.procedure_or_function:
                     owner = f"{proc.owner}." if proc.owner else ""
                     lines.append(f"- Wywołanie: `{owner}{proc.package or '?'}.{proc.procedure_or_function or '?'}`")
@@ -305,6 +334,8 @@ class HumanRenderer(BaseRenderer):
                         lines.append("    - Zachowuje paginację")
                     if step.items_to_submit:
                         lines.append(f"    - Przesyła elementy: {step.items_to_submit}")
+                    if step.items_to_return:
+                        lines.append(f"    - Odbiera elementy: {step.items_to_return}")
                     if step.code and self._should_include_code():
                         lines.append(f"    ```")
                         lines.append(f"    {step.code}")
@@ -318,7 +349,11 @@ class HumanRenderer(BaseRenderer):
             for branch in page.branches:
                 target = f"strona {branch.target_page}" if branch.target_page else branch.target_url or "?"
                 cond = f" (warunek: {branch.condition})" if branch.condition else ""
-                lines.append(f"- {branch.name or '?'}{_bo_suffix(branch.build_option)} → {target}{cond}")
+                btn_info = f" (przycisk: {branch.when_button_pressed})" if branch.when_button_pressed else ""
+                lines.append(f"- {branch.name or '?'}{_bo_suffix(branch.build_option)} → {target}{cond}{btn_info}")
+                if branch.target_values:
+                    vals = ", ".join(f"{k}={v}" for k, v in branch.target_values.items())
+                    lines.append(f"  - Parametry URL: `{vals}`")
             lines.append("")
 
         # Walidacje
@@ -327,7 +362,10 @@ class HumanRenderer(BaseRenderer):
             lines.append("")
             for val in page.validations:
                 cond = f" (warunek: {val.condition})" if val.condition else ""
-                lines.append(f"- **{val.name}**{_bo_suffix(val.build_option)} — typ: {val.type}{cond}")
+                item_info = f" [{val.associated_item}]" if val.associated_item else ""
+                lines.append(f"- **{val.name}**{_bo_suffix(val.build_option)} — typ: {val.type}{item_info}{cond}")
+                if val.error_message:
+                    lines.append(f"  - Komunikat błędu: {val.error_message}")
                 if val.code and self._should_include_code():
                     lines.append(f"  ```plsql")
                     lines.append(f"  {val.code}")
@@ -371,6 +409,8 @@ class HumanRenderer(BaseRenderer):
 
         # Typ i źródło
         type_info = region.type
+        if region.source_type and region.source_type not in type_info:
+            type_info += f" ({region.source_type})"
         if region.editable:
             ops = ", ".join(region.allowed_operations) if region.allowed_operations else "?"
             type_info += f" (edytowalny: {ops})"
@@ -399,6 +439,15 @@ class HumanRenderer(BaseRenderer):
                 lines.append(f"```sql")
                 lines.append(region.source_sql)
                 lines.append(f"```")
+        if region.html_code:
+            lines.append(f"- **Zawartość HTML:**")
+            if self._should_include_code():
+                lines.append(f"```html")
+                lines.append(region.html_code)
+                lines.append(f"```")
+            elif self._should_summarize_code():
+                first_line = region.html_code.strip().split("\n")[0]
+                lines.append(f"> `{first_line}...`")
         lines.append("")
 
         # Kolumny jako tabela
@@ -531,10 +580,15 @@ class HumanRenderer(BaseRenderer):
             lines.append("")
             for nav in app.nav_lists:
                 lines.append(f"**{nav.name}**")
+                # Indentacja wpisów na podstawie parent-entry
+                labels = {e.get("label") for e in nav.entries if e.get("label")}
                 for entry in nav.entries:
                     label = entry.get("label", "?")
                     target = entry.get("target_page", "?")
-                    lines.append(f"- {label} → {target}")
+                    parent = entry.get("parent")
+                    indent = "  " if parent and parent in labels else ""
+                    parent_info = f" (pod: {parent})" if parent and parent not in labels else ""
+                    lines.append(f"{indent}- {label} → strona {target}{parent_info}")
                 lines.append("")
 
         # App Items

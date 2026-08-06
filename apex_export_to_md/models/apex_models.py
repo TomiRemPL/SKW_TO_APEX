@@ -41,7 +41,9 @@ class Region:
     source_table: str | None = None
     source_owner: str | None = None
     source_sql: str | None = None
+    source_type: str | None = None      # typ źródła: Table / View, SQL Query, Static Content...
     source_where: str | None = None
+    html_code: str | None = None        # treść HTML regionów statycznych (Static Content)
     page_items_to_submit: str | None = None
     parent_region: str | None = None
     columns: list[Column] = field(default_factory=list)
@@ -71,6 +73,10 @@ class PageItem:
     label: str | None = None
     label_alignment: str | None = None
     source_column: str | None = None
+    source_sql: str | None = None       # zapytanie SQL dla źródła typu SQL Query
+    template: str | None = None         # szablon wyglądu elementu
+    width: str | None = None
+    height: str | None = None
     lov: str | None = None
     lov_display_null_value: str | None = None
     lov_display_extra_values: bool | None = None
@@ -140,6 +146,7 @@ class DynamicActionStep:
     maintain_pagination: bool | None = None
     show_processing: bool | None = None
     items_to_submit: str | None = None
+    items_to_return: str | None = None  # elementy zwracane przez serwer (Execute Server-side Code)
 
 
 @dataclass
@@ -167,6 +174,11 @@ class Button:
     confirmation_message: str | None = None
     confirmation_style: str | None = None
     server_side_condition: str | None = None
+    region: str | None = None           # region, w którym leży przycisk
+    slot: str | None = None             # slot (CLOSE, NEXT, DELETE...)
+    sequence: int | None = None
+    database_action: str | None = None  # operacja DML (SQL INSERT/UPDATE/DELETE action)
+    target_clear_cache: str | None = None
     build_option: str | None = None
 
 
@@ -177,8 +189,10 @@ class Branch:
     type: str = ""                      # Page or URL (Redirect)
     target_page: int | None = None
     target_url: str | None = None
+    target_values: dict | None = None   # parametry przekazywane w URL (item → wartość)
     point: str = ""                     # After Processing
     condition: str | None = None
+    when_button_pressed: str | None = None  # przycisk wyzwalający rozgałęzienie
     build_option: str | None = None
 
 
@@ -189,6 +203,8 @@ class Validation:
     type: str                           # PL/SQL Function Body, Item is NOT NULL...
     code: str | None = None
     condition: str | None = None
+    error_message: str | None = None    # komunikat błędu prezentowany użytkownikowi
+    associated_item: str | None = None  # element formularza powiązany z walidacją
     build_option: str | None = None
 
 

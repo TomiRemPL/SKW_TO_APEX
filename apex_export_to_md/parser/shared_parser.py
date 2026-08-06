@@ -119,7 +119,7 @@ def parse_nav_lists(data: list[dict] | None) -> list[NavList]:
             entries.append({
                 "label": safe_get_str(label_block, "label") if isinstance(label_block, dict) else None,
                 "target_page": safe_get(target, "page") if isinstance(target, dict) else None,
-                "parent": safe_get_str(e.get("identification", {}), "parent-entry", strip_id=True),
+                "parent": safe_get_str(e.get("layout", {}), "parent-entry", strip_id=True),
             })
         nav_list = NavList(
             name=safe_get_str(ident, "name", "") or "",
