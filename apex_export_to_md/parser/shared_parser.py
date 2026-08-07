@@ -55,7 +55,7 @@ def parse_lovs(data: list[dict] | None) -> list[LOV]:
     for item in data:
         ident = item.get("identification", {})
         source = item.get("source", {})
-        source_type = safe_get_str(source, "type", "") or ""
+        source_type = safe_get_str(source, "type") or safe_get_str(source, "location") or ""
         col_mapping = item.get("column-mapping", {})
 
         # Dla Static Values — wyciągnij wpisy
@@ -64,10 +64,12 @@ def parse_lovs(data: list[dict] | None) -> list[LOV]:
             raw_entries = item.get("entries", [])
             entries = []
             for e in raw_entries:
-                entry_data = e.get("entry", e)
+                entry_data = e.get("entry", e) if isinstance(e, dict) else {}
+                disp = entry_data.get("display") if isinstance(entry_data, dict) else ""
+                ret = entry_data.get("return") if isinstance(entry_data, dict) else ""
                 entries.append({
-                    "display": entry_data.get("display", ""),
-                    "return": entry_data.get("return", ""),
+                    "display": str(disp) if disp is not None else "",
+                    "return": str(ret) if ret is not None else "",
                 })
 
         lov = LOV(

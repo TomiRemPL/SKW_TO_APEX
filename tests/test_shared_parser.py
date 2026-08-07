@@ -27,6 +27,44 @@ def test_parse_lovs_static(sample_lovs_yaml):
     assert lovs[2].entries[0]["display"] == "Tak"
 
 
+def test_parse_lovs_static_location_only():
+    """Test dla statycznego LOV z APEX YAML gdzie występuje location: Static Values bez klucza type."""
+    data = [
+        {
+            "identification": {"name": "TAKNIEND"},
+            "source": {"location": "Static Values"},
+            "entries": [
+                {
+                    "id": 12345,
+                    "entry": {
+                        "sequence": 1,
+                        "display": "TAK",
+                        "return": "TAK",
+                    },
+                },
+                {
+                    "id": 12346,
+                    "entry": {
+                        "sequence": 2,
+                        "display": 1,
+                        "return": True,
+                    },
+                },
+            ],
+        }
+    ]
+    lovs = parse_lovs(data)
+    assert len(lovs) == 1
+    assert lovs[0].name == "TAKNIEND"
+    assert lovs[0].source_type == "Static Values"
+    assert len(lovs[0].entries) == 2
+    assert lovs[0].entries[0]["display"] == "TAK"
+    assert lovs[0].entries[0]["return"] == "TAK"
+    # Bezpieczna konwersja wartości numerycznych/boolowskich do string
+    assert lovs[0].entries[1]["display"] == "1"
+    assert lovs[0].entries[1]["return"] == "True"
+
+
 def test_parse_authorizations(sample_authorizations_yaml):
     auths = parse_authorizations(sample_authorizations_yaml)
     assert len(auths) == 2

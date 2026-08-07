@@ -65,7 +65,8 @@ class HTMLRenderer(BaseRenderer):
     <h1>{title}</h1>
   </div>
   <div class="search-box">
-    <input type="text" id="search" placeholder="Szukaj..." oninput="handleSearch(this.value)">
+    <input type="text" id="search" placeholder="Szukaj..." oninput="handleSearch(this.value)" onkeydown="if(event.key==='Escape')hideSearchResults()">
+    <div id="search-results" class="search-results" style="display:none"></div>
   </div>
 </header>
 
@@ -74,6 +75,7 @@ class HTMLRenderer(BaseRenderer):
   <button class="tab" onclick="switchTab('diagram')">Diagram relacji</button>
   <button class="tab" onclick="switchTab('browser')">Baza danych</button>
   <button class="tab" onclick="switchTab('map')">APEX \u2194 DB</button>
+  <button class="tab" onclick="switchTab('shared')">Shared Components</button>
 </nav>
 
 <main>
@@ -110,6 +112,13 @@ class HTMLRenderer(BaseRenderer):
           \u2190 Kliknij na stron\u0119 APEX, aby zobaczy\u0107 szczeg\u00f3\u0142y
         </div>
       </div>
+    </div>
+  </div>
+
+  <div id="tab-shared" class="tab-content" style="display:none">
+    <div class="browser-layout">
+      <div id="shared-tree" class="tree-panel"></div>
+      <div id="shared-detail" class="detail-panel"></div>
     </div>
   </div>
 </main>
@@ -359,6 +368,37 @@ class HTMLRenderer(BaseRenderer):
         data["links"] = self._build_links(app)
 
         # Top-level shared components
+        data["lovs"] = [{
+            "name": lov.name,
+            "source_type": lov.source_type or "",
+            "source_table": lov.source_table or "",
+            "sql_query": lov.sql_query or "",
+            "return_column": lov.return_column or "",
+            "display_column": lov.display_column or "",
+            "entries": lov.entries or []
+        } for lov in app.lovs]
+
+        data["authorizations"] = [{
+            "name": auth.name,
+            "type": auth.type or "",
+            "code": auth.code or "",
+            "role_or_group": auth.role_or_group or ""
+        } for auth in app.authorizations]
+
+        data["nav_lists"] = [{
+            "name": nl.name,
+            "entries": [{
+                "label": entry.get("label") or "",
+                "target_page": entry.get("target_page") or "",
+                "parent": entry.get("parent") or ""
+            } for entry in nl.entries]
+        } for nl in app.nav_lists]
+
+        data["app_items"] = [{
+            "name": item.name,
+            "scope": item.scope or ""
+        } for item in app.app_items]
+
         data["authentications"] = [{
             "name": a.name, "type": a.type or "", "host": a.host or "",
             "port": a.port or "", "use_ssl": a.use_ssl or "", "dn": a.dn_string or "",
@@ -769,6 +809,23 @@ pre { background: #f8f8f8; border: 1px solid #ddd; padding: 12px; overflow-x: au
       font-size: 12px; border-radius: 4px; }
 code { font-family: "Fira Code", Consolas, monospace; }
 /* Info tab */
+.search-box { position: relative; }
+.search-results { position: absolute; top: 100%; right: 0; width: 380px; max-height: 480px;
+                  overflow-y: auto; background: #fff; color: #333; border: 1px solid #cbd5e0;
+                  box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; border-radius: 0 0 6px 6px; text-align: left; }
+.search-group-header { padding: 6px 12px; background: #edf2f7; font-weight: 700; font-size: 11px;
+                       color: #4a5568; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
+.search-result-item { padding: 8px 12px; border-bottom: 1px solid #edf2f7; cursor: pointer; transition: background 0.15s; }
+.search-result-item:hover { background: #f7fafc; }
+.search-result-item:last-child { border-bottom: none; }
+.search-result-title { font-size: 13px; font-weight: 600; color: #2b6cb0; display: flex; align-items: center; justify-content: space-between; }
+.search-result-subtitle { font-size: 11px; color: #718096; margin-top: 2px; }
+.search-no-results { padding: 12px; text-align: center; color: #718096; font-size: 13px; }
+@keyframes highlight-pulse {
+  0% { background-color: rgba(236, 201, 75, 0.6); }
+  100% { background-color: transparent; }
+}
+.search-highlight { animation: highlight-pulse 2.5s ease-out; border-radius: 4px; }
 .info-container { max-width: 960px; margin: 0 auto; }
 .info-header { text-align: center; padding: 24px 0 16px; border-bottom: 2px solid #d4a843;
                margin-bottom: 24px; }
@@ -810,13 +867,312 @@ function switchTab(name) {
   if (name === "diagram" && !window._diagramInit) initDiagram();
   if (name === "browser" && !window._browserInit) initBrowser();
   if (name === "map" && !window._mapInit) initMap();
+  if (name === "shared" && !window._sharedInit) initSharedComponents();
 }
 
 // === SEARCH ===
-function handleSearch(q) {
-  q = q.toLowerCase().trim();
-  if (!q) return;
+var _searchIndex = null;
+
+function buildSearchIndex() {
+  if (_searchIndex) return _searchIndex;
+  var items = [];
+
+  if (typeof DATA === "undefined") return [];
+
+  // Database objects
+  if (DATA.tables) {
+    DATA.tables.forEach(function(t) {
+      items.push({
+        category: "Tabele bazy danych",
+        typeLabel: "Tabela",
+        name: t.name,
+        subtitle: t.comment || "",
+        searchText: (t.name + " " + (t.comment || "") + " " + (t.columns || []).map(function(c){ return c.name + " " + (c.comment||""); }).join(" ")).toLowerCase(),
+        action: function() {
+          if (!window._browserInit) initBrowser();
+          switchTab("browser");
+          showObject("table", t.name);
+        }
+      });
+    });
+  }
+
+  if (DATA.views) {
+    DATA.views.forEach(function(v) {
+      items.push({
+        category: "Widoki bazy danych",
+        typeLabel: "Widok",
+        name: v.name,
+        subtitle: v.comment || "",
+        searchText: (v.name + " " + (v.comment || "") + " " + (v.sql || "") + " " + (v.columns || []).map(function(c){ return c.name + " " + (c.comment||""); }).join(" ")).toLowerCase(),
+        action: function() {
+          if (!window._browserInit) initBrowser();
+          switchTab("browser");
+          showObject("view", v.name);
+        }
+      });
+    });
+  }
+
+  if (DATA.packages) {
+    DATA.packages.forEach(function(p) {
+      items.push({
+        category: "Pakiety PL/SQL",
+        typeLabel: "Pakiet",
+        name: p.name,
+        subtitle: p.comment || "",
+        searchText: (p.name + " " + (p.comment || "") + " " + (p.header_src || "") + " " + (p.body_src || "")).toLowerCase(),
+        action: function() {
+          if (!window._browserInit) initBrowser();
+          switchTab("browser");
+          showObject("package", p.name);
+        }
+      });
+    });
+  }
+
+  if (DATA.sequences) {
+    DATA.sequences.forEach(function(s) {
+      items.push({
+        category: "Sekwencje",
+        typeLabel: "Sekwencja",
+        name: s.name,
+        subtitle: "",
+        searchText: s.name.toLowerCase(),
+        action: function() {
+          if (!window._browserInit) initBrowser();
+          switchTab("browser");
+          showObject("sequence", s.name);
+        }
+      });
+    });
+  }
+
+  // APEX Pages & Sub-components
+  if (DATA.pages) {
+    DATA.pages.forEach(function(p) {
+      var pageTitle = "Strona " + p.id + ": " + p.name;
+      items.push({
+        category: "Strony APEX",
+        typeLabel: "Strona " + p.id,
+        name: p.name,
+        subtitle: p.alias ? "Alias: " + p.alias : "",
+        searchText: ("strona " + p.id + " " + p.name + " " + (p.alias || "") + " " + (p.help_text || "")).toLowerCase(),
+        action: function() {
+          if (!window._mapInit) initMap();
+          switchTab("map");
+          selectPage(p.id);
+        }
+      });
+
+      // Sub-components helper function
+      function addPageSubItem(compCategory, typeLabel, name, subtitle, text, subCompType, subCompName) {
+        items.push({
+          category: compCategory,
+          typeLabel: typeLabel,
+          name: name,
+          subtitle: "Strona " + p.id + ": " + p.name + (subtitle ? " | " + subtitle : ""),
+          searchText: (name + " " + (text || "") + " strona " + p.id + " " + p.name).toLowerCase(),
+          action: function() {
+            if (!window._mapInit) initMap();
+            switchTab("map");
+            selectPage(p.id);
+            setTimeout(function() {
+              highlightSubComponent(subCompType, subCompName);
+            }, 50);
+          }
+        });
+      }
+
+      (p.regions || []).forEach(function(r) {
+        var rName = r.title || r.name;
+        addPageSubItem("Komponenty stron (Regiony)", "Region", rName, r.type, (r.source_table || "") + " " + (r.source_sql || "") + " " + (r.html_code || ""), "region", rName);
+      });
+
+      (p.items || []).forEach(function(it) {
+        addPageSubItem("Komponenty stron (Elementy)", "Element", it.name, it.label || it.type, (it.label || "") + " " + (it.source_column || "") + " " + (it.lov || ""), "item", it.name);
+      });
+
+      (p.buttons || []).forEach(function(b) {
+        addPageSubItem("Komponenty stron (Przyciski)", "Przycisk", b.name, b.label || b.action, b.label || "", "button", b.name);
+      });
+
+      (p.processes || []).forEach(function(pr) {
+        addPageSubItem("Komponenty stron (Procesy)", "Proces", pr.name, pr.point || pr.type, (pr.code || "") + " " + (pr.package || ""), "process", pr.name);
+      });
+
+      (p.dynamic_actions || []).forEach(function(da) {
+        var daCode = (da.actions || []).map(function(a){ return a.code || ""; }).join(" ");
+        addPageSubItem("Komponenty stron (Akcje dynamiczne)", "Akcja dyn.", da.name, da.event, daCode, "da", da.name);
+      });
+    });
+  }
+
+  // Shared Components
+  function addSharedItem(category, typeLabel, name, subtitle, text, sharedType) {
+    items.push({
+      category: category,
+      typeLabel: typeLabel,
+      name: name,
+      subtitle: subtitle || "",
+      searchText: (name + " " + (subtitle || "") + " " + (text || "")).toLowerCase(),
+      action: function() {
+        if (!window._sharedInit) initSharedComponents();
+        switchTab("shared");
+        showSharedComponent(sharedType, name);
+      }
+    });
+  }
+
+  if (DATA.lovs) {
+    DATA.lovs.forEach(function(l) {
+      addSharedItem("Shared Components (LOV)", "LOV", l.name, l.source_type, (l.sql_query || "") + " " + (l.source_table || ""), "lov");
+    });
+  }
+  if (DATA.authorizations) {
+    DATA.authorizations.forEach(function(a) {
+      addSharedItem("Shared Components (Autoryzacja)", "Autoryzacja", a.name, a.type, a.code || "", "authorization");
+    });
+  }
+  if (DATA.nav_lists) {
+    DATA.nav_lists.forEach(function(nl) {
+      addSharedItem("Shared Components (Listy)", "Lista", nl.name, "", "", "nav_list");
+    });
+  }
+  if (DATA.app_items) {
+    DATA.app_items.forEach(function(ai) {
+      addSharedItem("Shared Components (Zmienne)", "Zmienna", ai.name, ai.scope, "", "app_item");
+    });
+  }
+  if (DATA.authentications) {
+    DATA.authentications.forEach(function(au) {
+      addSharedItem("Shared Components (Autentykacja)", "Autentykacja", au.name, au.scheme_type, "", "authentication");
+    });
+  }
+
+  _searchIndex = items;
+  return _searchIndex;
 }
+
+function handleSearch(q) {
+  var term = q.toLowerCase().trim();
+  var container = document.getElementById("search-results");
+  if (!container) return;
+
+  if (!term) {
+    hideSearchResults();
+    return;
+  }
+
+  var index = buildSearchIndex();
+  var matches = index.filter(function(item) {
+    return item.searchText.indexOf(term) >= 0;
+  });
+
+  if (matches.length === 0) {
+    container.innerHTML = '<div class="search-no-results">Brak wyników dla "' + escapeHtml(q) + '"</div>';
+    container.style.display = "block";
+    return;
+  }
+
+  // Group matches by category
+  var groups = {};
+  var totalCount = 0;
+  matches.forEach(function(item) {
+    if (totalCount >= 40) return;
+    if (!groups[item.category]) groups[item.category] = [];
+    if (groups[item.category].length < 8) {
+      groups[item.category].push(item);
+      totalCount++;
+    }
+  });
+
+  var html = "";
+  Object.keys(groups).forEach(function(cat) {
+    html += '<div class="search-group-header">' + escapeHtml(cat) + '</div>';
+    groups[cat].forEach(function(item) {
+      html += '<div class="search-result-item" onclick="navigateToSearchResult(this)">' +
+                '<div class="search-result-title"><span>' + escapeHtml(item.name) + '</span>' +
+                '<span class="badge badge-type">' + escapeHtml(item.typeLabel) + '</span></div>';
+      if (item.subtitle) {
+        html += '<div class="search-result-subtitle">' + escapeHtml(item.subtitle) + '</div>';
+      }
+      html += '</div>';
+    });
+  });
+
+  container.innerHTML = html;
+  // Store match action handlers on DOM nodes directly or in window
+  window._currentSearchMatches = groups;
+  var itemsElements = container.querySelectorAll(".search-result-item");
+  var idx = 0;
+  Object.keys(groups).forEach(function(cat) {
+    groups[cat].forEach(function(item) {
+      if (itemsElements[idx]) {
+        itemsElements[idx]._action = item.action;
+      }
+      idx++;
+    });
+  });
+
+  container.style.display = "block";
+}
+
+function navigateToSearchResult(el) {
+  hideSearchResults();
+  if (el && typeof el._action === "function") {
+    el._action();
+  }
+}
+
+function hideSearchResults() {
+  var container = document.getElementById("search-results");
+  if (container) container.style.display = "none";
+}
+
+function highlightSubComponent(type, name) {
+  var panel = document.getElementById("page-detail-panel");
+  if (!panel) return;
+
+  var targetEl = null;
+
+  // Search through subsections and table rows in page-detail-panel
+  if (type === "item") {
+    var rows = panel.querySelectorAll("table tr");
+    rows.forEach(function(tr) {
+      var firstCell = tr.querySelector("td");
+      if (firstCell && firstCell.textContent.trim().indexOf(name) === 0) {
+        targetEl = tr;
+      }
+    });
+  } else {
+    var titles = panel.querySelectorAll(".subsection-title");
+    titles.forEach(function(t) {
+      if (t.textContent.trim().indexOf(name) === 0) {
+        targetEl = t.closest(".subsection") || t;
+      }
+    });
+  }
+
+  if (targetEl) {
+    // Open parent section if inside an accordion
+    var section = targetEl.closest(".section");
+    if (section && !section.classList.contains("open")) {
+      section.classList.add("open");
+    }
+
+    targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    targetEl.classList.remove("search-highlight");
+    void targetEl.offsetWidth; // force reflow for re-triggering animation
+    targetEl.classList.add("search-highlight");
+  }
+}
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest(".search-box")) {
+    hideSearchResults();
+  }
+});
 
 // === HELPERS ===
 function escapeHtml(s) {
@@ -1336,6 +1692,178 @@ function renderBranches(branches) {
     html += '</div></div>';
   });
   return html;
+}
+
+// === SHARED COMPONENTS ===
+function initSharedComponents() {
+  window._sharedInit = true;
+  var tree = document.getElementById("shared-tree");
+  var html = "";
+
+  if (DATA.lovs && DATA.lovs.length) {
+    html += "<h4>Listy wartości (LOV) (" + DATA.lovs.length + ")</h4>";
+    DATA.lovs.forEach(function(l) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'lov\',\'' + escapeHtml(l.name) + '\')">' + escapeHtml(l.name) + '</div>';
+    });
+  }
+
+  if (DATA.authorizations && DATA.authorizations.length) {
+    html += "<h4>Autoryzacje (" + DATA.authorizations.length + ")</h4>";
+    DATA.authorizations.forEach(function(a) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'authorization\',\'' + escapeHtml(a.name) + '\')">' + escapeHtml(a.name) + '</div>';
+    });
+  }
+
+  if (DATA.nav_lists && DATA.nav_lists.length) {
+    html += "<h4>Listy nawigacyjne (" + DATA.nav_lists.length + ")</h4>";
+    DATA.nav_lists.forEach(function(nl) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'nav_list\',\'' + escapeHtml(nl.name) + '\')">' + escapeHtml(nl.name) + '</div>';
+    });
+  }
+
+  if (DATA.app_items && DATA.app_items.length) {
+    html += "<h4>Zmienne globalne (" + DATA.app_items.length + ")</h4>";
+    DATA.app_items.forEach(function(ai) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'app_item\',\'' + escapeHtml(ai.name) + '\')">' + escapeHtml(ai.name) + '</div>';
+    });
+  }
+
+  if (DATA.authentications && DATA.authentications.length) {
+    html += "<h4>Autentykacja (" + DATA.authentications.length + ")</h4>";
+    DATA.authentications.forEach(function(a) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'authentication\',\'' + escapeHtml(a.name) + '\')">' + escapeHtml(a.name) + '</div>';
+    });
+  }
+
+  if (DATA.plugins && DATA.plugins.length) {
+    html += "<h4>Pluginy (" + DATA.plugins.length + ")</h4>";
+    DATA.plugins.forEach(function(p) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'plugin\',\'' + escapeHtml(p.name) + '\')">' + escapeHtml(p.name) + '</div>';
+    });
+  }
+
+  if (DATA.search_configs && DATA.search_configs.length) {
+    html += "<h4>Wyszukiwanie (" + DATA.search_configs.length + ")</h4>";
+    DATA.search_configs.forEach(function(s) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'search_config\',\'' + escapeHtml(s.name) + '\')">' + escapeHtml(s.name) + '</div>';
+    });
+  }
+
+  if (DATA.data_load_defs && DATA.data_load_defs.length) {
+    html += "<h4>Ładowanie danych (" + DATA.data_load_defs.length + ")</h4>";
+    DATA.data_load_defs.forEach(function(d) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'data_load\',\'' + escapeHtml(d.name) + '\')">' + escapeHtml(d.name) + '</div>';
+    });
+  }
+
+  if (DATA.static_files && DATA.static_files.length) {
+    html += "<h4>Pliki statyczne (" + DATA.static_files.length + ")</h4>";
+    DATA.static_files.forEach(function(f) {
+      html += '<div class="tree-item" onclick="showSharedComponent(\'static_file\',\'' + escapeHtml(f.file_name) + '\')">' + escapeHtml(f.file_name) + '</div>';
+    });
+  }
+
+  tree.innerHTML = html;
+}
+
+function showSharedComponent(type, name) {
+  document.querySelectorAll("#shared-tree .tree-item").forEach(function(e) { e.classList.remove("active"); });
+  if (event && event.currentTarget) event.currentTarget.classList.add("active");
+  var panel = document.getElementById("shared-detail");
+  var html = "";
+
+  if (type === "lov") {
+    var l = DATA.lovs.find(function(x) { return x.name === name; });
+    if (!l) return;
+    html = "<h3>LOV: " + escapeHtml(l.name) + "</h3>";
+    html += "<p><strong>Typ źródła:</strong> " + escapeHtml(l.source_type || "Nieznany") + "</p>";
+    if (l.source_table) html += "<p><strong>Tabela źródłowa:</strong> <code>" + escapeHtml(l.source_table) + "</code></p>";
+    if (l.display_column) html += "<p><strong>Kolumna wyświetlana:</strong> <code>" + escapeHtml(l.display_column) + "</code></p>";
+    if (l.return_column) html += "<p><strong>Kolumna zwracana:</strong> <code>" + escapeHtml(l.return_column) + "</code></p>";
+
+    if (l.sql_query) {
+      html += "<h4>Zapytanie SQL</h4>" + codeBlock(l.sql_query, "sql");
+    }
+
+    if (l.entries && l.entries.length) {
+      html += "<h4>Wartości statyczne</h4>";
+      html += "<table><tr><th>Display (Wyświetlana)</th><th>Return (Zwracana)</th></tr>";
+      l.entries.forEach(function(e) {
+        html += "<tr><td>" + escapeHtml(e.display) + "</td><td>" + escapeHtml(e["return"]) + "</td></tr>";
+      });
+      html += "</table>";
+    }
+  } else if (type === "authorization") {
+    var a = DATA.authorizations.find(function(x) { return x.name === name; });
+    if (!a) return;
+    html = "<h3>Autoryzacja: " + escapeHtml(a.name) + "</h3>";
+    if (a.type) html += "<p><strong>Typ:</strong> " + escapeHtml(a.type) + "</p>";
+    if (a.role_or_group) html += "<p><strong>Rola / Grupa:</strong> " + escapeHtml(a.role_or_group) + "</p>";
+    if (a.code) {
+      html += "<h4>Kod PL/SQL</h4>" + codeBlock(a.code, "plsql");
+    }
+  } else if (type === "nav_list") {
+    var nl = DATA.nav_lists.find(function(x) { return x.name === name; });
+    if (!nl) return;
+    html = "<h3>Lista nawigacyjna: " + escapeHtml(nl.name) + "</h3>";
+    if (nl.entries && nl.entries.length) {
+      html += "<h4>Pozycje menu</h4>";
+      html += "<table><tr><th>Pozycja (Label)</th><th>Strona docelowa</th><th>Element nadrzędny</th></tr>";
+      nl.entries.forEach(function(e) {
+        html += "<tr><td>" + escapeHtml(e.label) + "</td><td>" + (e.target_page ? "Strona " + e.target_page : "—") + "</td><td>" + (escapeHtml(e.parent) || "—") + "</td></tr>";
+      });
+      html += "</table>";
+    }
+  } else if (type === "app_item") {
+    var ai = DATA.app_items.find(function(x) { return x.name === name; });
+    if (!ai) return;
+    html = "<h3>Zmienna globalna: " + escapeHtml(ai.name) + "</h3>";
+    html += "<p><strong>Zakres (Scope):</strong> " + escapeHtml(ai.scope || "Application") + "</p>";
+  } else if (type === "authentication") {
+    var aut = DATA.authentications.find(function(x) { return x.name === name; });
+    if (!aut) return;
+    html = "<h3>Autentykacja: " + escapeHtml(aut.name) + "</h3>";
+    html += "<p><strong>Typ:</strong> " + escapeHtml(aut.type) + "</p>";
+    if (aut.host) html += "<p><strong>Host:</strong> " + escapeHtml(aut.host) + "</p>";
+    if (aut.port) html += "<p><strong>Port:</strong> " + escapeHtml(aut.port) + "</p>";
+    if (aut.use_ssl) html += "<p><strong>SSL:</strong> " + escapeHtml(aut.use_ssl) + "</p>";
+    if (aut.dn) html += "<p><strong>DN:</strong> <code>" + escapeHtml(aut.dn) + "</code></p>";
+  } else if (type === "plugin") {
+    var p = DATA.plugins.find(function(x) { return x.name === name; });
+    if (!p) return;
+    html = "<h3>Plugin: " + escapeHtml(p.name) + "</h3>";
+    if (p.internal_name) html += "<p><strong>Nazwa wewnętrzna:</strong> <code>" + escapeHtml(p.internal_name) + "</code></p>";
+    if (p.theme) html += "<p><strong>Motyw:</strong> " + escapeHtml(p.theme) + "</p>";
+    if (p.plugin_type) html += "<p><strong>Typ:</strong> " + escapeHtml(p.plugin_type) + "</p>";
+    if (p.available_as && p.available_as.length) {
+      html += "<p><strong>Dostępny jako:</strong> " + escapeHtml(p.available_as.join(", ")) + "</p>";
+    }
+  } else if (type === "search_config") {
+    var s = DATA.search_configs.find(function(x) { return x.name === name; });
+    if (!s) return;
+    html = "<h3>Konfiguracja wyszukiwania: " + escapeHtml(s.name) + "</h3>";
+    if (s.search_type) html += "<p><strong>Typ wyszukiwania:</strong> " + escapeHtml(s.search_type) + "</p>";
+    if (s.location) html += "<p><strong>Lokalizacja:</strong> " + escapeHtml(s.location) + "</p>";
+    if (s.sql_query) {
+      html += "<h4>Zapytanie SQL</h4>" + codeBlock(s.sql_query, "sql");
+    }
+  } else if (type === "data_load") {
+    var d = DATA.data_load_defs.find(function(x) { return x.name === name; });
+    if (!d) return;
+    html = "<h3>Definicja ładowania danych: " + escapeHtml(d.name) + "</h3>";
+    if (d.target_type) html += "<p><strong>Typ docelowy:</strong> " + escapeHtml(d.target_type) + "</p>";
+    if (d.table_name) html += "<p><strong>Tabela docelowa:</strong> <code>" + escapeHtml(d.table_name) + "</code></p>";
+    if (d.loading_method) html += "<p><strong>Metoda ładowania:</strong> " + escapeHtml(d.loading_method) + "</p>";
+    if (d.commit_interval) html += "<p><strong>Interwał zatwierdzania:</strong> " + escapeHtml(d.commit_interval) + "</p>";
+  } else if (type === "static_file") {
+    var f = DATA.static_files.find(function(x) { return x.file_name === name; });
+    if (!f) return;
+    html = "<h3>Plik statyczny: " + escapeHtml(f.file_name) + "</h3>";
+    if (f.mime_type) html += "<p><strong>MIME Type:</strong> " + escapeHtml(f.mime_type) + "</p>";
+  }
+
+  panel.innerHTML = html;
+  highlightCode(panel);
 }
 
 // === INIT ===
